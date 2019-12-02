@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdventOfCode2019.Solvers
 {
@@ -12,17 +8,15 @@ namespace AdventOfCode2019.Solvers
         class IntcodeCPU
         {
             int[] Program;
-            int IP = 0;
-
+            int IP;
             public int RunProgram(int[] program)
             {
+                IP = 0;
                 Program = program;
 
-                bool terminate = false;
-                while(!terminate)
+                while(true)
                 {
                     var opCode = Program[IP];
-                    
                     switch (opCode)
                     {
                         case 1:
@@ -32,15 +26,11 @@ namespace AdventOfCode2019.Solvers
                             Program[Program[IP + 3]] = Program[Program[IP + 1]] * Program[Program[IP + 2]];
                             break;
                         case 99:
-                            terminate = true;
-                            break;
+                            return Program[0];
                     }
                     IP += 4;
                 }
-
-                return Program[0];
             }
-
         }
 
 
@@ -61,15 +51,15 @@ namespace AdventOfCode2019.Solvers
         }
 
         public override string Part2()
-        {            
+        {
+            IntcodeCPU cpu = new IntcodeCPU();
             int[] program;
+
             using (var input = File.OpenText(InputFile))
             {
                 program = input.ReadLine().Split(',').Select(n => int.Parse(n)).ToArray();
             }
 
-            bool terminate = false;
-            int result = 0;
             for (int n = 0; n < 100; n++)
             {
                 for (int v = 0; v < 100; v++)
@@ -80,19 +70,11 @@ namespace AdventOfCode2019.Solvers
                     testProgram[1] = n;
                     testProgram[2] = v;
 
-                    IntcodeCPU cpu = new IntcodeCPU();
-                    terminate = (cpu.RunProgram(testProgram) == 19690720);
-                    if (terminate)
-                    {
-                        result = n * 100 + v;
-                        break;
-                    }
+                    if (cpu.RunProgram(testProgram) == 19690720) return (n * 100 + v).ToString();
                 }
-                if (terminate) break;
             }
 
-            return result.ToString();
-
+            return "No solution found!";
         }
     }
 }
