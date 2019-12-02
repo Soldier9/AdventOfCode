@@ -14,7 +14,7 @@ namespace AdventOfCode2019
             Solvers = Assembly
                 .GetExecutingAssembly()
                 .GetTypes()
-                .Where(t => t.Namespace == @"AdventOfCode2019.Solvers" && t.BaseType.Name == @"AbstractSolver")
+                .Where(t => t.BaseType.Name == "AbstractSolver")
                 .Select(s => (AbstractSolver)Activator.CreateInstance(s))
                 .OrderBy(s => s.Day);
 
