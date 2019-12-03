@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdventOfCode2019.Solvers
 {
@@ -50,9 +47,12 @@ namespace AdventOfCode2019.Solvers
             }
         }
 
-        void TraceWire(string[] moves, HashSet<Point> points)
+        Dictionary<Point,int> TraceWire(string[] moves)
         {
+            Dictionary<Point, int> tracedWire = new Dictionary<Point, int>();
+
             Point currentPoint = new Point(0, 0);
+            int wireLength = 0;
 
             foreach(string movement in moves)
             {
@@ -67,89 +67,50 @@ namespace AdventOfCode2019.Solvers
                         case 'D': currentPoint.Y--; break;
                     }
 
-                    points.Add(currentPoint.Clone());
+                    wireLength++;
+                    if(!tracedWire.ContainsKey(currentPoint)) tracedWire.Add(currentPoint.Clone(), wireLength);
                 }
             }
+
+            return tracedWire;
         }
 
         public override string Part1()
         {
-            HashSet<Point> wire1 = new HashSet<Point>();
-            HashSet<Point> wire2 = new HashSet<Point>();
+            Dictionary<Point, int> wire1;
+            Dictionary<Point, int> wire2;
 
             using (var input = File.OpenText(InputFile))
             {
-                TraceWire(input.ReadLine().Split(',').ToArray(), wire1);
-                TraceWire(input.ReadLine().Split(',').ToArray(), wire2);
+                wire1 = TraceWire(input.ReadLine().Split(',').ToArray());
+                wire2 = TraceWire(input.ReadLine().Split(',').ToArray());
             }
 
-            List<Point> intersects = wire1.Where(p => wire2.Contains(p)).ToList();
-            int shortestDistance = Int32.MaxValue;
-            foreach(Point point in intersects)
-            {
-                var distanceToZero = Math.Abs(point.X) + Math.Abs(point.Y);
-                if (distanceToZero < shortestDistance) shortestDistance = distanceToZero;
-            }
+            var intersects = wire1.Where(p => wire2.ContainsKey(p.Key)).Select(p=> new KeyValuePair<Point, int>(p.Key, p.Value + wire2[p.Key]));
 
-            return shortestDistance.ToString();
-        }
-
-        int GetDistAlongWire(string[] moves, Point destPoint)
-        {
-            Point currentPoint = new Point(0, 0);
-            
-            int distMoved = 0;
-            foreach (string movement in moves)
-            {
-                int moveLength = int.Parse(movement.Substring(1));
-                for (int i = 0; i < moveLength; i++)
-                {
-                    switch (movement[0])
-                    {
-                        case 'R': currentPoint.X++; break;
-                        case 'L': currentPoint.X--; break;
-                        case 'U': currentPoint.Y++; break;
-                        case 'D': currentPoint.Y--; break;
-                    }
-
-                    distMoved++;
-                    if (currentPoint.Equals(destPoint)) return distMoved;
-                }
-            }
-
-            return 0;
+            return intersects.Min(p => Math.Abs(p.Key.X) + Math.Abs(p.Key.Y)).ToString();
         }
 
         public override string Part2()
         {
-            string[] wire1moves;
-            string[] wire2moves;
-
-            HashSet<Point> wire1 = new HashSet<Point>();
-            HashSet<Point> wire2 = new HashSet<Point>();
+            Dictionary<Point, int> wire1;
+            Dictionary<Point, int> wire2;
 
             using (var input = File.OpenText(InputFile))
             {
-                wire1moves = input.ReadLine().Split(',').ToArray();
-                wire2moves = input.ReadLine().Split(',').ToArray();
-
-                TraceWire(wire1moves, wire1);
-                TraceWire(wire2moves, wire2);
+                wire1 = TraceWire(input.ReadLine().Split(',').ToArray());
+                wire2 = TraceWire(input.ReadLine().Split(',').ToArray());
             }
 
-            List<Point> intersects = wire1.Where(p => wire2.Contains(p)).ToList();
+            var intersects = wire1.Where(p => wire2.ContainsKey(p.Key)).Select(p => new KeyValuePair<Point, int>(p.Key, p.Value + wire2[p.Key]));
 
-            int shortestDist = Int32.MaxValue;
-            foreach(Point intersect in intersects)
+            int shortestDistance = Int32.MaxValue;
+            foreach (var intersect in intersects)
             {
-                int thisDist = GetDistAlongWire(wire1moves, intersect) + GetDistAlongWire(wire2moves, intersect);
-                if (thisDist < shortestDist) shortestDist = thisDist;
+                if (intersect.Value < shortestDistance) shortestDistance = intersect.Value;
             }
 
-            return shortestDist.ToString();
+            return shortestDistance.ToString();
         }
-
-        
-
     }
 }
