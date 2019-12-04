@@ -50,6 +50,7 @@
     <Compile Include="Solvers\Day2Solver.cs" />
     <Compile Include="Solvers\Day3Solver.cs" />
     <Compile Include="Solvers\Day4Solver.cs" />
+    <Compile Include="Solvers\Day4SolverRegex.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
