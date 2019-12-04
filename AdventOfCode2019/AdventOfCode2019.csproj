@@ -49,6 +49,7 @@
     <Compile Include="Solvers\Day1Solver.cs" />
     <Compile Include="Solvers\Day2Solver.cs" />
     <Compile Include="Solvers\Day3Solver.cs" />
+    <Compile Include="Solvers\Day4Solver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -62,6 +63,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Inputs\Day3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Inputs\Day4.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
