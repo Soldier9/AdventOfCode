@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace AdventOfCode2019.Solvers
 {
-    class Day2Solver : AbstractSolver
+    class Day02Solver : AbstractSolver
     {
         class IntcodeCPU
         {

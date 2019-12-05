@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode2019.Solvers
 {
-    class Day4SolverRegex : AbstractSolver
+    class Day04SolverRegex : AbstractSolver
     {
         int InputFrom = 136818;
         int InputTo = 685979;

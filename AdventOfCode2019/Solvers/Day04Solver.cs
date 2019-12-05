@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode2019.Solvers
 {
-    class Day4Solver : AbstractSolver
+    class Day04Solver : AbstractSolver
     {
         int inputFrom = 136818;
         int inputTo = 685979;

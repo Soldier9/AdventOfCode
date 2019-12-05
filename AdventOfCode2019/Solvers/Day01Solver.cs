@@ -3,7 +3,7 @@ using System.IO;
 
 namespace AdventOfCode2019.Solvers
 {
-    class Day1Solver : AbstractSolver
+    class Day01Solver : AbstractSolver
     {
         public override string Part1()
         {
