@@ -24,7 +24,7 @@ namespace AdventOfCode2019.Solvers
                     int opCode = Program[IP];
 
                     int[] modes = new int[3];
-                    modes[0] = ( opCode % 1000 ) / 100;
+                    modes[0] = (opCode % 1000) / 100;
                     modes[1] = (opCode % 10000) / 1000;
                     modes[2] = (opCode % 100000) / 10000;
                     opCode = opCode % 100;
@@ -98,8 +98,8 @@ namespace AdventOfCode2019.Solvers
             {
                 int param1 = (modes[0] == 0 ? Program[Program[IP + 1]] : Program[IP + 1]);
 
-                Console.Write("\r\nOutput from program: ");
-                Console.Write(param1);
+                Console.Write("Output from program: ");
+                Console.Write("{0}\r\n", param1);
             }
 
             void JumpIfTrue(int[] modes)
@@ -107,14 +107,27 @@ namespace AdventOfCode2019.Solvers
                 int param1 = (modes[0] == 0 ? Program[Program[IP + 1]] : Program[IP + 1]);
                 int param2 = (modes[1] == 0 ? Program[Program[IP + 2]] : Program[IP + 2]);
 
-                if (param1 != 0) IP = param2;
+                if (param1 != 0)
+                {
+                    IP = param2;
+                }
+                else
+                {
+                    IP += 3;
+                }
             }
             void JumpIfFalse(int[] modes)
             {
                 int param1 = (modes[0] == 0 ? Program[Program[IP + 1]] : Program[IP + 1]);
                 int param2 = (modes[1] == 0 ? Program[Program[IP + 2]] : Program[IP + 2]);
 
-                if (param1 == 0) IP = param2;
+                if (param1 == 0)
+                {
+                    IP = param2;
+                } else
+                {
+                    IP += 3;
+                }
             }
 
             void LessThan(int[] modes)
