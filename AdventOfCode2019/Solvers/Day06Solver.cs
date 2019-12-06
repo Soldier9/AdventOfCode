@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdventOfCode2019.Solvers
 {
@@ -13,29 +10,26 @@ namespace AdventOfCode2019.Solvers
         {
             public static HashSet<Celestial> AllCelestials = new HashSet<Celestial>();
 
-            public string ID;
-            string OrbittingString;
+            public readonly string ID;
+            string OrbitsString;
             
-            public Celestial Orbitting;
-            public HashSet<Celestial> OrbittedBy = new HashSet<Celestial>();
-
+            public Celestial Orbits;
+            
             public Celestial(string id, string orbitting)
             {
                 ID = id;
-                OrbittingString = orbitting;
+                OrbitsString = orbitting;
                 AllCelestials.Add(this);
 
                 if (AllCelestials.Any(c => c.ID == orbitting))
                 {
-                    Orbitting = AllCelestials.Single(c => c.ID == orbitting);
-                    Orbitting.OrbittedBy.Add(this);
+                    Orbits = AllCelestials.Single(c => c.ID == orbitting);
                 }
                 
 
-                foreach (Celestial orbitter in AllCelestials.Where(c => c.OrbittingString == ID))
+                foreach (Celestial orbitter in AllCelestials.Where(c => c.OrbitsString == ID))
                 {
-                    orbitter.Orbitting = this;
-                    OrbittedBy.Add(orbitter);
+                    orbitter.Orbits = this;
                 }
             }
 
@@ -46,15 +40,13 @@ namespace AdventOfCode2019.Solvers
                 foreach(Celestial celestial in AllCelestials)
                 {
                     var test = celestial;
-                    while(test.Orbitting != null)
+                    while(test.Orbits != null)
                     {
                         orbits++;
-                        test = test.Orbitting;
+                        test = test.Orbits;
                     }
-                    if(test.Orbitting == null)
-                    {
-                        orbits++;
-                    }
+                    // There is no actual root-node in the graph, so Orbits will be null for the ones orbitting the root-node, but we need to count those as well!
+                    if (test.Orbits == null) orbits++;
                 }
 
                 return orbits;
@@ -64,14 +56,11 @@ namespace AdventOfCode2019.Solvers
 
         public override string Part1()
         {
-            
-
             using(var input = File.OpenText(InputFile))
             {
                 while(!input.EndOfStream)
                 {
                     string line = input.ReadLine();
-
                     new Celestial(line.Split(')')[1], line.Split(')')[0]);
                 }
             }
@@ -79,37 +68,35 @@ namespace AdventOfCode2019.Solvers
             return Celestial.GetTotalNumberOfOrbits().ToString();
         }
 
+        Dictionary<Celestial, int> GetPathToSun(Celestial body)
+        {
+            Dictionary<Celestial, int> pathToSun = new Dictionary<Celestial, int>();
+            Celestial currentBody = body;
+
+            int transfers = 0;
+            while (currentBody.Orbits != null)
+            {
+                pathToSun.Add(currentBody.Orbits, ++transfers);
+                currentBody = currentBody.Orbits;
+            }
+
+            return pathToSun;
+        }
+
         public override string Part2()
         {
             Celestial me = Celestial.AllCelestials.Single(c => c.ID == "YOU");
-            Dictionary<Celestial, int> myPathToSun = new Dictionary<Celestial, int>();
-
-            int transfers = 0;
-            while(me.Orbitting != null)
-            {
-                myPathToSun.Add(me.Orbitting,++transfers);
-                me = me.Orbitting;
-            }
-
+            Dictionary<Celestial, int> myPathToSun = GetPathToSun(me);
+            
             Celestial santa = Celestial.AllCelestials.Single(c => c.ID == "SAN");
-            Dictionary<Celestial, int> santasPathToSun = new Dictionary<Celestial, int>();
-
-            transfers = 0;
-            while (santa.Orbitting != null)
-            {
-                santasPathToSun.Add(santa.Orbitting, ++transfers);
-                santa = santa.Orbitting;
-            }
-
+            Dictionary<Celestial, int> santasPathToSun = GetPathToSun(santa);
+            
             foreach(KeyValuePair<Celestial,int> c in myPathToSun.OrderBy(c => c.Value))
             {
-                if(santasPathToSun.ContainsKey(c.Key))
-                {
-                    return (c.Value + santasPathToSun[c.Key] - 2).ToString();
-                }
+                if(santasPathToSun.ContainsKey(c.Key)) return (c.Value + santasPathToSun[c.Key] - 2).ToString();
             }
 
-            return "FUCK!";
+            return "Path not found!";
         }
     }
 }
