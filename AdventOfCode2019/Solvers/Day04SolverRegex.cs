@@ -5,6 +5,8 @@ namespace AdventOfCode2019.Solvers
 {
     class Day04SolverRegex : AbstractSolver
     {
+        public override bool PrioritizedSolver => true;
+
         int InputFrom = 136818;
         int InputTo = 685979;
 

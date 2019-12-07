@@ -9,9 +9,10 @@ namespace AdventOfCode2019.Solvers
 {
     class Day07SolverThreaded : AbstractSolver
     {
+        public override bool PrioritizedSolver => true;
+
         class IntcodeCPU
         {
-            int CpuID;
             readonly int[] Program;
             int IP;
             readonly BlockingCollection<int> InputQueue;
@@ -19,9 +20,8 @@ namespace AdventOfCode2019.Solvers
             int? LastOutput;
             public bool HasTerminated = false;
 
-            public IntcodeCPU(int[] program, BlockingCollection<int> input, BlockingCollection<int> output, int cpuId)
+            public IntcodeCPU(int[] program, BlockingCollection<int> input, BlockingCollection<int> output)
             {
-                CpuID = cpuId;
                 IP = 0;
                 Program = (int[])program.Clone();
                 InputQueue = input;
@@ -252,7 +252,7 @@ namespace AdventOfCode2019.Solvers
                     outputQueue = new BlockingCollection<int>();
                     inputQueue.Add(settings[i]);
                     if (i == 0) inputQueue.Add(0); // first input for cpu A
-                    IntcodeCPU cpu = new IntcodeCPU(program, inputQueue, outputQueue, i);
+                    IntcodeCPU cpu = new IntcodeCPU(program, inputQueue, outputQueue);
                     cpus.Add(new Task<int>(() =>
                     {
                         return cpu.RunProgram();
@@ -289,7 +289,7 @@ namespace AdventOfCode2019.Solvers
                     outputQueue = (i == 4 ? cpu1Input : new BlockingCollection<int>());
                     inputQueue.Add(settings[i]);
                     if (i == 0) inputQueue.Add(0); // first input for cpu A
-                    IntcodeCPU cpu = new IntcodeCPU(program, inputQueue, outputQueue, i);
+                    IntcodeCPU cpu = new IntcodeCPU(program, inputQueue, outputQueue);
                     cpus.Add(new Task<int>(() =>
                     {
                         return cpu.RunProgram();

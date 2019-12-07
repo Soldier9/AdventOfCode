@@ -9,7 +9,7 @@ namespace AdventOfCode2019
     {
         static IEnumerable<AbstractSolver> Solvers;
 
-        static void Main(string[] args)
+        static void Main()
         {
             Solvers = Assembly
                 .GetExecutingAssembly()
@@ -17,9 +17,10 @@ namespace AdventOfCode2019
                 .Where(t => t.BaseType.Name == "AbstractSolver")
                 //.Where(t => t.BaseType.Name == "AbstractSolver" && t.Name == "Day07SolverThreaded")
                 .Select(s => (AbstractSolver)Activator.CreateInstance(s))
-                .OrderBy(s => s.Day);
-
+                .OrderBy(s => s.Day).ThenBy(s => s.PrioritizedSolver);
+            
             var solver = Solvers.Last();
+
             Console.WriteLine("Advent of Code Day {0}", solver.Day);
             Console.WriteLine("\r\nSolving Part 1");
             try
