@@ -10,15 +10,14 @@ namespace AdventOfCode2019.Solvers
 {
     class Day07Solver : AbstractSolver
     {
-
         class IntcodeCPU
         {
             private class YieldException : Exception { }
 
-            int[] Program;
+            readonly int[] Program;
             int IP;
-            Queue<int> InputQueue = new Queue<int>();
-            Queue<int> OutputQueue = new Queue<int>();
+            readonly Queue<int> InputQueue = new Queue<int>();
+            readonly Queue<int> OutputQueue = new Queue<int>();
             int? LastOutput;
             public bool HasTerminated = false;
 
@@ -257,28 +256,20 @@ namespace AdventOfCode2019.Solvers
             int greatestFinalResult = 0;
             foreach (int[] settings in GetCombinations())
             {
-                Queue<int>[] cpuResults = new Queue<int>[5];
-                for (int i = 0; i < 5; i++) cpuResults[i] = new Queue<int>();
-
+                Queue<int> outputs = new Queue<int>();
+                outputs.Enqueue(0); // First input for CPU A
+                
                 for (int cpuNum = 0; cpuNum < 5; cpuNum++)
                 {
                     IntcodeCPU cpu = new IntcodeCPU(program);
                     cpu.Input(settings[cpuNum]);
-                    cpu.Input(cpuNum == 0? 0 :cpuResults[cpuNum-1].Dequeue());
+                    cpu.Input(outputs.Dequeue());
 
-                    Queue<int> results = cpu.ResumeProgram();
-                    while(results.Count > 0)cpuResults[cpuNum].Enqueue(results.Dequeue());
+                    outputs = cpu.ResumeProgram();
                 }
 
-                while (cpuResults[4].Count > 0)
-                {
-                    if (cpuResults[4].Peek() > greatestFinalResult) {
-                        greatestFinalResult = cpuResults[4].Dequeue();
-                    } else
-                    {
-                        cpuResults[4].Dequeue();
-                    }
-                }
+                while (outputs.Count > 1) outputs.Dequeue(); // We only want the final output!
+                if (outputs.Peek() > greatestFinalResult) greatestFinalResult = outputs.Dequeue();
             }
 
             return greatestFinalResult.ToString();
@@ -303,31 +294,19 @@ namespace AdventOfCode2019.Solvers
                     cpus[i].Input(settings[i]);
                 }
 
-                Queue<int>[] cpuResults = new Queue<int>[5];
-                for (int i = 0; i < 5; i++) cpuResults[i] = new Queue<int>();
-                cpuResults[4].Enqueue(0); // First input for cpu A
-
+                cpus[0].Input(0);
+                Queue<int> outputs = new Queue<int>();
+                
                 while (!cpus[4].HasTerminated) { 
                     for (int i = 0; i < 5; i++)
                     {
-                        cpus[i].Input(i == 0 ? cpuResults[4].Dequeue() : cpuResults[i - 1].Dequeue());
-
-                        Queue<int> results = cpus[i].ResumeProgram();
-                        while (results.Count > 0) cpuResults[i].Enqueue(results.Dequeue());
+                        while (outputs.Count > 0) cpus[i].Input(outputs.Dequeue());
+                        outputs = cpus[i].ResumeProgram();
                     }
                 }
 
-                while (cpuResults[4].Count > 0)
-                {
-                    if (cpuResults[4].Peek() > greatestFinalResult)
-                    {
-                        greatestFinalResult = cpuResults[4].Dequeue();
-                    }
-                    else
-                    {
-                        cpuResults[4].Dequeue();
-                    }
-                }
+                while (outputs.Count > 1) outputs.Dequeue(); // We only want the final output!
+                if (outputs.Peek() > greatestFinalResult) greatestFinalResult = outputs.Dequeue();
             }
 
             return greatestFinalResult.ToString();
