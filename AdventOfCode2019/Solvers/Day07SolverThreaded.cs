@@ -1,35 +1,39 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace AdventOfCode2019.Solvers
 {
-    class Day07Solver : AbstractSolver
+    class Day07SolverThreaded : AbstractSolver
     {
         class IntcodeCPU
         {
-            private class YieldException : Exception { }
-
+            int CpuID;
             readonly int[] Program;
             int IP;
-            readonly Queue<int> InputQueue = new Queue<int>();
-            readonly Queue<int> OutputQueue = new Queue<int>();
+            readonly BlockingCollection<int> InputQueue;
+            readonly BlockingCollection<int> OutputQueue;
             int? LastOutput;
             public bool HasTerminated = false;
 
-            public IntcodeCPU(int[] program)
+            public IntcodeCPU(int[] program, BlockingCollection<int> input, BlockingCollection<int> output, int cpuId)
             {
+                CpuID = cpuId;
                 IP = 0;
                 Program = (int[])program.Clone();
+                InputQueue = input;
+                OutputQueue = output;
             }
 
             public void Input(int input)
             {
-                InputQueue.Enqueue(input);
+                InputQueue.Add(input);
             }
-            
-            public Queue<int> ResumeProgram()
+
+            public int RunProgram()
             {
                 while (true)
                 {
@@ -52,18 +56,11 @@ namespace AdventOfCode2019.Solvers
                             IP += 4;
                             break;
                         case 3:
-                            try
-                            {
-                                InputInstr();
-                            }
-                            catch (YieldException)
-                            {
-                                return OutputQueue;
-                            }
+                            InputInstr();
                             IP += 2;
                             break;
                         case 4:
-                            OutputQueue.Enqueue(OutputInstr(modes));
+                            OutputInstr(modes);
                             IP += 2;
                             break;
                         case 5:
@@ -83,7 +80,7 @@ namespace AdventOfCode2019.Solvers
 
                         case 99:
                             HasTerminated = true;
-                            return OutputQueue;
+                            return (LastOutput != null ? (int)LastOutput : -1);
                     }
                 }
             }
@@ -109,21 +106,14 @@ namespace AdventOfCode2019.Solvers
             void InputInstr()
             {
                 int param1 = Program[IP + 1]; // Always position mode
-
-                if(InputQueue.Count > 0)
-                {
-                    Program[param1] = InputQueue.Dequeue();
-                } else
-                {
-                    throw new YieldException();
-                }
+                Program[param1] = InputQueue.Take();
             }
 
-            int OutputInstr(int[] modes)
+            void OutputInstr(int[] modes)
             {
                 int param1 = (modes[0] == 0 ? Program[Program[IP + 1]] : Program[IP + 1]);
                 LastOutput = param1;
-                return param1;
+                OutputQueue.Add(param1);
             }
 
             void JumpIfTrueInstr(int[] modes)
@@ -253,20 +243,25 @@ namespace AdventOfCode2019.Solvers
             int greatestFinalResult = 0;
             foreach (int[] settings in GetCombinations())
             {
-                Queue<int> outputs = new Queue<int>();
-                outputs.Enqueue(0); // First input for CPU A
-                
-                for (int cpuNum = 0; cpuNum < 5; cpuNum++)
+                BlockingCollection<int> outputQueue;
+                BlockingCollection<int> inputQueue = new BlockingCollection<int>();
+
+                List<Task<int>> cpus = new List<Task<int>>();
+                for (int i = 0; i < 5; i++)
                 {
-                    IntcodeCPU cpu = new IntcodeCPU(program);
-                    cpu.Input(settings[cpuNum]);
-                    cpu.Input(outputs.Dequeue());
-
-                    outputs = cpu.ResumeProgram();
+                    outputQueue = new BlockingCollection<int>();
+                    inputQueue.Add(settings[i]);
+                    if (i == 0) inputQueue.Add(0); // first input for cpu A
+                    IntcodeCPU cpu = new IntcodeCPU(program, inputQueue, outputQueue, i);
+                    cpus.Add(new Task<int>(() =>
+                    {
+                        return cpu.RunProgram();
+                    }));
+                    inputQueue = outputQueue;
                 }
+                for (int i = 0; i < 5; i++) cpus[i].Start();
 
-                while (outputs.Count > 1) outputs.Dequeue(); // We only want the final output!
-                if (outputs.Peek() > greatestFinalResult) greatestFinalResult = outputs.Dequeue();
+                greatestFinalResult = Math.Max(greatestFinalResult, cpus[4].Result);
             }
 
             return greatestFinalResult.ToString();
@@ -284,26 +279,26 @@ namespace AdventOfCode2019.Solvers
             int greatestFinalResult = 0;
             foreach (int[] settings in GetCombinations2())
             {
-                IntcodeCPU[] cpus = new IntcodeCPU[5];
+                BlockingCollection<int> outputQueue;
+                BlockingCollection<int> inputQueue = new BlockingCollection<int>();
+
+                BlockingCollection<int> cpu1Input = inputQueue;
+                List<Task<int>> cpus = new List<Task<int>>();
                 for (int i = 0; i < 5; i++)
                 {
-                    cpus[i] = new IntcodeCPU(program);
-                    cpus[i].Input(settings[i]);
-                }
-
-                cpus[0].Input(0);
-                Queue<int> outputs = new Queue<int>();
-                
-                while (!cpus[4].HasTerminated) { 
-                    for (int i = 0; i < 5; i++)
+                    outputQueue = (i == 4 ? cpu1Input : new BlockingCollection<int>());
+                    inputQueue.Add(settings[i]);
+                    if (i == 0) inputQueue.Add(0); // first input for cpu A
+                    IntcodeCPU cpu = new IntcodeCPU(program, inputQueue, outputQueue, i);
+                    cpus.Add(new Task<int>(() =>
                     {
-                        while (outputs.Count > 0) cpus[i].Input(outputs.Dequeue());
-                        outputs = cpus[i].ResumeProgram();
-                    }
+                        return cpu.RunProgram();
+                    }));
+                    inputQueue = outputQueue;
                 }
+                for (int i = 0; i < 5; i++) cpus[i].Start();
 
-                while (outputs.Count > 1) outputs.Dequeue(); // We only want the final output!
-                if (outputs.Peek() > greatestFinalResult) greatestFinalResult = outputs.Dequeue();
+                greatestFinalResult = Math.Max(greatestFinalResult, cpus[4].Result);
             }
 
             return greatestFinalResult.ToString();

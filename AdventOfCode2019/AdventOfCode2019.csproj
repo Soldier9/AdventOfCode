@@ -53,6 +53,7 @@
     <Compile Include="Solvers\Day04SolverRegex.cs" />
     <Compile Include="Solvers\Day05Solver.cs" />
     <Compile Include="Solvers\Day06Solver.cs" />
+    <Compile Include="Solvers\Day07SolverThreaded.cs" />
     <Compile Include="Solvers\Day07Solver.cs" />
   </ItemGroup>
   <ItemGroup>
