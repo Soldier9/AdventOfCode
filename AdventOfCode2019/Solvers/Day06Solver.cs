@@ -11,7 +11,7 @@ namespace AdventOfCode2019.Solvers
             public static HashSet<Celestial> AllCelestials = new HashSet<Celestial>();
 
             public readonly string ID;
-            string OrbitsString;
+            readonly string OrbitsString;
             
             public Celestial Orbits;
             
