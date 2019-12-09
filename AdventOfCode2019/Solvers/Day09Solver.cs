@@ -179,7 +179,9 @@ namespace AdventOfCode2019.Solvers
 
             Int64 GetParam(Int64 mode, int paramNum, bool isTargetParam = false)
             {
-                switch(mode)
+                Int64 fixedMode = (isTargetParam && mode == 0) ? 1 : mode;
+
+                switch (fixedMode)
                 {
                     case 0: return ((Program.ContainsKey(IP + paramNum) && Program.ContainsKey(Program[IP + paramNum])) ? Program[Program[IP + paramNum]]: 0);
                     case 1: return (Program.ContainsKey(IP + paramNum) ? Program[IP + paramNum] : 0);
@@ -195,6 +197,7 @@ namespace AdventOfCode2019.Solvers
         }
         public override string Part1()
         {
+            
             Int64[] program;
             using (var input = File.OpenText(InputFile))
             {
@@ -203,23 +206,28 @@ namespace AdventOfCode2019.Solvers
             BlockingCollection<Int64> outputQueue = new BlockingCollection<Int64>();
             BlockingCollection<Int64> inputQueue = new BlockingCollection<Int64>();
             inputQueue.Add(1);
-            Task<Int64> cpu = new Task<Int64>(() =>
-            {
-                return (new IntcodeCPU(program, inputQueue, outputQueue)).RunProgram();
-            });
-            cpu.Start();
-            
-            while(!cpu.IsCompleted || outputQueue.Count > 0)
+
+            string result = (new IntcodeCPU(program, inputQueue, outputQueue)).RunProgram().ToString();
+            while (outputQueue.Count > 0)
             {
                 Console.WriteLine("Output: " + outputQueue.Take());
             }
 
-            return cpu.Result.ToString();
+            return result;
         }
 
         public override string Part2()
         {
-            throw new NotImplementedException();
+            Int64[] program;
+            using (var input = File.OpenText(InputFile))
+            {
+                program = input.ReadLine().Split(',').Select(n => Int64.Parse(n)).ToArray();
+            }
+            BlockingCollection<Int64> outputQueue = new BlockingCollection<Int64>();
+            BlockingCollection<Int64> inputQueue = new BlockingCollection<Int64>();
+            inputQueue.Add(2);
+
+            return (new IntcodeCPU(program, inputQueue, outputQueue)).RunProgram().ToString();
         }
     }
 }
