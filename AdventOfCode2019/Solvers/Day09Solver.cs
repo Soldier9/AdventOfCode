@@ -179,13 +179,20 @@ namespace AdventOfCode2019.Solvers
 
             Int64 GetParam(Int64 mode, int paramNum, bool isTargetParam = false)
             {
-                Int64 fixedMode = (isTargetParam && mode == 0) ? 1 : mode;
-
-                switch (fixedMode)
+                switch (mode)
                 {
-                    case 0: return ((Program.ContainsKey(IP + paramNum) && Program.ContainsKey(Program[IP + paramNum])) ? Program[Program[IP + paramNum]]: 0);
-                    case 1: return (Program.ContainsKey(IP + paramNum) ? Program[IP + paramNum] : 0);
-                    case 2: return ((Program.ContainsKey(IP + paramNum) && Program.ContainsKey(RelativeBase + Program[IP + paramNum])) ? (isTargetParam ? RelativeBase + Program[IP + paramNum] : Program[RelativeBase + Program[IP + paramNum]]) : 0);
+                    case 0: // Position mode
+                        if (isTargetParam) return Program[IP + paramNum];
+                        else if (Program.ContainsKey(Program[IP + paramNum])) return Program[Program[IP + paramNum]];
+                        else return 0;
+
+                    case 1: // Immediate mode
+                        return Program[IP + paramNum];
+
+                    case 2: // Relative mode
+                        if (isTargetParam) return RelativeBase + Program[IP + paramNum];
+                        else if (Program.ContainsKey(RelativeBase + Program[IP + paramNum])) return Program[RelativeBase + Program[IP + paramNum]];
+                        else return 0;
                 }
                 throw new NotImplementedException();
             }
