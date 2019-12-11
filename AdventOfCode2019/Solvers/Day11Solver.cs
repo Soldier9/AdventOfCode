@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace AdventOfCode2019.Solvers
 {
-    class Day09Solver : AbstractSolver
+    class Day11Solver : AbstractSolver
     {
         class IntcodeCPU
         {
@@ -86,7 +89,8 @@ namespace AdventOfCode2019.Solvers
 
                         case 99:
                             HasTerminated = true;
-                            return (LastOutput != null ? (Int64)LastOutput : -1);
+                            OutputQueue.Add(-1);
+                            return -1;
                     }
                 }
             }
@@ -155,7 +159,7 @@ namespace AdventOfCode2019.Solvers
             {
                 Int64 param1 = GetParam(modes[0], 1);
                 Int64 param2 = GetParam(modes[1], 2);
-                Int64 param3 = GetParam(modes[2], 3,true);
+                Int64 param3 = GetParam(modes[2], 3, true);
 
                 Program[param3] = (param1 < param2 ? 1 : 0);
             }
@@ -202,7 +206,7 @@ namespace AdventOfCode2019.Solvers
         }
         public override string Part1()
         {
-            
+
             Int64[] program;
             using (var input = File.OpenText(InputFile))
             {
@@ -212,15 +216,41 @@ namespace AdventOfCode2019.Solvers
 #pragma warning disable IDE0028 // Simplify collection initialization
             BlockingCollection<Int64> inputQueue = new BlockingCollection<Int64>();
 #pragma warning restore IDE0028 // Simplify collection initialization
-            inputQueue.Add(1);
+            inputQueue.Add(0);
 
-            string result = (new IntcodeCPU(program, inputQueue, outputQueue)).RunProgram().ToString();
-            while (outputQueue.Count > 0)
+            Task<Int64> cpuTask = new Task<Int64>(() =>
             {
-                Console.WriteLine("Output: " + outputQueue.Take());
+                return (new IntcodeCPU(program, inputQueue, outputQueue)).RunProgram();
+            });
+            cpuTask.Start();
+
+            Point currentPosition = new Point(0, 0);
+            char currentDirection = 'U';
+            Dictionary<Point, Int64> panels = new Dictionary<Point, Int64>();
+            while (!cpuTask.IsCompleted || outputQueue.Count > 0)
+            {
+                Int64 nextColor = outputQueue.Take();
+                if (nextColor == -1) break;
+                panels[currentPosition] = nextColor;
+                switch (currentDirection)
+                {
+                    case 'U': currentDirection = outputQueue.Take() == 0 ? 'L' : 'R'; break;
+                    case 'R': currentDirection = outputQueue.Take() == 0 ? 'U' : 'D'; break;
+                    case 'D': currentDirection = outputQueue.Take() == 0 ? 'R' : 'L'; break;
+                    case 'L': currentDirection = outputQueue.Take() == 0 ? 'D' : 'U'; break;
+                }
+                switch (currentDirection)
+                {
+                    case 'U': currentPosition.Y++; break;
+                    case 'R': currentPosition.X++; break;
+                    case 'D': currentPosition.Y--; break;
+                    case 'L': currentPosition.X--; break;
+                }
+                Int64 nextPanelColor = panels.ContainsKey(currentPosition) ? panels[currentPosition] : 0;
+                inputQueue.Add(nextPanelColor);
             }
 
-            return result;
+            return panels.Count.ToString();
         }
 
         public override string Part2()
@@ -234,9 +264,55 @@ namespace AdventOfCode2019.Solvers
 #pragma warning disable IDE0028 // Simplify collection initialization
             BlockingCollection<Int64> inputQueue = new BlockingCollection<Int64>();
 #pragma warning restore IDE0028 // Simplify collection initialization
-            inputQueue.Add(2);
+            inputQueue.Add(1);
 
-            return (new IntcodeCPU(program, inputQueue, outputQueue)).RunProgram().ToString();
+            Task<Int64> cpuTask = new Task<Int64>(() =>
+            {
+                return (new IntcodeCPU(program, inputQueue, outputQueue)).RunProgram();
+            });
+            cpuTask.Start();
+
+            Point currentPosition = new Point(0, 0);
+            char currentDirection = 'U';
+            Dictionary<Point, Int64> panels = new Dictionary<Point, Int64>();
+            while (!cpuTask.IsCompleted || outputQueue.Count > 0)
+            {
+                Int64 nextColor = outputQueue.Take();
+                if (nextColor == -1) break;
+                panels[currentPosition] = nextColor;
+                switch (currentDirection)
+                {
+                    case 'U': currentDirection = outputQueue.Take() == 0 ? 'L' : 'R'; break;
+                    case 'R': currentDirection = outputQueue.Take() == 0 ? 'U' : 'D'; break;
+                    case 'D': currentDirection = outputQueue.Take() == 0 ? 'R' : 'L'; break;
+                    case 'L': currentDirection = outputQueue.Take() == 0 ? 'D' : 'U'; break;
+                }
+                switch (currentDirection)
+                {
+                    case 'U': currentPosition.Y--; break;
+                    case 'R': currentPosition.X++; break;
+                    case 'D': currentPosition.Y++; break;
+                    case 'L': currentPosition.X--; break;
+                }
+                Int64 nextPanelColor = panels.ContainsKey(currentPosition) ? panels[currentPosition] : 0;
+                inputQueue.Add(nextPanelColor);
+            }
+
+            int minX = panels.Keys.OrderBy(k => k.X).First().X;
+            int minY = panels.Keys.OrderBy(k => k.Y).First().Y;
+
+            foreach(KeyValuePair<Point, Int64> panel in panels)
+            {
+                Console.SetCursorPosition(panel.Key.X + minX, panel.Key.Y + minY);
+                switch(panel.Value)
+                {
+                    case 0: Console.Write(" "); break;
+                    case 1: Console.Write("#"); break;
+
+                }
+            }
+
+            return "";
         }
     }
 }
