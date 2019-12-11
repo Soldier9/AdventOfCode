@@ -20,8 +20,6 @@ namespace AdventOfCode2019.Solvers
 
             readonly BlockingCollection<Int64> InputQueue;
             readonly BlockingCollection<Int64> OutputQueue;
-            Int64? LastOutput;
-            public bool HasTerminated = false;
 
             public IntcodeCPU(Int64[] program, BlockingCollection<Int64> input, BlockingCollection<Int64> output)
             {
@@ -88,7 +86,6 @@ namespace AdventOfCode2019.Solvers
 
 
                         case 99:
-                            HasTerminated = true;
                             OutputQueue.Add(-1);
                             return -1;
                     }
@@ -122,7 +119,6 @@ namespace AdventOfCode2019.Solvers
             void OutputInstr(Int64[] modes)
             {
                 Int64 param1 = GetParam(modes[0], 1);
-                LastOutput = param1;
                 OutputQueue.Add(param1);
             }
 
@@ -198,11 +194,6 @@ namespace AdventOfCode2019.Solvers
                 }
                 throw new NotImplementedException();
             }
-
-            public override string ToString()
-            {
-                return "IP: " + IP.ToString() + ", LastOutput: " + LastOutput + ", Halted: " + HasTerminated;
-            }
         }
         public override string Part1()
         {
@@ -226,10 +217,10 @@ namespace AdventOfCode2019.Solvers
 
             Point currentPosition = new Point(0, 0);
             char currentDirection = 'U';
-            Dictionary<Point, Int64> panels = new Dictionary<Point, Int64>();
+            Dictionary<Point, int> panels = new Dictionary<Point, int>();
             while (!cpuTask.IsCompleted || outputQueue.Count > 0)
             {
-                Int64 nextColor = outputQueue.Take();
+                int nextColor = Convert.ToInt32(outputQueue.Take());
                 if (nextColor == -1) break;
                 panels[currentPosition] = nextColor;
                 switch (currentDirection)
@@ -246,7 +237,7 @@ namespace AdventOfCode2019.Solvers
                     case 'D': currentPosition.Y--; break;
                     case 'L': currentPosition.X--; break;
                 }
-                Int64 nextPanelColor = panels.ContainsKey(currentPosition) ? panels[currentPosition] : 0;
+                int nextPanelColor = panels.ContainsKey(currentPosition) ? panels[currentPosition] : 0;
                 inputQueue.Add(nextPanelColor);
             }
 
@@ -274,10 +265,10 @@ namespace AdventOfCode2019.Solvers
 
             Point currentPosition = new Point(0, 0);
             char currentDirection = 'U';
-            Dictionary<Point, Int64> panels = new Dictionary<Point, Int64>();
+            Dictionary<Point, int> panels = new Dictionary<Point, int>();
             while (!cpuTask.IsCompleted || outputQueue.Count > 0)
             {
-                Int64 nextColor = outputQueue.Take();
+                int nextColor = Convert.ToInt32(outputQueue.Take());
                 if (nextColor == -1) break;
                 panels[currentPosition] = nextColor;
                 switch (currentDirection)
@@ -294,14 +285,18 @@ namespace AdventOfCode2019.Solvers
                     case 'D': currentPosition.Y++; break;
                     case 'L': currentPosition.X--; break;
                 }
-                Int64 nextPanelColor = panels.ContainsKey(currentPosition) ? panels[currentPosition] : 0;
+                int nextPanelColor = panels.ContainsKey(currentPosition) ? panels[currentPosition] : 0;
                 inputQueue.Add(nextPanelColor);
             }
 
             int minX = panels.Keys.OrderBy(k => k.X).First().X;
             int minY = panels.Keys.OrderBy(k => k.Y).First().Y;
+            int maxY = panels.Keys.OrderByDescending(k => k.Y).First().Y;
 
-            foreach(KeyValuePair<Point, Int64> panel in panels)
+            int cursorLineAfterOutput = maxY - minY + Console.CursorTop + 1;
+            minY += Console.CursorTop;
+
+            foreach (KeyValuePair<Point, int> panel in panels)
             {
                 Console.SetCursorPosition(panel.Key.X + minX, panel.Key.Y + minY);
                 switch(panel.Value)
@@ -312,7 +307,8 @@ namespace AdventOfCode2019.Solvers
                 }
             }
 
-            return "";
+            Console.SetCursorPosition(0, cursorLineAfterOutput);
+            return "Output from program";
         }
     }
 }
