@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace AdventOfCode2019.Solvers
 {
-    class Day03Solver : AbstractSolver
+    class Day3Solver : AbstractSolver
     {
         class Point
         {

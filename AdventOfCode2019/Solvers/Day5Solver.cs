@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace AdventOfCode2019.Solvers
 {
-    class Day05Solver : AbstractSolver
+    class Day5Solver : AbstractSolver
     {
         class IntcodeCPU
         {
@@ -24,7 +24,7 @@ namespace AdventOfCode2019.Solvers
                     modes[0] = (opCode % 1000) / 100;
                     modes[1] = (opCode % 10000) / 1000;
                     modes[2] = (opCode % 100000) / 10000;
-                    opCode = opCode % 100;
+                    opCode %= 100;
 
                     switch (opCode)
                     {
@@ -37,7 +37,7 @@ namespace AdventOfCode2019.Solvers
                             IP += 4;
                             break;
                         case 3:
-                            Input(modes);
+                            Input();
                             IP += 2;
                             break;
                         case 4:
@@ -83,7 +83,7 @@ namespace AdventOfCode2019.Solvers
                 Program[param3] = param1 * param2;
             }
 
-            void Input(int[] modes)
+            void Input()
             {
                 int param1 = Program[IP + 1]; // Always position mode
 

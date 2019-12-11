@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode2019.Solvers
 {
-    class Day08Solver : AbstractSolver
+    class Day8Solver : AbstractSolver
     {
         public override string Part1()
         {

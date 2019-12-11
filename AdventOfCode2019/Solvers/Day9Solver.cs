@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace AdventOfCode2019.Solvers
 {
-    class Day09Solver : AbstractSolver
+    class Day9Solver : AbstractSolver
     {
         class IntcodeCPU
         {

@@ -3,12 +3,12 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode2019.Solvers
 {
-    class Day04SolverRegex : AbstractSolver
+    class Day4SolverRegex : AbstractSolver
     {
         public override bool PrioritizedSolver => true;
 
-        int InputFrom = 136818;
-        int InputTo = 685979;
+        readonly int InputFrom = 136818;
+        readonly int InputTo = 685979;
 
         bool IsValidPw(string testPw, bool part2 = false)
         {

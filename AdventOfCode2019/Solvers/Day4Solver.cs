@@ -1,9 +1,9 @@
 ﻿namespace AdventOfCode2019.Solvers
 {
-    class Day04Solver : AbstractSolver
+    class Day4Solver : AbstractSolver
     {
-        int inputFrom = 136818;
-        int inputTo = 685979;
+        readonly int inputFrom = 136818;
+        readonly int inputTo = 685979;
         //int inputFrom = 112233;
         //int inputTo = 112233;
 

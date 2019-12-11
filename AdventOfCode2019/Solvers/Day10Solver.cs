@@ -7,12 +7,12 @@ namespace AdventOfCode2019.Solvers
 {
     class Day10Solver : AbstractSolver
     {
-        class Direction : IComparable
+        class Line : IComparable
         {
-            public readonly Double A;
-            public readonly Double B;
+            public readonly double A;
+            public readonly double B;
 
-            public Direction(Double a, Double b)
+            public Line(double a, double b)
             {
                 A = a;
                 B = b;
@@ -20,15 +20,14 @@ namespace AdventOfCode2019.Solvers
 
             public override bool Equals(object obj)
             {
-                Direction other = (Direction)obj;
+                Line other = (Line)obj;
                 return (other.A == A && other.B == B);
             }
 
             public int CompareTo(object obj)
             {
-                Direction other = (Direction)obj;
+                Line other = (Line)obj;
                 return A.CompareTo(other.A);
-
             }
 
             public override int GetHashCode()
@@ -37,6 +36,11 @@ namespace AdventOfCode2019.Solvers
                 hashCode = hashCode * -1521134295 + A.GetHashCode();
                 hashCode = hashCode * -1521134295 + B.GetHashCode();
                 return hashCode;
+            }
+
+            public override string ToString()
+            {
+                return A.ToString() + "X + " + B.ToString();
             }
         }
 
@@ -51,7 +55,7 @@ namespace AdventOfCode2019.Solvers
             public readonly int X;
             public readonly int Y;
 
-            public Dictionary<Direction, Distances> OtherAsteroids = new Dictionary<Direction, Distances>();
+            public Dictionary<Line, Distances> OtherAsteroids = new Dictionary<Line, Distances>();
 
             public Asteroid(int x, int y)
             {
@@ -65,24 +69,24 @@ namespace AdventOfCode2019.Solvers
                 {
                     if (otherAsteroid == this) continue;
 
-                    Direction direction;
+                    Line line;
                     if (Y == otherAsteroid.Y)
                     {
-                        direction = new Direction(0, Y);
+                        line = new Line(0, Y);
                     }
                     else if (X == otherAsteroid.X)
                     {
-                        direction = new Direction(Double.NegativeInfinity, 0); // NegativeInfinity causes it to be first in a sort
+                        line = new Line(double.NegativeInfinity, 0); // NegativeInfinity causes it to be first in a sort
                     }
                     else
                     {
                         double a = (Y - otherAsteroid.Y) / (double)(X - otherAsteroid.X);
                         double b = Y - (a * X);
-                        direction = new Direction(a, b);
+                        line = new Line(a, b);
                     }
                     double distance = Math.Sqrt(Math.Pow(X - otherAsteroid.X, 2) + Math.Pow(Y - otherAsteroid.Y, 2));
 
-                    if (!OtherAsteroids.ContainsKey(direction))
+                    if (!OtherAsteroids.ContainsKey(line))
                     {
                         Distances distances = new Distances();
                         if (otherAsteroid.X > X || (otherAsteroid.X == X && otherAsteroid.Y < Y))
@@ -93,17 +97,17 @@ namespace AdventOfCode2019.Solvers
                         {
                             distances.TheOtherWay.Add(distance, otherAsteroid);
                         }
-                        OtherAsteroids.Add(direction, distances);
+                        OtherAsteroids.Add(line, distances);
                     }
                     else
                     {
                         if (otherAsteroid.X > X || (otherAsteroid.X == X && otherAsteroid.Y < Y))
                         {
-                            OtherAsteroids[direction].OneWay.Add(distance, otherAsteroid);
+                            OtherAsteroids[line].OneWay.Add(distance, otherAsteroid);
                         }
                         else
                         {
-                            OtherAsteroids[direction].TheOtherWay.Add(distance, otherAsteroid);
+                            OtherAsteroids[line].TheOtherWay.Add(distance, otherAsteroid);
                         }
                     }
                 }
@@ -131,10 +135,7 @@ namespace AdventOfCode2019.Solvers
                     string line = input.ReadLine();
                     for (int x = 0; x < line.Length; x++)
                     {
-                        if (line[x] == '#')
-                        {
-                            Asteroids.Add(new Asteroid(x, y));
-                        }
+                        if (line[x] == '#') Asteroids.Add(new Asteroid(x, y));
                     }
                     y++;
                 }
@@ -158,25 +159,25 @@ namespace AdventOfCode2019.Solvers
         {
             List<Asteroid> vaporizations = new List<Asteroid>();
 
-            bool OneWay = true;
+            bool oneWay = true;
             while (Asteroids.Count - 1 > vaporizations.Count)
             {
-                foreach (KeyValuePair<Direction, Distances> otherAsteroid in BestAsteroid.OtherAsteroids.OrderBy(a => a.Key))
+                foreach (KeyValuePair<Line, Distances> otherAsteroid in BestAsteroid.OtherAsteroids.OrderBy(a => a.Key))
                 {
-                    if (OneWay && otherAsteroid.Value.OneWay.Count > 0)
+                    if (oneWay && otherAsteroid.Value.OneWay.Count > 0)
                     {
                         KeyValuePair<double, Asteroid> nextToVaporize = otherAsteroid.Value.OneWay.First();
                         vaporizations.Add(nextToVaporize.Value);
                         otherAsteroid.Value.OneWay.Remove(nextToVaporize.Key);
                     }
-                    else if (!OneWay && otherAsteroid.Value.TheOtherWay.Count > 0)
+                    else if (!oneWay && otherAsteroid.Value.TheOtherWay.Count > 0)
                     {
                         KeyValuePair<double, Asteroid> nextToVaporize = otherAsteroid.Value.TheOtherWay.First();
                         vaporizations.Add(nextToVaporize.Value);
                         otherAsteroid.Value.TheOtherWay.Remove(nextToVaporize.Key);
                     }
                 }
-                OneWay = !OneWay;
+                oneWay = !oneWay;
             }
 
             return ((vaporizations[199].X * 100) + vaporizations[200].Y).ToString();
