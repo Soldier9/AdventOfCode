@@ -103,9 +103,20 @@ namespace AdventOfCode2019.Solvers
             return totalSystemEnergy.ToString();
         }
 
+        public long GCD(long a, long b)
+        {
+            while(b != 0)
+            {
+                long t = b;
+                b = a % b;
+                a = t;
+            }
+            return a;
+        }
+
         public override string Part2()
         {
-            List<Moon> moonsList = new List<Moon>();
+            List<Moon> moons = new List<Moon>();
             using (var input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
@@ -116,16 +127,17 @@ namespace AdventOfCode2019.Solvers
                     int y = int.Parse(matches[1].Value);
                     int z = int.Parse(matches[2].Value);
 
-                    moonsList.Add(new Moon(x, y, z));
+                    moons.Add(new Moon(x, y, z));
                 }
             }
 
-            Moon[] moons = moonsList.ToArray();
-            HashSet<Moon[]> states = new HashSet<Moon[]>();
+            
+            long steps = 0;
+            long repeatingX = 0;
+            long repeatingY = 0;
+            long repeatingZ = 0;
 
-            Int64 steps = 0;
-            states.Add((Moon[])moons.Clone());
-            while(true)
+            while (true)
             {
                 foreach (Moon moon in moons)
                 {
@@ -149,14 +161,19 @@ namespace AdventOfCode2019.Solvers
                     moon.Y += moon.VelY;
                     moon.Z += moon.VelZ;
                 }
-
                 steps++;
-                
-                if (states.Contains(moons)) break;
-                states.Add((Moon[])moons.Clone());
+
+                if (!moons.Exists(m => m.VelX != 0) && repeatingX == 0) repeatingX = steps;
+                if (!moons.Exists(m => m.VelY != 0) && repeatingY == 0) repeatingY = steps;
+                if (!moons.Exists(m => m.VelZ != 0) && repeatingZ == 0) repeatingZ = steps;
+
+                if (repeatingX != 0 && repeatingY != 0 && repeatingZ != 0) break;
             }
-                       
-            return steps.ToString();
+
+            long gcd = GCD(repeatingX, GCD(repeatingY, repeatingZ));
+            long lcm = (repeatingX * repeatingY * repeatingZ) / gcd;
+
+            return lcm.ToString();
         }
     }
 }
