@@ -47,19 +47,20 @@
     <Compile Include="AbstractSolver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Solvers\Day01Solver.cs" />
-    <Compile Include="Solvers\Day02Solver.cs" />
-    <Compile Include="Solvers\Day03Solver.cs" />
-    <Compile Include="Solvers\Day04Solver.cs" />
-    <Compile Include="Solvers\Day04SolverRegex.cs" />
-    <Compile Include="Solvers\Day05Solver.cs" />
-    <Compile Include="Solvers\Day06Solver.cs" />
-    <Compile Include="Solvers\Day07SolverThreaded.cs" />
-    <Compile Include="Solvers\Day07Solver.cs" />
-    <Compile Include="Solvers\Day08Solver.cs" />
-    <Compile Include="Solvers\Day09Solver.cs" />
+    <Compile Include="Solvers\Day1Solver.cs" />
+    <Compile Include="Solvers\Day2Solver.cs" />
+    <Compile Include="Solvers\Day3Solver.cs" />
+    <Compile Include="Solvers\Day4Solver.cs" />
+    <Compile Include="Solvers\Day4SolverRegex.cs" />
+    <Compile Include="Solvers\Day5Solver.cs" />
+    <Compile Include="Solvers\Day6Solver.cs" />
+    <Compile Include="Solvers\Day7SolverThreaded.cs" />
+    <Compile Include="Solvers\Day7Solver.cs" />
+    <Compile Include="Solvers\Day8Solver.cs" />
+    <Compile Include="Solvers\Day9Solver.cs" />
     <Compile Include="Solvers\Day10Solver.cs" />
     <Compile Include="Solvers\Day11Solver.cs" />
+    <Compile Include="Solvers\Day12Solver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -73,6 +74,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Inputs\Day11.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Inputs\Day12.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Inputs\Day2.txt">
