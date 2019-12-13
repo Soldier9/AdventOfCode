@@ -15,6 +15,7 @@ namespace AdventOfCode2019.Solvers
             readonly Dictionary<Int64, Int64> Program;
             Int64 IP;
             Int64 RelativeBase;
+            public bool WaitingForInput = false;
 
             readonly BlockingCollection<Int64> InputQueue;
             readonly BlockingCollection<Int64> OutputQueue;
@@ -111,7 +112,9 @@ namespace AdventOfCode2019.Solvers
             void InputInstr(Int64[] modes)
             {
                 Int64 param1 = GetParam(modes[0], 1, true);
+                if (InputQueue.Count == 0) WaitingForInput = true;
                 Program[param1] = InputQueue.Take();
+                WaitingForInput = false;
             }
 
             void OutputInstr(Int64[] modes)
@@ -207,9 +210,10 @@ namespace AdventOfCode2019.Solvers
 #pragma warning restore IDE0028 // Simplify collection initialization
             inputQueue.Add(0);
 
+            IntcodeCPU cpu = new IntcodeCPU(program, inputQueue, outputQueue);
             Task<Int64> cpuTask = new Task<Int64>(() =>
             {
-                return (new IntcodeCPU(program, inputQueue, outputQueue)).RunProgram();
+                return cpu.RunProgram();
             });
             cpuTask.Start();
 
@@ -232,11 +236,11 @@ namespace AdventOfCode2019.Solvers
                     case 3: Console.Write("-"); break;
                     case 4: Console.Write("o"); break;
                 }
-                
+
                 maxY = Math.Max(y, maxY);
             }
 
-            Console.SetCursorPosition(0, maxY+2);
+            Console.SetCursorPosition(0, maxY + 2);
 
             return blocks.ToString();
         }
@@ -256,72 +260,112 @@ namespace AdventOfCode2019.Solvers
 #pragma warning restore IDE0028 // Simplify collection initialization
             inputQueue.Add(0);
 
+            IntcodeCPU cpu = new IntcodeCPU(program, inputQueue, outputQueue);
             Task<Int64> cpuTask = new Task<Int64>(() =>
             {
-                return (new IntcodeCPU(program, inputQueue, outputQueue)).RunProgram();
+                return cpu.RunProgram();
             });
-            cpuTask.Start();
 
-            int minY = Console.CursorTop+1;
+            Console.Write("Play yourself (Y/N)?");
+            bool interactive = Console.ReadKey().Key == ConsoleKey.Y;
+            
+            int minY = Console.CursorTop + 3;
             int maxY = 0;
-            int blocks = 0;
+            int score = 0;
+
             int ballX = 0;
             int paddleX = 0;
 
-            Task.Factory.StartNew(() =>
+            cpuTask.Start();
+            if (!interactive)
             {
-                while (!cpuTask.IsCompleted)
+                Task.Factory.StartNew(() =>
                 {
-                    if (paddleX > 0 && ballX > 0)
+                    while (!cpuTask.IsCompleted)
                     {
-                        if (paddleX < ballX) inputQueue.Add(1);
-                        else if (paddleX > ballX) inputQueue.Add(-1);
-                        else if (paddleX == ballX) inputQueue.Add(0);
-                        paddleX = ballX = 0;
+                        lock (outputQueue)
+                        {
+                            if (inputQueue.Count == 0 && outputQueue.Count == 0 && ballX > 0 && paddleX > 0)
+                            {
+                                int nextInput = 0;
+                                if (paddleX < ballX) nextInput = 1;
+                                else if (paddleX > ballX) nextInput = -1;
+                                else if (paddleX == ballX) nextInput = 0;
+
+                                ballX = 0;
+                                paddleX = 0;
+                                inputQueue.Add(nextInput);
+                            }
+                        }
                     }
-                }
-            });
+                });
+            }
+            else
+            {
+                Task.Factory.StartNew(() =>
+                {
+                    while(!cpuTask.IsCompleted)
+                    {
+                        //lock(outputQueue)
+                        //{
+                            if (cpu.WaitingForInput && inputQueue.Count == 0 && outputQueue.Count == 0)
+                            {
+                                //Console.SetCursorPosition(0, maxY);
+                                switch(Console.ReadKey().Key)
+                                {
+                                    case ConsoleKey.LeftArrow: inputQueue.Add(-1); break;
+                                    case ConsoleKey.RightArrow: inputQueue.Add(1); break;
+                                    default: inputQueue.Add(0); break;
+                                }
+                            }
+                        //}
+                    }
+                });
+            }
 
             while (!cpuTask.IsCompleted || outputQueue.Count > 0)
             {
+
                 int x = Convert.ToInt32(outputQueue.Take());
-                if (x == -2) break;
-                if( x== -1)
+                lock (outputQueue)
                 {
-                    outputQueue.Take();
-                    Console.SetCursorPosition(0, minY-1);
-                    Console.Write("Score: {0}", outputQueue.Take());
-                    continue;
+                    if (x == -2) break;
+                    if (x == -1)
+                    {
+                        outputQueue.Take();
+                        score = Convert.ToInt32(outputQueue.Take());
+                        Console.SetCursorPosition(0, minY - 1);
+                        Console.Write("Score: {0}", score);
+                        continue;
+                    }
+
+                    int y = Convert.ToInt32(outputQueue.Take()) + minY;
+                    int blockType = Convert.ToInt32(outputQueue.Take());
+
+                    Console.SetCursorPosition(x, y);
+                    switch (blockType)
+                    {
+                        case 0: Console.Write(" "); break;
+                        case 1: Console.Write("#"); break;
+                        case 2: Console.Write("+"); break;
+                        case 3:
+                            Console.Write("-");
+                            paddleX = x;
+                            break;
+                        case 4:
+                            Console.Write("o");
+                            ballX = x;
+                            break;
+                    }
+
+                    maxY = Math.Max(y, maxY);
+                    if(interactive) Console.SetCursorPosition(0, maxY);
                 }
-
-                int y = Convert.ToInt32(outputQueue.Take()) + minY;
-                int blockType = Convert.ToInt32(outputQueue.Take());
-
-                Console.SetCursorPosition(x, y);
-                switch (blockType)
-                {
-                    case 0: Console.Write(" "); break;
-                    case 1: Console.Write("#"); break;
-                    case 2: Console.Write("¤"); blocks++; break;
-                    case 3: Console.Write("-");
-                        paddleX = x;
-                        break;
-                    case 4:
-                        Console.Write("o");
-                        ballX = x;
-                        break;
-                }
-
-                maxY = Math.Max(y, maxY);
             }
-
-
-
-
 
             Console.SetCursorPosition(0, maxY + 2);
 
-            return blocks.ToString();
+            return score.ToString();
         }
     }
 }
