@@ -103,7 +103,7 @@ namespace AdventOfCode2019.Solvers
             return totalSystemEnergy.ToString();
         }
 
-        public long GCD(long a, long b)
+        long GCD(long a, long b)
         {
             while(b != 0)
             {
@@ -112,6 +112,16 @@ namespace AdventOfCode2019.Solvers
                 a = t;
             }
             return a;
+        }
+
+        long LCM(List<long> numbers)
+        {
+            long result = numbers[0];
+            for (int i = 1; i < numbers.Count; i++)
+            {
+                result = result * numbers[i] / GCD(result, numbers[i]);
+            }
+            return result;
         }
 
         public override string Part2()
@@ -133,6 +143,7 @@ namespace AdventOfCode2019.Solvers
 
             
             long steps = 0;
+
             long repeatingX = 0;
             long repeatingY = 0;
             long repeatingZ = 0;
@@ -170,10 +181,8 @@ namespace AdventOfCode2019.Solvers
                 if (repeatingX != 0 && repeatingY != 0 && repeatingZ != 0) break;
             }
 
-            long gcd = GCD(repeatingX, GCD(repeatingY, repeatingZ));
-            long lcm = (repeatingX * repeatingY * repeatingZ) / gcd;
-
-            return lcm.ToString();
+            //return LCM(new List<long> { repeatingX, repeatingY, repeatingZ }).ToString();
+            return (repeatingX * repeatingY * repeatingZ).ToString();
         }
     }
 }
