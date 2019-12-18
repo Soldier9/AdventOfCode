@@ -15,7 +15,7 @@ namespace AdventOfCode2019
                 .GetExecutingAssembly()
                 .GetTypes()
                 .Where(t => t.BaseType.Name == "AbstractSolver")
-                //.Where(t => t.BaseType.Name == "AbstractSolver" && t.Name == "Day12Solver")
+                //.Where(t => t.BaseType.Name == "AbstractSolver" && t.Name == "Day13Solver")
                 .Select(s => (AbstractSolver)Activator.CreateInstance(s))
                 .OrderBy(s => s.Day).ThenBy(s => s.PrioritizedSolver);
             
