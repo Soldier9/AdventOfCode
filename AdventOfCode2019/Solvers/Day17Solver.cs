@@ -217,18 +217,18 @@ namespace AdventOfCode2019.Solvers
 
             int width = 0;
             int height = 0;
-            var lines = new List<string>();
+            List<string> lines = new List<string>();
+
             var sb = new StringBuilder();
             while (!cpuTask.IsCompleted || outputQueue.Count > 0)
             {
-                
                 if (outputQueue.Count > 0)
                 {
                     char c = (char)outputQueue.Take();
-                    Console.Write(c);
                     if (c == 10)
                     {
-                        lines.Add(sb.ToString());
+                        if (width == 0) width = sb.Length;
+                        if (sb.Length == width) lines.Add(sb.ToString());
                         sb.Clear();
                     }
                     else
@@ -237,20 +237,18 @@ namespace AdventOfCode2019.Solvers
                     }
                 }
             }
-
-            height = lines.Count - 1; // final line is empty, so we skip it
-            width = lines[0].Length;
+            height = lines.Count;
 
             int alignmentParamSum = 0;
-            for(var x = 1; x < width-1; x++)
+            for (var x = 1; x < width - 1; x++)
             {
-                for(var y = 1; y < height-1; y++)
+                for (var y = 1; y < height - 1; y++)
                 {
-                    if(lines[y][x] == '#' &&
+                    if (lines[y][x] == '#' &&
                         lines[y - 1][x] == '#' &&
                         lines[y + 1][x] == '#' &&
-                        lines[y][x-1] == '#' &&
-                        lines[y][x+1] == '#')
+                        lines[y][x - 1] == '#' &&
+                        lines[y][x + 1] == '#')
                     {
                         alignmentParamSum += (x * y);
                     }
@@ -262,7 +260,53 @@ namespace AdventOfCode2019.Solvers
 
         public override string Part2()
         {
-            throw new NotImplementedException();
+
+            Int64[] program;
+            using (var input = File.OpenText(InputFile))
+            {
+                program = input.ReadLine().Split(',').Select(n => Int64.Parse(n)).ToArray();
+            }
+            program[0] = 2;
+            BlockingCollection<Int64> outputQueue = new BlockingCollection<Int64>();
+            BlockingCollection<Int64> inputQueue = new BlockingCollection<Int64>();
+
+            IntcodeCPU cpu = new IntcodeCPU(program, inputQueue, outputQueue);
+            Task<Int64> cpuTask = new Task<Int64>(() =>
+            {
+                return cpu.RunProgram();
+            });
+            cpuTask.Start();
+
+            string mainRoutine = "B,C,B,C,A,B,C,A,B,A\n";
+            string funA = "L,10,R,6,R,6,L,8\n";
+            string funB = "R,6,L,10,R,8\n";
+            string funC = "R,8,R,12,L,8,L,8\n";
+
+            foreach (var n in GetIntCodeInput(mainRoutine)) inputQueue.Add(n);
+            foreach (var n in GetIntCodeInput(funA)) inputQueue.Add(n);
+            foreach (var n in GetIntCodeInput(funB)) inputQueue.Add(n);
+            foreach (var n in GetIntCodeInput(funC)) inputQueue.Add(n);
+            foreach (var n in GetIntCodeInput("n\n")) inputQueue.Add(n);
+
+            Int64 result = 0;
+            while (!cpuTask.IsCompleted || outputQueue.Count > 0)
+            {
+                if (outputQueue.Count == 0) continue;
+                Int64 output = 0;
+                output = outputQueue.Take();
+                if (output < 127) Console.Write((char)output);
+                else result = output;
+            }
+
+            return result.ToString();
+        }
+
+        public IEnumerable<Int64> GetIntCodeInput(string input)
+        {
+            foreach (var c in input)
+            {
+                yield return Convert.ToInt64(c);
+            }
         }
     }
 }
