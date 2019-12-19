@@ -53,9 +53,9 @@ namespace AdventOfCode2019.Solvers
         }
 
         Dictionary<Point, Location> Maze = new Dictionary<Point, Location>();
-        Dictionary<Tuple<Point, string>, HashSet<Location>> CachedReachableKeys = new Dictionary<Tuple<Point, string>, HashSet<Location>>();
+        Dictionary<Tuple<Point, BitArray>, HashSet<Location>> CachedReachableKeys = new Dictionary<Tuple<Point, BitArray>, HashSet<Location>>();
 
-        HashSet<Location> SearchForReachableKeys(Point currentPosition, string collectedKeys, int stepsSoFar)
+        HashSet<Location> SearchForReachableKeys(Point currentPosition, BitArray collectedKeys, int stepsSoFar)
         {
             var currentState = Tuple.Create(currentPosition, collectedKeys);
             HashSet<Location> reachableKeys;
@@ -66,7 +66,7 @@ namespace AdventOfCode2019.Solvers
             else
             {
                 reachableKeys = new HashSet<Location>();
-                var queue = new Queue<Location>(); // Ought to be real priorityQueue
+                var queue = new Queue<Location>();
 
                 foreach (var location in Maze.Values) location.Steps = int.MaxValue;
                 Maze[currentPosition].Steps = 0;
@@ -76,7 +76,7 @@ namespace AdventOfCode2019.Solvers
                 {
                     var currentLocation = queue.Dequeue();
 
-                    if (currentLocation.Type >= 97 && currentLocation.Type <= 122 && !collectedKeys.Contains(currentLocation.Type))
+                    if (currentLocation.Type >= 97 && currentLocation.Type <= 122 && !collectedKeys[currentLocation.Type - 97])
                     {
                         reachableKeys.Add(new Location(currentLocation));
                     }
@@ -84,7 +84,7 @@ namespace AdventOfCode2019.Solvers
                     foreach (var neighboor in currentLocation.NeighboorPositions())
                     {
                         if (!Maze.ContainsKey(neighboor)
-                            || (Maze[neighboor].Type >= 65 && Maze[neighboor].Type <= 90 && !collectedKeys.Contains((char)(Convert.ToInt32(Maze[neighboor].Type) + 32)))) continue;
+                            || (Maze[neighboor].Type >= 65 && Maze[neighboor].Type <= 90 && !collectedKeys[Maze[neighboor].Type - 65])) continue;
 
                         if (Maze[neighboor].Steps == int.MaxValue)
                         {
@@ -101,14 +101,14 @@ namespace AdventOfCode2019.Solvers
             var bestReturnedKeys = new HashSet<Location>();
             foreach (var k in reachableKeys)
             {
-                var recursiveCollectedKeys = collectedKeys.ToCharArray();
-                recursiveCollectedKeys[k.Type - 97] = k.Type;
-                var returnedKeys = SearchForReachableKeys(k.Position, new string(recursiveCollectedKeys), k.Steps + stepsSoFar);
+                var recursiveCollectedKeys = (BitArray)collectedKeys.Clone();
+                recursiveCollectedKeys[k.Type - 97] = true;
+                var returnedKeys = SearchForReachableKeys(k.Position, recursiveCollectedKeys, k.Steps + stepsSoFar);
                 if (bestReturnedKeys.Count == 0 || returnedKeys.Count > 0 && bestReturnedKeys.Max(l => l.Steps) > returnedKeys.Max(l => l.Steps)) bestReturnedKeys = returnedKeys;
             }
 
-            //bestReturnedKeys.UnionWith(reachableKeys);
-            foreach (var key in reachableKeys) {
+            foreach (var key in reachableKeys)
+            {
                 var tmp = new Location(key);
                 tmp.Steps += stepsSoFar;
                 bestReturnedKeys.Add(tmp);
@@ -139,8 +139,7 @@ namespace AdventOfCode2019.Solvers
                 }
             }
 
-            var collectedKeys = new char[26];
-            return SearchForReachableKeys(currentPosition, new string(collectedKeys), 0).Max(k => k.Steps).ToString();
+            return SearchForReachableKeys(currentPosition, new BitArray(26), 0).Max(k => k.Steps).ToString();
         }
 
         public override string Part2()
