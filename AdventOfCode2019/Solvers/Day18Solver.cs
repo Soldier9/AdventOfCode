@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdventOfCode2019.Solvers
 {
@@ -52,8 +50,29 @@ namespace AdventOfCode2019.Solvers
             }
         }
 
+        class StateEqualityComparer : IEqualityComparer<Tuple<Point, BitArray>>
+        {
+            public bool Equals(Tuple<Point, BitArray> x, Tuple<Point, BitArray> y)
+            {
+                if (x.Item1 != y.Item1 || x.Item2.Length != y.Item2.Length) return false;
+                for (var i = 0; i < x.Item2.Length; i++)
+                {
+                    if (x.Item2[i] != y.Item2[i]) return false;
+                }
+                return true;
+            }
+
+            public int GetHashCode(Tuple<Point, BitArray> obj)
+            {
+                int hash = obj.Item1.GetHashCode();
+                for (var i = 0; i < obj.Item2.Length; i++) if(obj.Item2[i]) hash += 2356345 * i;
+                return hash;
+            }
+        }
+
+
         Dictionary<Point, Location> Maze = new Dictionary<Point, Location>();
-        Dictionary<Tuple<Point, BitArray>, HashSet<Location>> CachedReachableKeys = new Dictionary<Tuple<Point, BitArray>, HashSet<Location>>();
+        Dictionary<Tuple<Point, BitArray>, HashSet<Location>> CachedReachableKeys = new Dictionary<Tuple<Point, BitArray>, HashSet<Location>>(new StateEqualityComparer());
 
         HashSet<Location> SearchForReachableKeys(Point currentPosition, BitArray collectedKeys, int stepsSoFar)
         {
@@ -79,6 +98,7 @@ namespace AdventOfCode2019.Solvers
                     if (currentLocation.Type >= 97 && currentLocation.Type <= 122 && !collectedKeys[currentLocation.Type - 97])
                     {
                         reachableKeys.Add(new Location(currentLocation));
+                        continue;
                     }
 
                     foreach (var neighboor in currentLocation.NeighboorPositions())
@@ -95,26 +115,40 @@ namespace AdventOfCode2019.Solvers
                     }
                 }
 
+                Location bestKeyInThisIteration = null;
+                var bestReturnedKeys = new HashSet<Location>();
+                int bestReturnedSteps = int.MaxValue;
+
+                foreach (var k in reachableKeys)
+                {
+                    var recursiveCollectedKeys = (BitArray)collectedKeys.Clone();
+                    recursiveCollectedKeys[k.Type - 97] = true;
+                    var returnedKeys = SearchForReachableKeys(k.Position, recursiveCollectedKeys, k.Steps + stepsSoFar);
+                    if (bestReturnedKeys.Count == 0 || returnedKeys.Count > 0 && bestReturnedSteps > returnedKeys.Max(l => l.Steps) + k.Steps)
+                    {
+                        bestReturnedKeys = returnedKeys;
+                        bestKeyInThisIteration = k;
+                        bestReturnedSteps = k.Steps + (bestReturnedKeys.Count == 0 ? 0 : bestReturnedKeys.Max(l => l.Steps)) ;
+                    }
+                }
+
+                var bestReturnedKeysCloned = new HashSet<Location>();
+                if (bestKeyInThisIteration != null)
+                {
+                    foreach (var k in bestReturnedKeys)
+                    {
+                        var clonedKey = new Location(k);
+                        clonedKey.Steps += bestKeyInThisIteration.Steps;
+                        bestReturnedKeysCloned.Add(clonedKey);
+                    }
+                    bestReturnedKeysCloned.Add(new Location(bestKeyInThisIteration));
+                }
+                reachableKeys = bestReturnedKeysCloned;
+
                 CachedReachableKeys.Add(currentState, reachableKeys);
             }
 
-            var bestReturnedKeys = new HashSet<Location>();
-            foreach (var k in reachableKeys)
-            {
-                var recursiveCollectedKeys = (BitArray)collectedKeys.Clone();
-                recursiveCollectedKeys[k.Type - 97] = true;
-                var returnedKeys = SearchForReachableKeys(k.Position, recursiveCollectedKeys, k.Steps + stepsSoFar);
-                if (bestReturnedKeys.Count == 0 || returnedKeys.Count > 0 && bestReturnedKeys.Max(l => l.Steps) > returnedKeys.Max(l => l.Steps)) bestReturnedKeys = returnedKeys;
-            }
-
-            foreach (var key in reachableKeys)
-            {
-                var tmp = new Location(key);
-                tmp.Steps += stepsSoFar;
-                bestReturnedKeys.Add(tmp);
-            }
-
-            return bestReturnedKeys;
+            return reachableKeys;
         }
 
 
