@@ -70,9 +70,8 @@ namespace AdventOfCode2019.Solvers
             }
         }
 
-
-        Dictionary<Point, Location> Maze = new Dictionary<Point, Location>();
-        Dictionary<Tuple<Point, BitArray>, HashSet<Location>> CachedReachableKeys = new Dictionary<Tuple<Point, BitArray>, HashSet<Location>>(new StateEqualityComparer());
+        readonly Dictionary<Point, Location> Maze = new Dictionary<Point, Location>();
+        readonly Dictionary<Tuple<Point, BitArray>, HashSet<Location>> CachedReachableKeys = new Dictionary<Tuple<Point, BitArray>, HashSet<Location>>(new StateEqualityComparer());
 
         HashSet<Location> SearchForReachableKeys(Point currentPosition, BitArray collectedKeys, int stepsSoFar)
         {

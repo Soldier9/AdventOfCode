@@ -55,6 +55,7 @@
     <Compile Include="Solvers\Day18Solver.cs" />
     <Compile Include="Solvers\Day19Solver.cs" />
     <Compile Include="Solvers\Day1Solver.cs" />
+    <Compile Include="Solvers\Day20Solver.cs" />
     <Compile Include="Solvers\Day2Solver.cs" />
     <Compile Include="Solvers\Day3Solver.cs" />
     <Compile Include="Solvers\Day4Solver.cs" />
@@ -110,6 +111,9 @@
     <Content Include="Inputs\Day2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Inputs\Day20.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Inputs\Day3.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -131,7 +135,6 @@
     <Content Include="Inputs\Day9.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Solvers\TextFile1.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
