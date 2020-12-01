@@ -5,10 +5,11 @@ namespace AdventOfCode.Solvers.Year2020
 {
     class Day1Solver : AbstractSolver
     {
+        private const int target = 2020;
+        private HashSet<int> nums = new HashSet<int>();
+
         public override string Part1()
         {
-            List<int> nums = new List<int>();
-            
             using(var input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
@@ -19,10 +20,7 @@ namespace AdventOfCode.Solvers.Year2020
 
             foreach(int x in nums)
             {
-                foreach(int y in nums)
-                {
-                    if (x + y == 2020) return (x * y).ToString();
-                }
+                if (nums.Contains(target - x)) return (x * (target - x)).ToString();
             }
             
             return "No solution found";
@@ -30,25 +28,12 @@ namespace AdventOfCode.Solvers.Year2020
 
         public override string Part2()
         {
-            List<int> nums = new List<int>();
-
-            using (var input = File.OpenText(InputFile))
-            {
-                while (!input.EndOfStream)
-                {
-                    nums.Add(int.Parse(input.ReadLine()));
-                }
-            }
-
             foreach (int x in nums)
             {
                 foreach (int y in nums)
                 {
                     if (x == y) continue;
-                    foreach (int z in nums)
-                    {
-                        if (x + y + z == 2020) return (x * y * z).ToString();
-                    }
+                    if (nums.Contains(target - (x + y))) return (x * y * (target - (x + y))).ToString();
                 }
             }
 
