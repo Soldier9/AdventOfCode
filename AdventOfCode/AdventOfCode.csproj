@@ -89,6 +89,7 @@
     <Compile Include="Solvers\2019\Day10Solver.cs" />
     <Compile Include="Solvers\2019\Day11Solver.cs" />
     <Compile Include="Solvers\2019\Day12Solver.cs" />
+    <Compile Include="Solvers\2020\Day1Solver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -180,6 +181,9 @@
     </Content>
     <Content Include="Inputs\2019\Day9.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Inputs\2020\Day1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup />
