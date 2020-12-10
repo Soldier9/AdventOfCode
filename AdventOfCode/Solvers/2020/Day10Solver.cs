@@ -37,18 +37,11 @@ namespace AdventOfCode.Solvers.Year2020
 
         public override string Part2()
         {
-            long paths = 0;
-            for (int i = 0; i < adapters.Count; i++)
-            {
-                if (adapters[i] > 3) break;
-                paths += validPathsToEnd(adapters[i], i);
-            }
-
-            return paths.ToString();
+            return ValidPathsToEnd(0, -1).ToString();
         }
 
         Dictionary<int, long> foundPaths = new Dictionary<int, long>();
-        public long validPathsToEnd(int adapter, int index)
+        public long ValidPathsToEnd(int adapter, int index)
         {
             if (finalJoltage - adapter <= 3) return 1;
             if (foundPaths.ContainsKey(adapter)) return foundPaths[adapter];
@@ -57,7 +50,7 @@ namespace AdventOfCode.Solvers.Year2020
             for (int i = index + 1; i < adapters.Count; i++)
             {
                 if (adapters[i] - adapter > 3) break;
-                paths += validPathsToEnd(adapters[i], i);
+                paths += ValidPathsToEnd(adapters[i], i);
             }
             foundPaths.Add(adapter, paths);
             return paths;
