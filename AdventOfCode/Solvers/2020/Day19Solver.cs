@@ -8,10 +8,10 @@ namespace AdventOfCode.Solvers.Year2020
 {
     class Day19Solver : AbstractSolver
     {
+        List<string> Messages = new List<string>();
+        static List<Rule> Rules = new List<Rule>();
         class Rule
         {
-            public static List<Rule> AllRules = new List<Rule>();
-
             public int Number;
             HashSet<string> Patterns = new HashSet<string>();
             public List<List<int>> ReferencedRules = new List<List<int>>();
@@ -50,7 +50,7 @@ namespace AdventOfCode.Solvers.Year2020
                         foreach (int refRule in ReferencedRules[i])
                         {
                             int newPatternCount = newPatterns.Count;
-                            Rule referencedRule = AllRules.Where(r => r.Number == refRule).Single();
+                            Rule referencedRule = Rules.Where(r => r.Number == refRule).Single();
                             foreach (string pattern in referencedRule.GetPatterns())
                             {
                                 for (int j = 0; j < newPatternCount; j++)
@@ -71,11 +71,8 @@ namespace AdventOfCode.Solvers.Year2020
             }
         }
 
-
         public override string Part1()
         {
-            List<string> messages = new List<string>();
-
             using (var input = File.OpenText(InputFile))
             {
                 bool parsingRules = true;
@@ -90,18 +87,18 @@ namespace AdventOfCode.Solvers.Year2020
 
                     if (parsingRules)
                     {
-                        Rule.AllRules.Add(new Rule(line));
+                        Rules.Add(new Rule(line));
                     }
                     else
                     {
-                        messages.Add(line);
+                        Messages.Add(line);
                     }
                 }
             }
 
             int result = 0;
-            Rule rule0 = Rule.AllRules.Where(r => r.Number == 0).Single();
-            foreach(string message in messages)
+            Rule rule0 = Rules.Where(r => r.Number == 0).Single();
+            foreach(string message in Messages)
             {
                 if (rule0.GetPatterns().Contains(message)) result++;
             }
@@ -111,36 +108,7 @@ namespace AdventOfCode.Solvers.Year2020
 
         public override string Part2()
         {
-            Rule.AllRules.Clear();
-            List<string> messages = new List<string>();
-
-            using (var input = File.OpenText(InputFile))
-            {
-                bool parsingRules = true;
-                while (!input.EndOfStream)
-                {
-                    string line = input.ReadLine();
-                    if (line.Length == 0)
-                    {
-                        parsingRules = false;
-                        continue;
-                    }
-
-                    if (parsingRules)
-                    {
-                        if (line.StartsWith("8:")) line = "8: 42 | 42 8";
-                        else if(line.StartsWith("11:")) line = "11: 42 31 | 42 11 31";
-
-                        Rule.AllRules.Add(new Rule(line));
-                    }
-                    else
-                    {
-                        messages.Add(line);
-                    }
-                }
-            }
-
-            Rule rule42 = Rule.AllRules.Where(r => r.Number == 42).Single();
+            Rule rule42 = Rules.Where(r => r.Number == 42).Single();
             string regexPattern42 = "(";
             foreach (string pattern in rule42.GetPatterns())
             {
@@ -148,7 +116,7 @@ namespace AdventOfCode.Solvers.Year2020
             }
             regexPattern42 = regexPattern42.Substring(0, regexPattern42.Length - 1) + ")";
 
-            Rule rule31 = Rule.AllRules.Where(r => r.Number == 31).Single();
+            Rule rule31 = Rules.Where(r => r.Number == 31).Single();
             string regexPattern31 = "(";
             foreach (string pattern in rule31.GetPatterns())
             {
@@ -161,7 +129,7 @@ namespace AdventOfCode.Solvers.Year2020
             string regexPattern0 = "^" + regexPattern8 + regexPattern11 + "$";
 
             int result = 0;
-            foreach(string msg in messages)
+            foreach(string msg in Messages)
             {
                 int quantifiersToTry = (msg.Length - 5) / 2;
                 for(int i = 1; i < quantifiersToTry; i++)
