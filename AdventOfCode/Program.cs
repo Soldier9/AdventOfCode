@@ -29,7 +29,7 @@ namespace AdventOfCode
                 Stopwatch timer = Stopwatch.StartNew();
                 string result = solver.Part1();
                 timer.Stop();
-                Console.WriteLine("Solution to Part 1: {0} ({1:##,#}ms)", result, timer.ElapsedMilliseconds);
+                Console.WriteLine("Solution to Part 1: {0} ({1:##,0.#} ms)", result, ((double)timer.ElapsedTicks / (Stopwatch.Frequency / 1000)));
             }
             catch (NotImplementedException)
             {
@@ -42,7 +42,7 @@ namespace AdventOfCode
                 Stopwatch timer = Stopwatch.StartNew();
                 string result = solver.Part2();
                 timer.Stop();
-                Console.WriteLine("Solution to Part 2: {0} ({1:##,#}ms)", result, timer.ElapsedMilliseconds);
+                Console.WriteLine("Solution to Part 2: {0} ({1:##,0.#} ms)", result, ((double)timer.ElapsedTicks / (Stopwatch.Frequency / 1000)));
             }
             catch (NotImplementedException)
             {
