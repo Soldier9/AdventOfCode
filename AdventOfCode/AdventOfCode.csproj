@@ -100,6 +100,7 @@
     <Compile Include="Solvers\2020\Day17Solver.cs" />
     <Compile Include="Solvers\2020\Day18Solver.cs" />
     <Compile Include="Solvers\2020\Day19Solver.cs" />
+    <Compile Include="Solvers\2020\Day24Solver.cs" />
     <Compile Include="Solvers\2020\Day23Solver.cs" />
     <Compile Include="Solvers\2020\Day22Solver.cs" />
     <Compile Include="Solvers\2020\Day21Solver.cs" />
@@ -204,6 +205,9 @@
     </Content>
     <Content Include="Inputs\2019\Day9.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Inputs\2020\Day24.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Inputs\2020\Day23.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
