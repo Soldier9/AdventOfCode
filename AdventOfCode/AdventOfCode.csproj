@@ -52,6 +52,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -100,6 +101,7 @@
     <Compile Include="Solvers\2020\Day17Solver.cs" />
     <Compile Include="Solvers\2020\Day18Solver.cs" />
     <Compile Include="Solvers\2020\Day19Solver.cs" />
+    <Compile Include="Solvers\2020\Day25Solver.cs" />
     <Compile Include="Solvers\2020\Day24Solver.cs" />
     <Compile Include="Solvers\2020\Day23Solver.cs" />
     <Compile Include="Solvers\2020\Day22Solver.cs" />
@@ -205,6 +207,9 @@
     </Content>
     <Content Include="Inputs\2019\Day9.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Inputs\2020\Day25.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Inputs\2020\Day24.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
