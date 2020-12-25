@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Numerics;
 
 namespace AdventOfCode.Solvers.Year2020
@@ -10,31 +8,25 @@ namespace AdventOfCode.Solvers.Year2020
         
         public override string Part1()
         {
-            Dictionary<BigInteger, BigInteger> pkeys = new Dictionary<BigInteger, BigInteger>();
             int subject = 7;
             int modulus = 20201227;
+            int publicKey1;
+            int publicKey2;
 
             using (var input = File.OpenText(InputFile))
             {
-                while (!input.EndOfStream)
-                {
-                    pkeys.Add(long.Parse(input.ReadLine()), 0);
-                }
+                publicKey1 = int.Parse(input.ReadLine());
+                publicKey2 = int.Parse(input.ReadLine());
             }
 
-            int loopSizesFound = 0;
-            for(BigInteger loopSize = 1; loopSizesFound < 2; loopSize++)
+            int loopSize = 1;
+            while(true)
             {
-                BigInteger currentPublicKey = BigInteger.ModPow(subject, loopSize, modulus);
-                if (pkeys.ContainsKey(currentPublicKey))
-                {
-                    pkeys[currentPublicKey] = loopSize;
-                    loopSizesFound++;
-                }
+                BigInteger tmp = BigInteger.ModPow(subject, loopSize, modulus);
+                if(tmp == publicKey1) return BigInteger.ModPow(publicKey2, loopSize, modulus).ToString();
+                if(tmp == publicKey2) return BigInteger.ModPow(publicKey1, loopSize, modulus).ToString();
+                loopSize++;
             }
-
-            BigInteger encKey = BigInteger.ModPow(pkeys.Last().Key, pkeys.First().Value, modulus);
-            return encKey.ToString();
         }
 
         public override string Part2()
