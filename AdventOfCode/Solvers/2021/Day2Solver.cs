@@ -4,8 +4,6 @@ namespace AdventOfCode.Solvers.Year2021
 {
     class Day2Solver : AbstractSolver
     {
-        private const int target = 2021;
-
         public override string Part1()
         {
             int horizontal = 0;
