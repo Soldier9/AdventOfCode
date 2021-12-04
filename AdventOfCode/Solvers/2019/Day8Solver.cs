@@ -15,8 +15,8 @@ namespace AdventOfCode.Solvers.Year2019
             int width = 25;
             int height = 6;
 
-            Dictionary<string,int> layers = new Dictionary<string, int>();
-            for(int i = 0; i <input.Length; i += (width*height))
+            Dictionary<string, int> layers = new Dictionary<string, int>();
+            for (int i = 0; i < input.Length; i += (width * height))
             {
                 string layer = input.Substring(i, width * height);
                 layers.Add(layer, Regex.Matches(layer, @"0").Count);
@@ -43,16 +43,16 @@ namespace AdventOfCode.Solvers.Year2019
             }
 
             StringBuilder sb = new StringBuilder(new string('2', width * height));
-            foreach(string layer in layers)
+            foreach (string layer in layers)
             {
-                for(int i = 0; i < layer.Length; i++)
+                for (int i = 0; i < layer.Length; i++)
                 {
                     if (sb[i] == '2') sb[i] = layer[i];
                 }
             }
 
             string finalLayer = sb.ToString();
-            for(int i = 0; i<width*height; i += width)
+            for (int i = 0; i < width * height; i += width)
             {
                 Console.WriteLine(finalLayer.Substring(i, width).Replace('0', ' '));    // Replace black for readability in ascii "white-on-black" :)
             }

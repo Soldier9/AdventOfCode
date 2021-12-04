@@ -12,9 +12,9 @@ namespace AdventOfCode.Solvers.Year2019
 
             public readonly string ID;
             readonly string OrbitsString;
-            
+
             public Celestial Orbits;
-            
+
             public Celestial(string id, string orbitting)
             {
                 ID = id;
@@ -25,7 +25,7 @@ namespace AdventOfCode.Solvers.Year2019
                 {
                     Orbits = AllCelestials.Single(c => c.ID == orbitting);
                 }
-                
+
 
                 foreach (Celestial orbitter in AllCelestials.Where(c => c.OrbitsString == ID))
                 {
@@ -36,11 +36,11 @@ namespace AdventOfCode.Solvers.Year2019
             public static int GetTotalNumberOfOrbits()
             {
                 int orbits = 0;
-                
-                foreach(Celestial celestial in AllCelestials)
+
+                foreach (Celestial celestial in AllCelestials)
                 {
                     var test = celestial;
-                    while(test.Orbits != null)
+                    while (test.Orbits != null)
                     {
                         orbits++;
                         test = test.Orbits;
@@ -56,9 +56,9 @@ namespace AdventOfCode.Solvers.Year2019
 
         public override string Part1()
         {
-            using(var input = File.OpenText(InputFile))
+            using (var input = File.OpenText(InputFile))
             {
-                while(!input.EndOfStream)
+                while (!input.EndOfStream)
                 {
                     string line = input.ReadLine();
                     new Celestial(line.Split(')')[1], line.Split(')')[0]);
@@ -87,13 +87,13 @@ namespace AdventOfCode.Solvers.Year2019
         {
             Celestial me = Celestial.AllCelestials.Single(c => c.ID == "YOU");
             Dictionary<Celestial, int> myPathToSun = GetPathToSun(me);
-            
+
             Celestial santa = Celestial.AllCelestials.Single(c => c.ID == "SAN");
             Dictionary<Celestial, int> santasPathToSun = GetPathToSun(santa);
-            
-            foreach(KeyValuePair<Celestial,int> c in myPathToSun.OrderBy(c => c.Value))
+
+            foreach (KeyValuePair<Celestial, int> c in myPathToSun.OrderBy(c => c.Value))
             {
-                if(santasPathToSun.ContainsKey(c.Key)) return (c.Value + santasPathToSun[c.Key] - 2).ToString();
+                if (santasPathToSun.ContainsKey(c.Key)) return (c.Value + santasPathToSun[c.Key] - 2).ToString();
             }
 
             return "Path not found!";

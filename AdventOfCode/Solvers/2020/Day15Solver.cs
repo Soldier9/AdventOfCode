@@ -45,7 +45,7 @@ namespace AdventOfCode.Solvers.Year2020
                 foreach (string n in input.ReadLine().Split(','))
                 {
                     lastNum = int.Parse(n);
-                    numbers.Add(lastNum, (0, round));                    
+                    numbers.Add(lastNum, (0, round));
                     round++;
                 }
             }
@@ -53,13 +53,15 @@ namespace AdventOfCode.Solvers.Year2020
             while (round < 30000001)
             {
                 int nextNum = 0;
-                if (numbers.ContainsKey(lastNum) && numbers[lastNum].Item1 != 0) {
+                if (numbers.ContainsKey(lastNum) && numbers[lastNum].Item1 != 0)
+                {
                     nextNum = numbers[lastNum].Item2 - numbers[lastNum].Item1;
                 }
 
-                if (numbers.ContainsKey(nextNum)) {
+                if (numbers.ContainsKey(nextNum))
+                {
                     numbers[nextNum] = (numbers[nextNum].Item2, round);
-                } 
+                }
                 else
                 {
                     numbers.Add(nextNum, (0, round));

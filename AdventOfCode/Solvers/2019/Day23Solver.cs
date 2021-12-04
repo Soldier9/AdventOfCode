@@ -3,9 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace AdventOfCode.Solvers.Year2019
 {
@@ -117,7 +115,7 @@ namespace AdventOfCode.Solvers.Year2019
                 if (InputQueue.Count == 0)
                 {
                     failedNicReads++;
-                    Program[param1] = -1;                    
+                    Program[param1] = -1;
                 }
                 else
                 {
@@ -130,9 +128,9 @@ namespace AdventOfCode.Solvers.Year2019
             {
                 Int64 param1 = GetParam(modes[0], 1);
                 NicOutputQueue.Enqueue(param1);
-                if(NicOutputQueue.Count == 3)
+                if (NicOutputQueue.Count == 3)
                 {
-                    while(NicOutputQueue.Count > 0) OutputQueue.Add(NicOutputQueue.Dequeue());
+                    while (NicOutputQueue.Count > 0) OutputQueue.Add(NicOutputQueue.Dequeue());
                 }
                 failedNicReads = 0;
             }
@@ -246,8 +244,8 @@ namespace AdventOfCode.Solvers.Year2019
             }
 
             var theSwitch = new List<NIC>();
-            
-            for(var i = 0; i < 50; i++)
+
+            for (var i = 0; i < 50; i++)
             {
                 var outputQueue = new BlockingCollection<Int64>();
                 var inputQueue = new BlockingCollection<Int64>
@@ -260,11 +258,11 @@ namespace AdventOfCode.Solvers.Year2019
                 theSwitch.Add(new NIC(i, cpu, cpuThread, outputQueue, inputQueue));
             }
 
-            while(true)
+            while (true)
             {
-                foreach(var nic in theSwitch)
+                foreach (var nic in theSwitch)
                 {
-                    if(nic.OutputQueue.Count > 2)
+                    if (nic.OutputQueue.Count > 2)
                     {
                         var address = Convert.ToInt32(nic.OutputQueue.Take());
                         var x = nic.OutputQueue.Take();
@@ -309,7 +307,7 @@ namespace AdventOfCode.Solvers.Year2019
             Int64 NATx = 0;
             Int64 NATy = 0;
             Int64 lastSentNATy = -1;
-            
+
             while (true)
             {
                 bool allIdle = true;
@@ -334,7 +332,7 @@ namespace AdventOfCode.Solvers.Year2019
                     }
                     if (nic.CPU.failedNicReads < 100000) allIdle = false;
                 }
-                if(allIdle)
+                if (allIdle)
                 {
                     theSwitch[0].InputQueue.Add(NATx);
                     theSwitch[0].InputQueue.Add(NATy);

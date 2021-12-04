@@ -60,7 +60,7 @@ namespace AdventOfCode.Solvers.Year2020
                             }
                             newPatterns.RemoveRange(0, newPatternCount);
                         }
-                        foreach(string pattern in newPatterns)
+                        foreach (string pattern in newPatterns)
                         {
                             Patterns.Add(pattern);
                         }
@@ -98,7 +98,7 @@ namespace AdventOfCode.Solvers.Year2020
 
             int result = 0;
             Rule rule0 = Rules.Where(r => r.Number == 0).Single();
-            foreach(string message in Messages)
+            foreach (string message in Messages)
             {
                 if (rule0.GetPatterns().Contains(message)) result++;
             }
@@ -129,18 +129,18 @@ namespace AdventOfCode.Solvers.Year2020
             string regexPattern0 = "^" + regexPattern8 + regexPattern11 + "$";
 
             int result = 0;
-            foreach(string msg in Messages)
+            foreach (string msg in Messages)
             {
                 int quantifiersToTry = (msg.Length - 5) / 2;
-                for(int i = 1; i < quantifiersToTry; i++)
+                for (int i = 1; i < quantifiersToTry; i++)
                 {
                     Regex r0 = new Regex(regexPattern0.Replace("{n}", "{" + i.ToString() + "}"));
-                    if(r0.IsMatch(msg))
+                    if (r0.IsMatch(msg))
                     {
                         result++;
                         break;
                     }
-                }   
+                }
             }
 
             return result.ToString();

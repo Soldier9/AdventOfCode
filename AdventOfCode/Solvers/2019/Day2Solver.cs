@@ -14,7 +14,7 @@ namespace AdventOfCode.Solvers.Year2019
                 IP = 0;
                 Program = program;
 
-                while(true)
+                while (true)
                 {
                     var opCode = Program[IP];
                     switch (opCode)
@@ -39,8 +39,8 @@ namespace AdventOfCode.Solvers.Year2019
         {
             IntcodeCPU cpu = new IntcodeCPU();
             int[] program;
-            
-            using(var input = File.OpenText(InputFile))
+
+            using (var input = File.OpenText(InputFile))
             {
                 program = input.ReadLine().Split(',').Select(n => int.Parse(n)).ToArray();
             }

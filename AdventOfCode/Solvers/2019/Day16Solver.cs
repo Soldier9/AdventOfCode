@@ -60,7 +60,7 @@ namespace AdventOfCode.Solvers.Year2019
         public override string Part2()
         {
             throw new NotImplementedException();
-            
+
             //List<int> signal = new List<int>();
             //var basePattern = new List<int> { 0, 1, 0, -1 };
 

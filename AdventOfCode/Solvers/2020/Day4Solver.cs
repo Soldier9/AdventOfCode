@@ -22,7 +22,7 @@ namespace AdventOfCode.Solvers.Year2020
 
         public override string Part1()
         {
-            using(var input = File.OpenText(InputFile))
+            using (var input = File.OpenText(InputFile))
             {
                 Passport passport = new Passport();
 
@@ -37,10 +37,10 @@ namespace AdventOfCode.Solvers.Year2020
                     }
 
                     string[] pairs = line.Split(' ');
-                    foreach(string pair in pairs)
+                    foreach (string pair in pairs)
                     {
                         string[] parts = pair.Split(':');
-                        switch(parts[0])
+                        switch (parts[0])
                         {
                             case "byr": passport.byr = parts[1]; break;
                             case "iyr": passport.iyr = parts[1]; break;
@@ -88,7 +88,7 @@ namespace AdventOfCode.Solvers.Year2020
                 if (hgtMatch.Groups[2].Value == "in" && !(int.Parse(hgtMatch.Groups[1].Value) >= 59 && int.Parse(hgtMatch.Groups[1].Value) <= 76)) continue;
 
                 if (!hclValid.IsMatch(pp.hcl)) continue;
-                switch(pp.ecl)
+                switch (pp.ecl)
                 {
                     case "amb":
                     case "blu":

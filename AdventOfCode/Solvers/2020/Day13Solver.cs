@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -55,7 +54,8 @@ namespace AdventOfCode.Solvers.Year2020
                 departureTime += advanceBy;
                 allTimesMatch = true;
 
-                while (allTimesMatch && busses.Count > 0) {
+                while (allTimesMatch && busses.Count > 0)
+                {
                     var bus = busses.First();
                     if ((departureTime + bus.Value) % bus.Key == 0)
                     {

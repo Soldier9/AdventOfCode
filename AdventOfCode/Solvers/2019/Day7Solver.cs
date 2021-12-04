@@ -28,7 +28,7 @@ namespace AdventOfCode.Solvers.Year2019
             {
                 InputQueue.Enqueue(input);
             }
-            
+
             public Queue<int> ResumeProgram()
             {
                 while (true)
@@ -110,10 +110,11 @@ namespace AdventOfCode.Solvers.Year2019
             {
                 int param1 = Program[IP + 1]; // Always position mode
 
-                if(InputQueue.Count > 0)
+                if (InputQueue.Count > 0)
                 {
                     Program[param1] = InputQueue.Dequeue();
-                } else
+                }
+                else
                 {
                     throw new YieldException();
                 }
@@ -255,7 +256,7 @@ namespace AdventOfCode.Solvers.Year2019
             {
                 Queue<int> outputs = new Queue<int>();
                 outputs.Enqueue(0); // First input for CPU A
-                
+
                 for (int cpuNum = 0; cpuNum < 5; cpuNum++)
                 {
                     IntcodeCPU cpu = new IntcodeCPU(program);
@@ -293,8 +294,9 @@ namespace AdventOfCode.Solvers.Year2019
 
                 cpus[0].Input(0);
                 Queue<int> outputs = new Queue<int>();
-                
-                while (!cpus[4].HasTerminated) { 
+
+                while (!cpus[4].HasTerminated)
+                {
                     for (int i = 0; i < 5; i++)
                     {
                         while (outputs.Count > 0) cpus[i].Input(outputs.Dequeue());

@@ -10,7 +10,7 @@ namespace AdventOfCode.Solvers.Year2020
 
         public override string Part1()
         {
-            using(var input = File.OpenText(InputFile))
+            using (var input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
@@ -18,11 +18,11 @@ namespace AdventOfCode.Solvers.Year2020
                 }
             }
 
-            foreach(int x in nums)
+            foreach (int x in nums)
             {
                 if (nums.Contains(target - x)) return (x * (target - x)).ToString();
             }
-            
+
             return "No solution found";
         }
 

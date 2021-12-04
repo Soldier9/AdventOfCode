@@ -8,13 +8,13 @@ namespace AdventOfCode.Solvers.Year2020
     {
         private List<string> map = new List<string>();
 
-        private int FindTreesInTraversal(int right, int down) 
+        private int FindTreesInTraversal(int right, int down)
         {
             int trees = 0;
 
             int height = map.Count;
             int width = map[0].Length;
-            
+
             int x = 0;
             int y = 0;
 
@@ -40,7 +40,7 @@ namespace AdventOfCode.Solvers.Year2020
                 }
             }
 
-            return FindTreesInTraversal(3,1).ToString();
+            return FindTreesInTraversal(3, 1).ToString();
         }
 
         public override string Part2()

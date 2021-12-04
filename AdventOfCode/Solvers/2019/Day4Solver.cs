@@ -10,13 +10,13 @@
         public override string Part1()
         {
             int goodPws = 0;
-            
-            for(int testPw = inputFrom; testPw <= inputTo; testPw++)
+
+            for (int testPw = inputFrom; testPw <= inputTo; testPw++)
             {
                 string testPwStr = testPw.ToString();
                 char? prevChar = null;
                 bool goodPw = false;
-                foreach(char c in testPwStr)
+                foreach (char c in testPwStr)
                 {
                     if (prevChar == null)
                     {
@@ -62,13 +62,13 @@
                     }
                     if (c != prevChar)
                     {
-                        if(eqGrpSize == 2) goodPw = true;
+                        if (eqGrpSize == 2) goodPw = true;
                         eqGrpSize = 1;
                     }
                     if (c == prevChar)
                     {
                         eqGrpSize++;
-                    } 
+                    }
 
                     prevChar = c;
                 }

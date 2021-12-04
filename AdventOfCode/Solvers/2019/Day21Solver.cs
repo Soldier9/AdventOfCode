@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AdventOfCode.Solvers.Year2019
@@ -231,7 +230,7 @@ namespace AdventOfCode.Solvers.Year2019
             springScript.Add("OR T J\n");
             springScript.Add("AND D J\n");
             springScript.Add("WALK\n");
-            foreach(var line in springScript) foreach (var c in IntcodeCPU.GetIntCodeInput(line)) inputQueue.Add(c);
+            foreach (var line in springScript) foreach (var c in IntcodeCPU.GetIntCodeInput(line)) inputQueue.Add(c);
 
             Int64 result = 0;
             while (!cpuTask.IsCompleted || outputQueue.Count > 0)

@@ -47,14 +47,14 @@ namespace AdventOfCode.Solvers.Year2019
             }
         }
 
-        Dictionary<Point,int> TraceWire(string[] moves)
+        Dictionary<Point, int> TraceWire(string[] moves)
         {
             Dictionary<Point, int> tracedWire = new Dictionary<Point, int>();
 
             Point currentPoint = new Point(0, 0);
             int wireLength = 0;
 
-            foreach(string movement in moves)
+            foreach (string movement in moves)
             {
                 int moveLength = int.Parse(movement.Substring(1));
                 for (int i = 0; i < moveLength; i++)
@@ -68,7 +68,7 @@ namespace AdventOfCode.Solvers.Year2019
                     }
 
                     wireLength++;
-                    if(!tracedWire.ContainsKey(currentPoint)) tracedWire.Add(currentPoint.Clone(), wireLength);
+                    if (!tracedWire.ContainsKey(currentPoint)) tracedWire.Add(currentPoint.Clone(), wireLength);
                 }
             }
 
@@ -86,7 +86,7 @@ namespace AdventOfCode.Solvers.Year2019
                 wire2 = TraceWire(input.ReadLine().Split(',').ToArray());
             }
 
-            var intersects = wire1.Where(p => wire2.ContainsKey(p.Key)).Select(p=> new KeyValuePair<Point, int>(p.Key, p.Value + wire2[p.Key]));
+            var intersects = wire1.Where(p => wire2.ContainsKey(p.Key)).Select(p => new KeyValuePair<Point, int>(p.Key, p.Value + wire2[p.Key]));
 
             return intersects.Min(p => Math.Abs(p.Key.X) + Math.Abs(p.Key.Y)).ToString();
         }

@@ -267,7 +267,7 @@ namespace AdventOfCode.Solvers.Year2019
 
             Console.Write("Play yourself (Y/N)?");
             bool interactive = Console.ReadKey().Key == ConsoleKey.Y;
-            
+
             int minY = Console.CursorTop + 3;
             int maxY = 0;
             int score = 0;
@@ -303,20 +303,20 @@ namespace AdventOfCode.Solvers.Year2019
             {
                 Task.Factory.StartNew(() =>
                 {
-                    while(!cpuTask.IsCompleted)
+                    while (!cpuTask.IsCompleted)
                     {
                         //lock(outputQueue)
                         //{
-                            if (cpu.WaitingForInput && inputQueue.Count == 0 && outputQueue.Count == 0)
+                        if (cpu.WaitingForInput && inputQueue.Count == 0 && outputQueue.Count == 0)
+                        {
+                            //Console.SetCursorPosition(0, maxY);
+                            switch (Console.ReadKey().Key)
                             {
-                                //Console.SetCursorPosition(0, maxY);
-                                switch(Console.ReadKey().Key)
-                                {
-                                    case ConsoleKey.LeftArrow: inputQueue.Add(-1); break;
-                                    case ConsoleKey.RightArrow: inputQueue.Add(1); break;
-                                    default: inputQueue.Add(0); break;
-                                }
+                                case ConsoleKey.LeftArrow: inputQueue.Add(-1); break;
+                                case ConsoleKey.RightArrow: inputQueue.Add(1); break;
+                                default: inputQueue.Add(0); break;
                             }
+                        }
                         //}
                     }
                 });
@@ -358,7 +358,7 @@ namespace AdventOfCode.Solvers.Year2019
                     }
 
                     maxY = Math.Max(y, maxY);
-                    if(interactive) Console.SetCursorPosition(0, maxY);
+                    if (interactive) Console.SetCursorPosition(0, maxY);
                 }
             }
 

@@ -20,10 +20,9 @@ namespace AdventOfCode
                 .OrderBy(s => s.Year).ThenBy(s => s.Day).ThenBy(s => s.PrioritizedSolver);
 
             var solver = Solvers.Last();
-
             Console.WriteLine("Advent of Code {0} Day {1}", solver.Year, solver.Day);
-            Console.WriteLine("\r\nSolving Part 1");
 
+            Console.WriteLine("\r\nSolving Part 1");
             try
             {
                 Stopwatch timer = Stopwatch.StartNew();
@@ -48,7 +47,6 @@ namespace AdventOfCode
             {
                 Console.WriteLine("Solution not implemented");
             }
-
             Console.ReadLine();
         }
     }

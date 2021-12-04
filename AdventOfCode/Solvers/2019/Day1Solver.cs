@@ -8,7 +8,7 @@ namespace AdventOfCode.Solvers.Year2019
         public override string Part1()
         {
             long totalFuelRequired = 0;
-            using(var input = File.OpenText(InputFile))
+            using (var input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
@@ -17,7 +17,7 @@ namespace AdventOfCode.Solvers.Year2019
                     totalFuelRequired += fuelRequired;
                 }
             }
-            
+
             return totalFuelRequired.ToString();
         }
 

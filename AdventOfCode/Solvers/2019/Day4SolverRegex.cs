@@ -19,7 +19,7 @@ namespace AdventOfCode.Solvers.Year2019
 
             var matches = Regex.Matches(testPw, @"(\d)\1+").Cast<Match>();
             if (!part2 && matches.Any(m => m.Length >= 2)) return true;
-            else if(part2 && matches.Any(m => m.Length == 2)) return true;
+            else if (part2 && matches.Any(m => m.Length == 2)) return true;
 
             return false;
         }

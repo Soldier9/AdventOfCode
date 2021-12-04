@@ -121,7 +121,8 @@ namespace AdventOfCode.Solvers.Year2019
                 if (param1 == 0)
                 {
                     IP = param2;
-                } else
+                }
+                else
                 {
                     IP += 3;
                 }

@@ -33,7 +33,7 @@ namespace AdventOfCode.Solvers.Year2020
 
         public override string Part1()
         {
-            using(var input = File.OpenText(InputFile))
+            using (var input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
@@ -41,11 +41,12 @@ namespace AdventOfCode.Solvers.Year2020
                 }
             }
 
-            while (Identified.Count != Alergens2Recipes.Count) {
+            while (Identified.Count != Alergens2Recipes.Count)
+            {
                 foreach (string alergen in Alergens2Recipes.Keys)
                 {
                     HashSet<string> ingredients = null;
-                    foreach(Recipe recipe in Alergens2Recipes[alergen])
+                    foreach (Recipe recipe in Alergens2Recipes[alergen])
                     {
                         if (ingredients == null) ingredients = new HashSet<string>(recipe.Ingredients.Where(i => !Identified.ContainsKey(i)));
                         else
@@ -53,7 +54,7 @@ namespace AdventOfCode.Solvers.Year2020
                             ingredients.RemoveWhere(r => !recipe.Ingredients.Contains(r));
                         }
                     }
-                    if(ingredients.Count == 1)
+                    if (ingredients.Count == 1)
                     {
                         Identified.Add(ingredients.First(), alergen);
                     }
@@ -61,16 +62,16 @@ namespace AdventOfCode.Solvers.Year2020
             }
 
             HashSet<string> noAlergens = new HashSet<string>();
-            foreach(Recipe recipe in Recipes)
+            foreach (Recipe recipe in Recipes)
             {
-                foreach(string ingredient in recipe.Ingredients)
+                foreach (string ingredient in recipe.Ingredients)
                 {
                     if (!Identified.ContainsKey(ingredient)) noAlergens.Add(ingredient);
                 }
             }
 
             int result = 0;
-            foreach(string ingredient in noAlergens)
+            foreach (string ingredient in noAlergens)
             {
                 result += Recipes.Where(r => r.Ingredients.Contains(ingredient)).Count();
             }
@@ -81,7 +82,7 @@ namespace AdventOfCode.Solvers.Year2020
         public override string Part2()
         {
             string result = "";
-            foreach(string ingredient in Identified.OrderBy(i => i.Value).Select(i => i.Key))
+            foreach (string ingredient in Identified.OrderBy(i => i.Value).Select(i => i.Key))
             {
                 if (result != "") result += ",";
                 result += ingredient;

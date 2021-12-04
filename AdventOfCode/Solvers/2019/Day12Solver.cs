@@ -53,7 +53,7 @@ namespace AdventOfCode.Solvers.Year2019
 
             using (var input = File.OpenText(InputFile))
             {
-                while(!input.EndOfStream)
+                while (!input.EndOfStream)
                 {
                     MatchCollection matches = Regex.Matches(input.ReadLine(), @"\-?\d+");
 
@@ -65,11 +65,11 @@ namespace AdventOfCode.Solvers.Year2019
                 }
             }
 
-            for(int steps = 0; steps < 1000; steps++)
+            for (int steps = 0; steps < 1000; steps++)
             {
-                foreach(Moon moon in moons)
+                foreach (Moon moon in moons)
                 {
-                    foreach(Moon otherMoon in moons)
+                    foreach (Moon otherMoon in moons)
                     {
                         if (moon == otherMoon) continue;
 
@@ -92,7 +92,7 @@ namespace AdventOfCode.Solvers.Year2019
             }
 
             int totalSystemEnergy = 0;
-            foreach(Moon moon in moons)
+            foreach (Moon moon in moons)
             {
                 totalSystemEnergy += moon.GetTotalEnergy();
             }
@@ -102,7 +102,7 @@ namespace AdventOfCode.Solvers.Year2019
 
         long GCD(long a, long b)
         {
-            while(b != 0)
+            while (b != 0)
             {
                 long t = b;
                 b = a % b;
@@ -138,7 +138,7 @@ namespace AdventOfCode.Solvers.Year2019
                 }
             }
 
-            
+
             long steps = 0;
 
             long repeatingX = 0;

@@ -110,7 +110,7 @@ namespace AdventOfCode.Solvers.Year2021
 
         public override string Part2()
         {
-            foreach(Board board in Boards) board.ResetBoard();
+            foreach (Board board in Boards) board.ResetBoard();
 
             foreach (int num in Numbers)
             {
@@ -121,6 +121,7 @@ namespace AdventOfCode.Solvers.Year2021
                 }
                 Boards.RemoveAll(b => b.HasWon());
             }
+
             return "Not all boards will win?!".ToString();
         }
     }

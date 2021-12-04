@@ -8,8 +8,8 @@ namespace AdventOfCode.Solvers.Year2020
         List<int> seatIDs = new List<int>();
         public override string Part1()
         {
-            
-            using(var input = File.OpenText(InputFile))
+
+            using (var input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
@@ -19,9 +19,9 @@ namespace AdventOfCode.Solvers.Year2020
                     int colMin = -1;
                     int colMax = 7;
 
-                    foreach(char c in line)
+                    foreach (char c in line)
                     {
-                        switch(c)
+                        switch (c)
                         {
                             case 'F': rowMax -= (rowMax - rowMin) / 2; break;
                             case 'B': rowMin += (rowMax - rowMin) / 2; break;
@@ -35,16 +35,16 @@ namespace AdventOfCode.Solvers.Year2020
             }
             seatIDs.Sort();
 
-            return  seatIDs[seatIDs.Count-1].ToString();
+            return seatIDs[seatIDs.Count - 1].ToString();
         }
 
         public override string Part2()
         {
             HashSet<int> seatIDs = new HashSet<int>(this.seatIDs);
-            for(int i = 0; i < this.seatIDs[this.seatIDs.Count - 1]; i++)
+            for (int i = 0; i < this.seatIDs[this.seatIDs.Count - 1]; i++)
             {
                 if (seatIDs.Contains(i)) continue;
-                if(!seatIDs.Contains(i-1)) continue;
+                if (!seatIDs.Contains(i - 1)) continue;
                 if (!seatIDs.Contains(i + 1)) continue;
                 return i.ToString();
             }

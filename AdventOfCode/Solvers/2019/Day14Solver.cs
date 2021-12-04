@@ -124,7 +124,7 @@ namespace AdventOfCode.Solvers.Year2019
                 if (currentAttempt + 1 == lastAttempt && lastResult <= target) break;
 
                 long adjustMent = Math.Max(Math.Abs((currentAttempt - lastAttempt) / 2), 1);
-                if(lastResult > target) nextAttempt -= adjustMent;
+                if (lastResult > target) nextAttempt -= adjustMent;
                 else nextAttempt += adjustMent;
                 lastAttempt = currentAttempt;
             }

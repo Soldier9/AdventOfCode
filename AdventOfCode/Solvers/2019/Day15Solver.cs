@@ -239,7 +239,7 @@ namespace AdventOfCode.Solvers.Year2019
             {
                 PrevTile = betterPrevTile;
                 MovesFromStart = betterPrevTile.MovesFromStart + 1;
-                foreach(Point neighboor in Neighboors)
+                foreach (Point neighboor in Neighboors)
                 {
                     if (AllTiles.ContainsKey(neighboor) && AllTiles[neighboor].MovesFromStart > MovesFromStart - 1) AllTiles[neighboor].SetBetterPrevTile(this);
                 }
@@ -295,11 +295,11 @@ namespace AdventOfCode.Solvers.Year2019
                         nextDirection = currentTile.FindDirectionTo(nextLocation);
                     } while (nextDirection == 0);
                 }
-                
+
                 inputQueue.Add(nextDirection);
                 int nextType = Convert.ToInt32(outputQueue.Take());
                 if (nextType == 0) continue; // we hit a wall and did not move
-                
+
                 currentTile = new Tile(nextLocation, nextType, currentTile);
                 Tile.AllTiles.Add(currentTile.Location, currentTile);
             }
@@ -317,7 +317,7 @@ namespace AdventOfCode.Solvers.Year2019
 
             Tile oxygenTile = Tile.AllTiles.Single(t => t.Value.Type == 2).Value;
             oxygenTile.MovesFromStart = 0;
-            foreach(Point neighboorLocation in oxygenTile.Neighboors)
+            foreach (Point neighboorLocation in oxygenTile.Neighboors)
             {
                 if (Tile.AllTiles.ContainsKey(neighboorLocation)) Tile.AllTiles[neighboorLocation].SetBetterPrevTile(oxygenTile);
             }

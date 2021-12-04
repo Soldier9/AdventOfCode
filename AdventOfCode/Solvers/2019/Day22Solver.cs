@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdventOfCode.Solvers.Year2019
 {
@@ -54,7 +52,7 @@ namespace AdventOfCode.Solvers.Year2019
         {
             var newDeck = new List<Card>();
             var card = deck[deck.Count - 1];
-            for(var i = 0; i < deck.Count; i++)
+            for (var i = 0; i < deck.Count; i++)
             {
                 newDeck.Add(card);
                 card = card.Previous;
@@ -78,7 +76,7 @@ namespace AdventOfCode.Solvers.Year2019
         List<Card> DealWithIncrement(List<Card> deck, int increment)
         {
             var tmpDeck = new Dictionary<int, Card>();
-            for(var i = 0; i < deck.Count; i++)
+            for (var i = 0; i < deck.Count; i++)
             {
                 tmpDeck.Add((i * increment) % deck.Count, deck[i]);
             }
@@ -90,8 +88,8 @@ namespace AdventOfCode.Solvers.Year2019
         public override string Part1()
         {
             var deck = CreateDeck(10007);
-            
-            using(var input = File.OpenText(InputFile))
+
+            using (var input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
@@ -113,7 +111,7 @@ namespace AdventOfCode.Solvers.Year2019
                 }
             }
 
-            for(var i = 0; i < deck.Count; i++)
+            for (var i = 0; i < deck.Count; i++)
             {
                 if (deck[i].Value == 2019) return i.ToString();
             }

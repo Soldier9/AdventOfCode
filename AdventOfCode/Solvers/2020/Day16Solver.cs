@@ -23,12 +23,12 @@ namespace AdventOfCode.Solvers.Year2020
         int ValuesOnTicket = 0;
         public override string Part1()
         {
-            using(var input = File.OpenText(InputFile))
+            using (var input = File.OpenText(InputFile))
             {
                 bool parsingRules = true;
                 bool parsingYourTicket = false;
                 bool parsingNearbyTickets = false;
-                
+
                 while (!input.EndOfStream)
                 {
                     string[] line = input.ReadLine().Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
@@ -49,7 +49,7 @@ namespace AdventOfCode.Solvers.Year2020
                         }
                     }
 
-                    if(parsingRules)
+                    if (parsingRules)
                     {
                         string[] ranges = line[1].Split(new string[] { " or " }, StringSplitOptions.None);
                         string[] range1 = ranges[0].Split('-');
@@ -62,7 +62,7 @@ namespace AdventOfCode.Solvers.Year2020
                         ValuesOnTicket = values.Length;
                         MyTicket = values.Select(v => int.Parse(v)).ToList();
                     }
-                    else if(parsingNearbyTickets)
+                    else if (parsingNearbyTickets)
                     {
                         string[] values = line[0].Split(',');
                         NearbyTickets.Add(values.Select(v => int.Parse(v)).ToList());
@@ -71,15 +71,15 @@ namespace AdventOfCode.Solvers.Year2020
             }
 
             int result = 0;
-            foreach(List<int> ticket in NearbyTickets)
+            foreach (List<int> ticket in NearbyTickets)
             {
                 bool ticketIsValid = true;
-                foreach(int value in ticket)
+                foreach (int value in ticket)
                 {
                     bool matchesSomething = false;
-                    foreach(Rule rule in Rules)
+                    foreach (Rule rule in Rules)
                     {
-                        if((value >= rule.Range1.Item1 && value <= rule.Range1.Item2) || (value >= rule.Range2.Item1 && value <= rule.Range2.Item2))
+                        if ((value >= rule.Range1.Item1 && value <= rule.Range1.Item2) || (value >= rule.Range2.Item1 && value <= rule.Range2.Item2))
                         {
                             matchesSomething = true;
                             break;
@@ -91,7 +91,7 @@ namespace AdventOfCode.Solvers.Year2020
                         ticketIsValid = false;
                     }
                 }
-                if (ticketIsValid) ValidNearbyTickets.Add(ticket);                
+                if (ticketIsValid) ValidNearbyTickets.Add(ticket);
             }
 
             return result.ToString();
@@ -99,14 +99,14 @@ namespace AdventOfCode.Solvers.Year2020
 
         public override string Part2()
         {
-            for(int j = 0; j < Rules.Count; j++) 
+            for (int j = 0; j < Rules.Count; j++)
             {
-                for(int i = 0; i < ValuesOnTicket; i++)
+                for (int i = 0; i < ValuesOnTicket; i++)
                 {
                     bool fieldNumberMatches = true;
-                    foreach(List<int> ticket in ValidNearbyTickets)
+                    foreach (List<int> ticket in ValidNearbyTickets)
                     {
-                        if(!((ticket[i] >= Rules[j].Range1.Item1 && ticket[i] <= Rules[j].Range1.Item2) || (ticket[i] >= Rules[j].Range2.Item1 && ticket[i] <= Rules[j].Range2.Item2)))
+                        if (!((ticket[i] >= Rules[j].Range1.Item1 && ticket[i] <= Rules[j].Range1.Item2) || (ticket[i] >= Rules[j].Range2.Item1 && ticket[i] <= Rules[j].Range2.Item2)))
                         {
                             fieldNumberMatches = false;
                             break;
@@ -132,7 +132,7 @@ namespace AdventOfCode.Solvers.Year2020
             }
 
             long result = 1;
-            foreach(Rule rule in Rules.Where(r => r.Name.StartsWith("departure")))
+            foreach (Rule rule in Rules.Where(r => r.Name.StartsWith("departure")))
             {
                 result *= MyTicket[rule.Fieldnumber];
             }

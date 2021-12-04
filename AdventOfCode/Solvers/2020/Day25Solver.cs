@@ -5,7 +5,7 @@ namespace AdventOfCode.Solvers.Year2020
 {
     class Day25Solver : AbstractSolver
     {
-        
+
         public override string Part1()
         {
             int subject = 7;
@@ -20,11 +20,11 @@ namespace AdventOfCode.Solvers.Year2020
             }
 
             int loopSize = 1;
-            while(true)
+            while (true)
             {
                 BigInteger tmp = BigInteger.ModPow(subject, loopSize, modulus);
-                if(tmp == publicKey1) return BigInteger.ModPow(publicKey2, loopSize, modulus).ToString();
-                if(tmp == publicKey2) return BigInteger.ModPow(publicKey1, loopSize, modulus).ToString();
+                if (tmp == publicKey1) return BigInteger.ModPow(publicKey2, loopSize, modulus).ToString();
+                if (tmp == publicKey2) return BigInteger.ModPow(publicKey1, loopSize, modulus).ToString();
                 loopSize++;
             }
         }

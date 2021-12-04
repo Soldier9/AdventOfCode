@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace AdventOfCode.Solvers.Year2020
 {
@@ -78,7 +77,7 @@ namespace AdventOfCode.Solvers.Year2020
                     lookup.Add(cups.Last.Value, cups.Last);
                 }
             }
-            for(int i = 10; i < 1000001; i++)
+            for (int i = 10; i < 1000001; i++)
             {
                 cups.AddLast(i);
                 lookup.Add(cups.Last.Value, cups.Last);
@@ -104,7 +103,7 @@ namespace AdventOfCode.Solvers.Year2020
                 }
 
                 LinkedListNode<long> destCup = lookup[destLabel];
-                
+
                 while (removedCups.Count > 0)
                 {
                     LinkedListNode<long> cupToInsert = removedCups.First;

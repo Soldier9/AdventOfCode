@@ -49,7 +49,7 @@ namespace AdventOfCode.Solvers.Year2020
                     string line = input.ReadLine();
 
                     var parsed = parser.Matches(line)[0].Groups;
-                    passwordsToTest.Add(new PassToTest( int.Parse(parsed[1].Value), int.Parse(parsed[2].Value), parsed[3].Value[0], parsed[4].Value));
+                    passwordsToTest.Add(new PassToTest(int.Parse(parsed[1].Value), int.Parse(parsed[2].Value), parsed[3].Value[0], parsed[4].Value));
                 }
             }
 

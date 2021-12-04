@@ -65,7 +65,7 @@ namespace AdventOfCode.Solvers.Year2019
             public int GetHashCode(Tuple<Point, BitArray> obj)
             {
                 int hash = obj.Item1.GetHashCode();
-                for (var i = 0; i < obj.Item2.Length; i++) if(obj.Item2[i]) hash += 2356345 * i;
+                for (var i = 0; i < obj.Item2.Length; i++) if (obj.Item2[i]) hash += 2356345 * i;
                 return hash;
             }
         }
@@ -127,7 +127,7 @@ namespace AdventOfCode.Solvers.Year2019
                     {
                         bestReturnedKeys = returnedKeys;
                         bestKeyInThisIteration = k;
-                        bestReturnedSteps = k.Steps + (bestReturnedKeys.Count == 0 ? 0 : bestReturnedKeys.Max(l => l.Steps)) ;
+                        bestReturnedSteps = k.Steps + (bestReturnedKeys.Count == 0 ? 0 : bestReturnedKeys.Max(l => l.Steps));
                     }
                 }
 

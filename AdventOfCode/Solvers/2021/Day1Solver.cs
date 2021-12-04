@@ -8,7 +8,7 @@ namespace AdventOfCode.Solvers.Year2021
         public override string Part1()
         {
             int result = 0;
-            using(var input = File.OpenText(InputFile))
+            using (var input = File.OpenText(InputFile))
             {
                 int oldMeasure = int.MaxValue;
                 while (!input.EndOfStream)
@@ -18,7 +18,7 @@ namespace AdventOfCode.Solvers.Year2021
                     oldMeasure = newMeasure;
                 }
             }
-            
+
             return result.ToString();
         }
 
@@ -27,7 +27,7 @@ namespace AdventOfCode.Solvers.Year2021
             List<int> measures = new List<int>();
             using (var input = File.OpenText(InputFile))
             {
-                
+
                 while (!input.EndOfStream)
                 {
                     measures.Add(int.Parse(input.ReadLine()));

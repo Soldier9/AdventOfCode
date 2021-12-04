@@ -298,7 +298,7 @@ namespace AdventOfCode.Solvers.Year2019
             foreach (KeyValuePair<Point, int> panel in panels)
             {
                 Console.SetCursorPosition(panel.Key.X + minX, panel.Key.Y + minY);
-                switch(panel.Value)
+                switch (panel.Value)
                 {
                     case 0: Console.Write(" "); break;
                     case 1: Console.Write("#"); break;

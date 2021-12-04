@@ -155,7 +155,7 @@ namespace AdventOfCode.Solvers.Year2019
             {
                 Int64 param1 = GetParam(modes[0], 1);
                 Int64 param2 = GetParam(modes[1], 2);
-                Int64 param3 = GetParam(modes[2], 3,true);
+                Int64 param3 = GetParam(modes[2], 3, true);
 
                 Program[param3] = (param1 < param2 ? 1 : 0);
             }
@@ -202,7 +202,7 @@ namespace AdventOfCode.Solvers.Year2019
         }
         public override string Part1()
         {
-            
+
             Int64[] program;
             using (var input = File.OpenText(InputFile))
             {

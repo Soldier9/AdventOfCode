@@ -14,9 +14,9 @@ namespace AdventOfCode.Solvers.Year2020
                 foreach (string group in input.ReadToEnd().Split(new[] { "\r\n\r\n" }, System.StringSplitOptions.None))
                 {
                     HashSet<char> answers = new HashSet<char>();
-                    foreach(string replies in group.Split(new[] { "\r\n" }, System.StringSplitOptions.None))
+                    foreach (string replies in group.Split(new[] { "\r\n" }, System.StringSplitOptions.None))
                     {
-                        foreach(char c in replies)
+                        foreach (char c in replies)
                         {
                             answers.Add(c);
                         }
@@ -38,7 +38,7 @@ namespace AdventOfCode.Solvers.Year2020
 
                 foreach (string group in input.ReadToEnd().Split(new[] { "\r\n\r\n" }, System.StringSplitOptions.None))
                 {
-                    Dictionary<char,int> answers = new Dictionary<char, int>();
+                    Dictionary<char, int> answers = new Dictionary<char, int>();
                     int groupMembers = 0;
 
                     foreach (string replies in group.Split(new[] { "\r\n" }, System.StringSplitOptions.None))
@@ -47,7 +47,7 @@ namespace AdventOfCode.Solvers.Year2020
                         foreach (char c in replies)
                         {
                             if (answers.ContainsKey(c)) answers[c]++;
-                            else answers.Add(c,1);
+                            else answers.Add(c, 1);
                         }
                     }
 
