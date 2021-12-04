@@ -17,7 +17,12 @@ namespace AdventOfCode.Solvers.Year2021
             public Board(int gridSize = 5)
             {
                 GridSize = gridSize;
-                for (int i = 0; i < GridSize; i++) Called.Add(new List<bool>(new bool[] { false, false, false, false, false }));
+                for (int x = 0; x < GridSize; x++)
+                {
+                    List<bool> called = new List<bool>();
+                    for (int y = 0; y < GridSize; y++) called.Add(false);
+                    Called.Add(called);
+                }
             }
 
             public bool HasWon()
