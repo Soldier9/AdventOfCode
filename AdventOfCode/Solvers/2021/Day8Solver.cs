@@ -79,7 +79,7 @@ namespace AdventOfCode.Solvers.Year2021
                     foreach (string display in line[1].Split(new char[] { ' ' }, System.StringSplitOptions.RemoveEmptyEntries))
                     {
                         ISet<char> testDigit = new HashSet<char>(display);
-                        for (int i = 0; i < 10; i++) if(testDigit.SetEquals(digits[i])) value += i.ToString();
+                        for (int i = 0; i < 10; i++) if (testDigit.SetEquals(digits[i])) value += i.ToString();
                     }
 
                     result += int.Parse(value);
