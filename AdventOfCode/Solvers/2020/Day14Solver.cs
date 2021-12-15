@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers.Year2020
 {
@@ -8,20 +6,20 @@ namespace AdventOfCode.Solvers.Year2020
     {
         public override string Part1()
         {
-            Dictionary<long, long> memory = new Dictionary<long, long>();
-            using (var input = File.OpenText(InputFile))
+            Dictionary<long, long> memory = new();
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 string mask = "";
                 while (!input.EndOfStream)
                 {
-                    string[] line = input.ReadLine().Split('=');
+                    string[] line = input.ReadLine()!.Split('=');
                     if (line[0] == "mask ")
                     {
                         mask = line[1].Trim();
                         continue;
                     }
 
-                    Regex getAddress = new Regex(@"\[(\d+)\]");
+                    Regex getAddress = new(@"\[(\d+)\]");
                     int address = int.Parse(getAddress.Match(line[0]).Groups[1].Value);
                     long value = long.Parse(line[1]);
 
@@ -44,7 +42,7 @@ namespace AdventOfCode.Solvers.Year2020
             return result.ToString();
         }
 
-        private long ModifyBit(long n, int p, long b)
+        private static long ModifyBit(long n, int p, long b)
         {
             long mask = (long)1 << p;
             return (n & ~mask) | ((b << p) & mask);
@@ -52,32 +50,34 @@ namespace AdventOfCode.Solvers.Year2020
 
         public override string Part2()
         {
-            Dictionary<long, long> memory = new Dictionary<long, long>();
-            using (var input = File.OpenText(InputFile))
+            Dictionary<long, long> memory = new();
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 string mask = "";
                 while (!input.EndOfStream)
                 {
-                    string[] line = input.ReadLine().Split('=');
+                    string[] line = input.ReadLine()!.Split('=');
                     if (line[0] == "mask ")
                     {
                         mask = line[1].Trim();
                         continue;
                     }
 
-                    Regex getAddress = new Regex(@"\[(\d+)\]");
+                    Regex getAddress = new(@"\[(\d+)\]");
                     long address = long.Parse(getAddress.Match(line[0]).Groups[1].Value);
                     long value = int.Parse(line[1]);
 
-                    List<int> floatingBits = new List<int>();
+                    List<int> floatingBits = new();
                     for (int i = 0; i < mask.Length; i++)
                     {
                         if (mask[i] == 'X') floatingBits.Add(i);
                         else if (mask[i] == '1') address = ModifyBit(address, (mask.Length - 1) - i, mask[i] - 48);
                     }
 
-                    List<long> addresses = new List<long>();
-                    addresses.Add(address);
+                    List<long> addresses = new()
+                    {
+                        address
+                    };
 
                     foreach (int pos in floatingBits)
                     {
@@ -105,7 +105,7 @@ namespace AdventOfCode.Solvers.Year2020
             return result.ToString();
         }
 
-        private long FlipBit(long n, int p)
+        private static long FlipBit(long n, int p)
         {
             return (n ^ ((long)1 << p));
         }

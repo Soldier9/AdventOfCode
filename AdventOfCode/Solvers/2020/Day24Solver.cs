@@ -1,22 +1,19 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers.Year2020
 {
     class Day24Solver : AbstractSolver
     {
-        HashSet<(double, int)> BlackTiles = new HashSet<(double, int)>();
+        HashSet<(double, int)> BlackTiles = new();
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                Regex getDirections = new Regex(@"se|sw|ne|nw|e|w");
+                Regex getDirections = new(@"se|sw|ne|nw|e|w");
                 while (!input.EndOfStream)
                 {
                     (double, int) pos = (0, 0);
-                    foreach (Match movement in getDirections.Matches(input.ReadLine()))
+                    foreach (Match movement in getDirections.Matches(input.ReadLine()!))
                     {
                         switch (movement.Value)
                         {
@@ -28,8 +25,8 @@ namespace AdventOfCode.Solvers.Year2020
                             case "w": pos = pos = (pos.Item1 - 1, pos.Item2); break;
                         }
                     }
-                    if (BlackTiles.Contains(pos)) BlackTiles.Remove(pos);
-                    else BlackTiles.Add(pos);
+                    if (BlackTiles.Contains(pos)) _ = BlackTiles.Remove(pos);
+                    else _ = BlackTiles.Add(pos);
                 }
             }
 
@@ -38,7 +35,7 @@ namespace AdventOfCode.Solvers.Year2020
 
         public override string Part2()
         {
-            List<(double, int)> neighbors = new List<(double, int)>
+            List<(double, int)> neighbors = new()
             {
                 (-0.5, -1),
                 (+0.5, -1),
@@ -50,13 +47,13 @@ namespace AdventOfCode.Solvers.Year2020
 
             for (int d = 0; d < 100; d++)
             {
-                HashSet<(double, int)> newLayout = new HashSet<(double, int)>();
-                HashSet<(double, int)> interestingTiles = new HashSet<(double, int)>();
+                HashSet<(double, int)> newLayout = new();
+                HashSet<(double, int)> interestingTiles = new();
 
                 foreach ((double, int) pos in BlackTiles)
                 {
-                    foreach ((double, int) n in neighbors.Select(n => (n.Item1 + pos.Item1, n.Item2 + pos.Item2)).ToList()) interestingTiles.Add(n);
-                    interestingTiles.Add(pos);
+                    foreach ((double, int) n in neighbors.Select(n => (n.Item1 + pos.Item1, n.Item2 + pos.Item2)).ToList()) _ = interestingTiles.Add(n);
+                    _ = interestingTiles.Add(pos);
                 }
 
                 foreach ((double, int) pos in interestingTiles)
@@ -66,11 +63,11 @@ namespace AdventOfCode.Solvers.Year2020
 
                     if (BlackTiles.Contains(pos))
                     {
-                        if (!(blackNeighbors == 0 || blackNeighbors > 2)) newLayout.Add(pos);
+                        if (!(blackNeighbors == 0 || blackNeighbors > 2)) _ = newLayout.Add(pos);
                     }
                     else
                     {
-                        if (blackNeighbors == 2) newLayout.Add(pos);
+                        if (blackNeighbors == 2) _ = newLayout.Add(pos);
                     }
                 }
 

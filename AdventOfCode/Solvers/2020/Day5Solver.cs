@@ -1,19 +1,16 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-namespace AdventOfCode.Solvers.Year2020
+﻿namespace AdventOfCode.Solvers.Year2020
 {
     class Day5Solver : AbstractSolver
     {
-        List<int> seatIDs = new List<int>();
+        readonly List<int> seatIDs = new();
         public override string Part1()
         {
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    string line = input.ReadLine();
+                    string line = input.ReadLine()!;
                     int rowMin = -1;
                     int rowMax = 127;
                     int colMin = -1;
@@ -35,13 +32,13 @@ namespace AdventOfCode.Solvers.Year2020
             }
             seatIDs.Sort();
 
-            return seatIDs[seatIDs.Count - 1].ToString();
+            return seatIDs[^1].ToString();
         }
 
         public override string Part2()
         {
-            HashSet<int> seatIDs = new HashSet<int>(this.seatIDs);
-            for (int i = 0; i < this.seatIDs[this.seatIDs.Count - 1]; i++)
+            HashSet<int> seatIDs = new(this.seatIDs);
+            for (int i = 0; i < this.seatIDs[^1]; i++)
             {
                 if (seatIDs.Contains(i)) continue;
                 if (!seatIDs.Contains(i - 1)) continue;

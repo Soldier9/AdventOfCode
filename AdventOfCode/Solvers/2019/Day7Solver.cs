@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace AdventOfCode.Solvers.Year2019
+﻿namespace AdventOfCode.Solvers.Year2019
 {
     class Day7Solver : AbstractSolver
     {
@@ -13,8 +8,8 @@ namespace AdventOfCode.Solvers.Year2019
 
             readonly int[] Program;
             int IP;
-            readonly Queue<int> InputQueue = new Queue<int>();
-            readonly Queue<int> OutputQueue = new Queue<int>();
+            readonly Queue<int> InputQueue = new();
+            readonly Queue<int> OutputQueue = new();
             int? LastOutput;
             public bool HasTerminated = false;
 
@@ -246,27 +241,27 @@ namespace AdventOfCode.Solvers.Year2019
         {
             int[] program;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                program = input.ReadLine().Split(',').Select(n => int.Parse(n)).ToArray();
+                program = input.ReadLine()!.Split(',').Select(n => int.Parse(n)).ToArray();
             }
 
             int greatestFinalResult = 0;
             foreach (int[] settings in GetCombinations())
             {
-                Queue<int> outputs = new Queue<int>();
+                Queue<int> outputs = new();
                 outputs.Enqueue(0); // First input for CPU A
 
                 for (int cpuNum = 0; cpuNum < 5; cpuNum++)
                 {
-                    IntcodeCPU cpu = new IntcodeCPU(program);
+                    IntcodeCPU cpu = new(program);
                     cpu.Input(settings[cpuNum]);
                     cpu.Input(outputs.Dequeue());
 
                     outputs = cpu.ResumeProgram();
                 }
 
-                while (outputs.Count > 1) outputs.Dequeue(); // We only want the final output!
+                while (outputs.Count > 1) _ = outputs.Dequeue(); // We only want the final output!
                 if (outputs.Peek() > greatestFinalResult) greatestFinalResult = outputs.Dequeue();
             }
 
@@ -277,9 +272,9 @@ namespace AdventOfCode.Solvers.Year2019
         {
             int[] program;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                program = input.ReadLine().Split(',').Select(n => int.Parse(n)).ToArray();
+                program = input.ReadLine()!.Split(',').Select(n => int.Parse(n)).ToArray();
             }
 
             int greatestFinalResult = 0;
@@ -293,7 +288,7 @@ namespace AdventOfCode.Solvers.Year2019
                 }
 
                 cpus[0].Input(0);
-                Queue<int> outputs = new Queue<int>();
+                Queue<int> outputs = new();
 
                 while (!cpus[4].HasTerminated)
                 {
@@ -304,7 +299,7 @@ namespace AdventOfCode.Solvers.Year2019
                     }
                 }
 
-                while (outputs.Count > 1) outputs.Dequeue(); // We only want the final output!
+                while (outputs.Count > 1) _ = outputs.Dequeue(); // We only want the final output!
                 if (outputs.Peek() > greatestFinalResult) greatestFinalResult = outputs.Dequeue();
             }
 

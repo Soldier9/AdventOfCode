@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace AdventOfCode.Solvers.Year2021
+﻿namespace AdventOfCode.Solvers.Year2021
 {
     class Day2Solver : AbstractSolver
     {
@@ -9,11 +7,11 @@ namespace AdventOfCode.Solvers.Year2021
             int horizontal = 0;
             int deepth = 0;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    string[] instr = input.ReadLine().Split(new char[] { ' ' });
+                    string[] instr = input.ReadLine()!.Split(new char[] { ' ' });
                     switch (instr[0])
                     {
                         case "forward": horizontal += int.Parse(instr[1]); break;
@@ -32,11 +30,11 @@ namespace AdventOfCode.Solvers.Year2021
             int aim = 0;
             int deepth = 0;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    string[] instr = input.ReadLine().Split(new char[] { ' ' });
+                    string[] instr = input.ReadLine()!.Split(new char[] { ' ' });
                     switch (instr[0])
                     {
                         case "forward":

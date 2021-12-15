@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace AdventOfCode.Solvers.Year2019
+﻿namespace AdventOfCode.Solvers.Year2019
 {
     class Day3Solver : AbstractSolver
     {
@@ -23,7 +18,7 @@ namespace AdventOfCode.Solvers.Year2019
                 return new Point(X, Y);
             }
 
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
                 if (obj == null || GetType() != obj.GetType())
                 {
@@ -40,23 +35,20 @@ namespace AdventOfCode.Solvers.Year2019
 
             public override int GetHashCode()
             {
-                var hashCode = 1861411795;
-                hashCode = hashCode * -1521134295 + X.GetHashCode();
-                hashCode = hashCode * -1521134295 + Y.GetHashCode();
-                return hashCode;
+                return HashCode.Combine(X, Y);
             }
         }
 
-        Dictionary<Point, int> TraceWire(string[] moves)
+        static Dictionary<Point, int> TraceWire(string[] moves)
         {
-            Dictionary<Point, int> tracedWire = new Dictionary<Point, int>();
+            Dictionary<Point, int> tracedWire = new();
 
-            Point currentPoint = new Point(0, 0);
+            Point currentPoint = new(0, 0);
             int wireLength = 0;
 
             foreach (string movement in moves)
             {
-                int moveLength = int.Parse(movement.Substring(1));
+                int moveLength = int.Parse(movement[1..]);
                 for (int i = 0; i < moveLength; i++)
                 {
                     switch (movement[0])
@@ -80,13 +72,13 @@ namespace AdventOfCode.Solvers.Year2019
             Dictionary<Point, int> wire1;
             Dictionary<Point, int> wire2;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                wire1 = TraceWire(input.ReadLine().Split(',').ToArray());
-                wire2 = TraceWire(input.ReadLine().Split(',').ToArray());
+                wire1 = TraceWire(input.ReadLine()!.Split(',').ToArray());
+                wire2 = TraceWire(input.ReadLine()!.Split(',').ToArray());
             }
 
-            var intersects = wire1.Where(p => wire2.ContainsKey(p.Key)).Select(p => new KeyValuePair<Point, int>(p.Key, p.Value + wire2[p.Key]));
+            IEnumerable<KeyValuePair<Point, int>> intersects = wire1.Where(p => wire2.ContainsKey(p.Key)).Select(p => new KeyValuePair<Point, int>(p.Key, p.Value + wire2[p.Key]));
 
             return intersects.Min(p => Math.Abs(p.Key.X) + Math.Abs(p.Key.Y)).ToString();
         }
@@ -96,16 +88,16 @@ namespace AdventOfCode.Solvers.Year2019
             Dictionary<Point, int> wire1;
             Dictionary<Point, int> wire2;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                wire1 = TraceWire(input.ReadLine().Split(',').ToArray());
-                wire2 = TraceWire(input.ReadLine().Split(',').ToArray());
+                wire1 = TraceWire(input.ReadLine()!.Split(',').ToArray());
+                wire2 = TraceWire(input.ReadLine()!.Split(',').ToArray());
             }
 
-            var intersects = wire1.Where(p => wire2.ContainsKey(p.Key)).Select(p => new KeyValuePair<Point, int>(p.Key, p.Value + wire2[p.Key]));
+            IEnumerable<KeyValuePair<Point, int>> intersects = wire1.Where(p => wire2.ContainsKey(p.Key)).Select(p => new KeyValuePair<Point, int>(p.Key, p.Value + wire2[p.Key]));
 
-            int shortestDistance = Int32.MaxValue;
-            foreach (var intersect in intersects)
+            int shortestDistance = int.MaxValue;
+            foreach (KeyValuePair<Point, int> intersect in intersects)
             {
                 if (intersect.Value < shortestDistance) shortestDistance = intersect.Value;
             }

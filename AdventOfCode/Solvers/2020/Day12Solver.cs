@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
-namespace AdventOfCode.Solvers.Year2020
+﻿namespace AdventOfCode.Solvers.Year2020
 {
     class Day12Solver : AbstractSolver
     {
-        List<(char, int)> instructions = new List<(char, int)>();
+        readonly List<(char, int)> instructions = new();
 
         char facing = 'E';
         int shipX = 0;
@@ -14,11 +10,11 @@ namespace AdventOfCode.Solvers.Year2020
 
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    string line = input.ReadLine();
+                    string line = input.ReadLine()!;
                     instructions.Add((line[0], int.Parse(line.Remove(0, 1))));
                 }
             }

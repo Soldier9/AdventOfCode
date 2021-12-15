@@ -1,20 +1,16 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace AdventOfCode.Solvers.Year2021
+﻿namespace AdventOfCode.Solvers.Year2021
 {
     class Day9Solver : AbstractSolver
     {
         public override string Part1()
         {
-            List<int[]> grid = new List<int[]>();
+            List<int[]> grid = new();
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    grid.Add(input.ReadLine().ToCharArray().Select(c => int.Parse(c.ToString())).ToArray());
+                    grid.Add(input.ReadLine()!.ToCharArray().Select(c => int.Parse(c.ToString())).ToArray());
                 }
             }
 
@@ -40,20 +36,20 @@ namespace AdventOfCode.Solvers.Year2021
 
         public override string Part2()
         {
-            List<int[]> grid = new List<int[]>();
+            List<int[]> grid = new();
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    grid.Add(input.ReadLine().ToCharArray().Select(c => int.Parse(c.ToString())).ToArray());
+                    grid.Add(input.ReadLine()!.ToCharArray().Select(c => int.Parse(c.ToString())).ToArray());
                 }
             }
 
             int result = 1;
             int height = grid.Count;
             int width = grid[0].Length;
-            List<(int, int)> lowPoints = new List<(int, int)>();
+            List<(int, int)> lowPoints = new();
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
@@ -68,12 +64,12 @@ namespace AdventOfCode.Solvers.Year2021
                 }
             }
 
-            List<HashSet<(int, int)>> basinGrids = new List<HashSet<(int, int)>>();
+            List<HashSet<(int, int)>> basinGrids = new();
             foreach ((int, int) point in lowPoints)
             {
-                HashSet<(int, int)> basinGrid = new HashSet<(int, int)>();
+                HashSet<(int, int)> basinGrid = new();
                 basinGrids.Add(basinGrid);
-                basinGrid.Add(point);
+                _ = basinGrid.Add(point);
                 AddNeighbors(grid, point, basinGrid);
             }
 
@@ -88,7 +84,7 @@ namespace AdventOfCode.Solvers.Year2021
 
         public void AddNeighbors(List<int[]> grid, (int x, int y) point, HashSet<(int, int)> basinGrid)
         {
-            List<(int x, int y)> neighbors = new List<(int, int)>();
+            List<(int x, int y)> neighbors = new();
 
             if (point.x > 0) neighbors.Add((point.x - 1, point.y));
             if (point.x < grid[0].Length - 1) neighbors.Add((point.x + 1, point.y));
@@ -100,7 +96,7 @@ namespace AdventOfCode.Solvers.Year2021
             {
                 if (!basinGrid.Contains(neighbors[i]) && grid[neighbors[i].y][neighbors[i].x] < 9)
                 {
-                    basinGrid.Add(neighbors[i]);
+                    _ = basinGrid.Add(neighbors[i]);
                     AddNeighbors(grid, neighbors[i], basinGrid);
                 }
             }

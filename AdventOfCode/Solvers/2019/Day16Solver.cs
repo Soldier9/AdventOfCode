@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
 namespace AdventOfCode.Solvers.Year2019
 {
@@ -11,24 +7,24 @@ namespace AdventOfCode.Solvers.Year2019
         public override string Part1()
         {
             List<int> signal;
-            var basePattern = new List<int> { 0, 1, 0, -1 };
+            List<int> basePattern = new() { 0, 1, 0, -1 };
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                signal = input.ReadLine().ToCharArray().Select(c => c - 48).ToList();
+                signal = input.ReadLine()!.ToCharArray().Select(c => c - 48).ToList();
             }
 
-            for (var phase = 0; phase < 100; phase++)
+            for (int phase = 0; phase < 100; phase++)
             {
-                var processedSignal = new List<int>();
-                for (var i = 0; i < signal.Count; i++)
+                List<int> processedSignal = new();
+                for (int i = 0; i < signal.Count; i++)
                 {
-                    var pattern = new List<int>();
-                    var bpEnum = basePattern.GetEnumerator();
-                    bpEnum.MoveNext();
+                    List<int> pattern = new();
+                    List<int>.Enumerator bpEnum = basePattern.GetEnumerator();
+                    _ = bpEnum.MoveNext();
                     while (pattern.Count <= signal.Count) // we need one extra because the first element is removed shortly
                     {
-                        for (var j = 0; j < i + 1; j++)
+                        for (int j = 0; j < i + 1; j++)
                         {
                             pattern.Add(bpEnum.Current);
                             if (pattern.Count > signal.Count) break;
@@ -36,13 +32,13 @@ namespace AdventOfCode.Solvers.Year2019
                         if (!bpEnum.MoveNext())
                         {
                             bpEnum = basePattern.GetEnumerator();
-                            bpEnum.MoveNext();
+                            _ = bpEnum.MoveNext();
                         }
                     }
                     pattern.RemoveAt(0);
 
                     processedSignal.Insert(i, 0);
-                    for (var n = 0; n < signal.Count; n++)
+                    for (int n = 0; n < signal.Count; n++)
                     {
                         processedSignal[i] += (signal[n] * pattern[n]);
                     }
@@ -52,8 +48,8 @@ namespace AdventOfCode.Solvers.Year2019
                 signal = processedSignal;
             }
 
-            var sb = new StringBuilder();
-            for (var i = 0; i < 8; i++) sb.Append(signal[i]);
+            StringBuilder? sb = new();
+            for (int i = 0; i < 8; i++) _ = sb.Append(signal[i]);
             return sb.ToString();
         }
 

@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers.Year2020
 {
     class Day19Solver : AbstractSolver
     {
-        List<string> Messages = new List<string>();
-        static List<Rule> Rules = new List<Rule>();
+        readonly List<string> Messages = new();
+        static readonly List<Rule> Rules = new();
         class Rule
         {
             public int Number;
-            HashSet<string> Patterns = new HashSet<string>();
-            public List<List<int>> ReferencedRules = new List<List<int>>();
+            readonly HashSet<string> Patterns = new();
+            public List<List<int>> ReferencedRules = new();
 
             public Rule(string input)
             {
@@ -25,15 +21,14 @@ namespace AdventOfCode.Solvers.Year2020
                 {
                     foreach (string item in ruleSets[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
                     {
-                        int ruleRefNum;
-                        if (int.TryParse(item, out ruleRefNum))
+                        if (int.TryParse(item, out int ruleRefNum))
                         {
                             if (ReferencedRules.Count <= i) ReferencedRules.Add(new List<int>());
                             ReferencedRules[i].Add(ruleRefNum);
                         }
                         else
                         {
-                            Patterns.Add(item.Replace("\"", ""));
+                            _ = Patterns.Add(item.Replace("\"", ""));
                         }
                     }
                 }
@@ -45,7 +40,7 @@ namespace AdventOfCode.Solvers.Year2020
                 {
                     for (int i = 0; i < ReferencedRules.Count; i++)
                     {
-                        List<string> newPatterns = new List<string>();
+                        List<string> newPatterns = new();
                         newPatterns.Add("");
                         foreach (int refRule in ReferencedRules[i])
                         {
@@ -62,7 +57,7 @@ namespace AdventOfCode.Solvers.Year2020
                         }
                         foreach (string pattern in newPatterns)
                         {
-                            Patterns.Add(pattern);
+                            _ = Patterns.Add(pattern);
                         }
                     }
                     ReferencedRules.Clear();
@@ -73,12 +68,12 @@ namespace AdventOfCode.Solvers.Year2020
 
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 bool parsingRules = true;
                 while (!input.EndOfStream)
                 {
-                    string line = input.ReadLine();
+                    string line = input.ReadLine()!;
                     if (line.Length == 0)
                     {
                         parsingRules = false;
@@ -114,7 +109,7 @@ namespace AdventOfCode.Solvers.Year2020
             {
                 regexPattern42 += pattern + "|";
             }
-            regexPattern42 = regexPattern42.Substring(0, regexPattern42.Length - 1) + ")";
+            regexPattern42 = regexPattern42[0..^1] + ")";
 
             Rule rule31 = Rules.Where(r => r.Number == 31).Single();
             string regexPattern31 = "(";
@@ -122,7 +117,7 @@ namespace AdventOfCode.Solvers.Year2020
             {
                 regexPattern31 += pattern + "|";
             }
-            regexPattern31 = regexPattern31.Substring(0, regexPattern31.Length - 1) + ")";
+            regexPattern31 = regexPattern31[0..^1] + ")";
 
             string regexPattern8 = regexPattern42 + "+";
             string regexPattern11 = regexPattern42 + "{n}" + regexPattern31 + "{n}";
@@ -134,7 +129,7 @@ namespace AdventOfCode.Solvers.Year2020
                 int quantifiersToTry = (msg.Length - 5) / 2;
                 for (int i = 1; i < quantifiersToTry; i++)
                 {
-                    Regex r0 = new Regex(regexPattern0.Replace("{n}", "{" + i.ToString() + "}"));
+                    Regex r0 = new(regexPattern0.Replace("{n}", "{" + i.ToString() + "}"));
                     if (r0.IsMatch(msg))
                     {
                         result++;

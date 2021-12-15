@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace AdventOfCode.Solvers.Year2020
 {
@@ -13,10 +12,10 @@ namespace AdventOfCode.Solvers.Year2020
             int publicKey1;
             int publicKey2;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                publicKey1 = int.Parse(input.ReadLine());
-                publicKey2 = int.Parse(input.ReadLine());
+                publicKey1 = int.Parse(input.ReadLine()!);
+                publicKey2 = int.Parse(input.ReadLine()!);
             }
 
             int loopSize = 1;

@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-namespace AdventOfCode.Solvers.Year2020
+﻿namespace AdventOfCode.Solvers.Year2020
 {
     class Day6Solver : AbstractSolver
     {
@@ -9,16 +6,16 @@ namespace AdventOfCode.Solvers.Year2020
         {
             int result = 0;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 foreach (string group in input.ReadToEnd().Split(new[] { "\r\n\r\n" }, System.StringSplitOptions.None))
                 {
-                    HashSet<char> answers = new HashSet<char>();
+                    HashSet<char> answers = new();
                     foreach (string replies in group.Split(new[] { "\r\n" }, System.StringSplitOptions.None))
                     {
                         foreach (char c in replies)
                         {
-                            answers.Add(c);
+                            _ = answers.Add(c);
                         }
                     }
 
@@ -33,12 +30,12 @@ namespace AdventOfCode.Solvers.Year2020
         {
             int result = 0;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
 
                 foreach (string group in input.ReadToEnd().Split(new[] { "\r\n\r\n" }, System.StringSplitOptions.None))
                 {
-                    Dictionary<char, int> answers = new Dictionary<char, int>();
+                    Dictionary<char, int> answers = new();
                     int groupMembers = 0;
 
                     foreach (string replies in group.Split(new[] { "\r\n" }, System.StringSplitOptions.None))
@@ -51,7 +48,7 @@ namespace AdventOfCode.Solvers.Year2020
                         }
                     }
 
-                    foreach (var answer in answers) if (answer.Value == groupMembers) result++;
+                    foreach (KeyValuePair<char, int> answer in answers) if (answer.Value == groupMembers) result++;
                 }
             }
 

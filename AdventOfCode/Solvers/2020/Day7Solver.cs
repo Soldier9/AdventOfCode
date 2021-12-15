@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
-namespace AdventOfCode.Solvers.Year2020
+﻿namespace AdventOfCode.Solvers.Year2020
 {
     class Day7Solver : AbstractSolver
     {
         class Bag
         {
-            public string color;
-            public Dictionary<string, int> content = new Dictionary<string, int>();
-            public Dictionary<Bag, int> linkedContent = new Dictionary<Bag, int>();
+            public string? color;
+            public Dictionary<string, int> content = new();
+            public Dictionary<Bag, int> linkedContent = new();
         }
 
         private bool SearchForBag(string color, Dictionary<Bag, int> content)
         {
-            foreach (var item in content)
+            foreach (KeyValuePair<Bag, int> item in content)
             {
                 if (item.Key.color == color) return true;
                 if (SearchForBag(color, item.Key.linkedContent)) return true;
@@ -23,17 +19,17 @@ namespace AdventOfCode.Solvers.Year2020
             return false;
         }
 
-        List<Bag> Bags = new List<Bag>();
+        readonly List<Bag> Bags = new();
 
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    Bag newBag = new Bag();
+                    Bag newBag = new();
 
-                    string[] line = input.ReadLine().Split(new[] { " bags contain " }, StringSplitOptions.None);
+                    string[] line = input.ReadLine()!.Split(new[] { " bags contain " }, StringSplitOptions.None);
                     newBag.color = line[0];
 
                     string[] content = line[1].Split(new[] { ", " }, StringSplitOptions.None);
@@ -57,9 +53,9 @@ namespace AdventOfCode.Solvers.Year2020
 
             foreach (Bag bag in Bags)
             {
-                foreach (var item in bag.content)
+                foreach (KeyValuePair<string, int> item in bag.content)
                 {
-                    bag.linkedContent.Add(Bags.Find(b => b.color == item.Key), item.Value);
+                    bag.linkedContent.Add(Bags.Find(b => b.color == item.Key)!, item.Value);
                 }
             }
 
@@ -74,7 +70,7 @@ namespace AdventOfCode.Solvers.Year2020
         private int CountBags(Dictionary<Bag, int> content)
         {
             int result = 0;
-            foreach (var item in content)
+            foreach (KeyValuePair<Bag, int> item in content)
             {
                 result += item.Value * (1 + CountBags(item.Key.linkedContent));
             }
@@ -83,7 +79,7 @@ namespace AdventOfCode.Solvers.Year2020
 
         public override string Part2()
         {
-            return CountBags(Bags.Find(b => b.color == "shiny gold").linkedContent).ToString();
+            return CountBags(Bags.Find(b => b.color == "shiny gold")!.linkedContent).ToString();
         }
     }
 }

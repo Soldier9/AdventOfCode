@@ -1,16 +1,13 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-namespace AdventOfCode.Solvers.Year2020
+﻿namespace AdventOfCode.Solvers.Year2020
 {
     class Day15Solver : AbstractSolver
     {
         public override string Part1()
         {
-            List<int> numbers = new List<int>();
-            using (var input = File.OpenText(InputFile))
+            List<int> numbers = new();
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                foreach (string n in input.ReadLine().Split(','))
+                foreach (string n in input.ReadLine()!.Split(','))
                 {
                     numbers.Add(int.Parse(n));
                 }
@@ -21,7 +18,7 @@ namespace AdventOfCode.Solvers.Year2020
                 bool alreadySaid = false;
                 for (int previousRound = numbers.Count - 2; previousRound > -1; previousRound--)
                 {
-                    if (numbers[previousRound] == numbers[numbers.Count - 1])
+                    if (numbers[previousRound] == numbers[^1])
                     {
                         numbers.Add(numbers.Count - 1 - previousRound);
                         alreadySaid = true;
@@ -31,18 +28,18 @@ namespace AdventOfCode.Solvers.Year2020
                 if (!alreadySaid) numbers.Add(0);
             }
 
-            return numbers[numbers.Count - 1].ToString();
+            return numbers[^1].ToString();
         }
 
         public override string Part2()
         {
-            Dictionary<int, (int, int)> numbers = new Dictionary<int, (int, int)>();
+            Dictionary<int, (int, int)> numbers = new();
             int round = 1;
             int lastNum = 0;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                foreach (string n in input.ReadLine().Split(','))
+                foreach (string n in input.ReadLine()!.Split(','))
                 {
                     lastNum = int.Parse(n);
                     numbers.Add(lastNum, (0, round));

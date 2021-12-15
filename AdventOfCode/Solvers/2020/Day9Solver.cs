@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
-namespace AdventOfCode.Solvers.Year2020
+﻿namespace AdventOfCode.Solvers.Year2020
 {
     class Day9Solver : AbstractSolver
     {
-        List<long> buffer = new List<long>();
+        readonly List<long> buffer = new();
         long firstInvalidNumber;
 
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    long nextNum = long.Parse(input.ReadLine());
+                    long nextNum = long.Parse(input.ReadLine()!);
                     if (buffer.Count >= 25)
                     {
                         bool isValid = false;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 
 namespace AdventOfCode.Solvers.Year2019
 {
@@ -12,35 +7,35 @@ namespace AdventOfCode.Solvers.Year2019
 
         class IntcodeCPU
         {
-            readonly Dictionary<Int64, Int64> Program;
-            Int64 IP;
-            Int64 RelativeBase;
+            readonly Dictionary<long, long> Program;
+            long IP;
+            long RelativeBase;
             public bool WaitingForInput = false;
 
-            readonly BlockingCollection<Int64> InputQueue;
-            readonly BlockingCollection<Int64> OutputQueue;
+            readonly BlockingCollection<long> InputQueue;
+            readonly BlockingCollection<long> OutputQueue;
 
-            public IntcodeCPU(Int64[] program, BlockingCollection<Int64> input, BlockingCollection<Int64> output)
+            public IntcodeCPU(long[] program, BlockingCollection<long> input, BlockingCollection<long> output)
             {
                 IP = 0;
                 Program = new Dictionary<long, long>();
-                for (Int64 i = 0; i < program.Length; i++) Program[i] = program[i];
+                for (long i = 0; i < program.Length; i++) Program[i] = program[i];
                 InputQueue = input;
                 OutputQueue = output;
             }
 
-            public void Input(Int64 input)
+            public void Input(long input)
             {
                 InputQueue.Add(input);
             }
 
-            public Int64 RunProgram()
+            public long RunProgram()
             {
                 while (true)
                 {
-                    Int64 opCode = Program[IP];
+                    long opCode = Program[IP];
 
-                    Int64[] modes = new Int64[3];
+                    long[] modes = new long[3];
                     modes[0] = (opCode % 1000) / 100;
                     modes[1] = (opCode % 10000) / 1000;
                     modes[2] = (opCode % 100000) / 10000;
@@ -91,42 +86,42 @@ namespace AdventOfCode.Solvers.Year2019
                 }
             }
 
-            void AddInstr(Int64[] modes)
+            void AddInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
-                Int64 param3 = GetParam(modes[2], 3, true);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
+                long param3 = GetParam(modes[2], 3, true);
 
                 Program[param3] = param1 + param2;
             }
 
-            void MultInstr(Int64[] modes)
+            void MultInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
-                Int64 param3 = GetParam(modes[2], 3, true);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
+                long param3 = GetParam(modes[2], 3, true);
 
                 Program[param3] = param1 * param2;
             }
 
-            void InputInstr(Int64[] modes)
+            void InputInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1, true);
+                long param1 = GetParam(modes[0], 1, true);
                 if (InputQueue.Count == 0) WaitingForInput = true;
                 Program[param1] = InputQueue.Take();
                 WaitingForInput = false;
             }
 
-            void OutputInstr(Int64[] modes)
+            void OutputInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
+                long param1 = GetParam(modes[0], 1);
                 OutputQueue.Add(param1);
             }
 
-            void JumpIfTrueInstr(Int64[] modes)
+            void JumpIfTrueInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
 
                 if (param1 != 0)
                 {
@@ -137,10 +132,10 @@ namespace AdventOfCode.Solvers.Year2019
                     IP += 3;
                 }
             }
-            void JumpIfFalseInstr(Int64[] modes)
+            void JumpIfFalseInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
 
                 if (param1 == 0)
                 {
@@ -152,31 +147,31 @@ namespace AdventOfCode.Solvers.Year2019
                 }
             }
 
-            void LessThanInstr(Int64[] modes)
+            void LessThanInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
-                Int64 param3 = GetParam(modes[2], 3, true);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
+                long param3 = GetParam(modes[2], 3, true);
 
                 Program[param3] = (param1 < param2 ? 1 : 0);
             }
 
-            void EqualsInstr(Int64[] modes)
+            void EqualsInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
-                Int64 param3 = GetParam(modes[2], 3, true);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
+                long param3 = GetParam(modes[2], 3, true);
 
                 Program[param3] = (param1 == param2 ? 1 : 0);
             }
 
-            void ModifyRelativeBaseInstr(Int64[] modes)
+            void ModifyRelativeBaseInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
+                long param1 = GetParam(modes[0], 1);
                 RelativeBase += param1;
             }
 
-            Int64 GetParam(Int64 mode, int paramNum, bool isTargetParam = false)
+            long GetParam(long mode, int paramNum, bool isTargetParam = false)
             {
                 switch (mode)
                 {
@@ -196,9 +191,9 @@ namespace AdventOfCode.Solvers.Year2019
                 throw new NotImplementedException();
             }
 
-            public static IEnumerable<Int64> GetIntCodeInput(string input)
+            public static IEnumerable<long> GetIntCodeInput(string input)
             {
-                foreach (var c in input)
+                foreach (char c in input)
                 {
                     yield return Convert.ToInt64(c);
                 }
@@ -207,22 +202,22 @@ namespace AdventOfCode.Solvers.Year2019
 
         public override string Part1()
         {
-            Int64[] program;
-            using (var input = File.OpenText(InputFile))
+            long[] program;
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                program = input.ReadLine().Split(',').Select(n => Int64.Parse(n)).ToArray();
+                program = input.ReadLine()!.Split(',').Select(n => long.Parse(n)).ToArray();
             }
-            BlockingCollection<Int64> outputQueue = new BlockingCollection<Int64>();
-            BlockingCollection<Int64> inputQueue = new BlockingCollection<Int64>();
+            BlockingCollection<long> outputQueue = new();
+            BlockingCollection<long> inputQueue = new();
 
-            IntcodeCPU cpu = new IntcodeCPU(program, inputQueue, outputQueue);
-            Task<Int64> cpuTask = new Task<Int64>(() =>
+            IntcodeCPU cpu = new(program, inputQueue, outputQueue);
+            Task<long> cpuTask = new(() =>
             {
                 return cpu.RunProgram();
             });
             cpuTask.Start();
 
-            List<string> springScript = new List<string>();
+            List<string> springScript = new();
             springScript.Add("NOT C J\n");
             springScript.Add("NOT B T\n");
             springScript.Add("OR T J\n");
@@ -230,14 +225,14 @@ namespace AdventOfCode.Solvers.Year2019
             springScript.Add("OR T J\n");
             springScript.Add("AND D J\n");
             springScript.Add("WALK\n");
-            foreach (var line in springScript) foreach (var c in IntcodeCPU.GetIntCodeInput(line)) inputQueue.Add(c);
+            foreach (string line in springScript) foreach (long c in IntcodeCPU.GetIntCodeInput(line)) inputQueue.Add(c);
 
-            Int64 result = 0;
+            long result = 0;
             while (!cpuTask.IsCompleted || outputQueue.Count > 0)
             {
                 while (outputQueue.Count > 0)
                 {
-                    var output = outputQueue.Take();
+                    long output = outputQueue.Take();
                     if (output > 127)
                     {
                         result = output;
@@ -253,22 +248,22 @@ namespace AdventOfCode.Solvers.Year2019
 
         public override string Part2()
         {
-            Int64[] program;
-            using (var input = File.OpenText(InputFile))
+            long[] program;
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                program = input.ReadLine().Split(',').Select(n => Int64.Parse(n)).ToArray();
+                program = input.ReadLine()!.Split(',').Select(n => long.Parse(n)).ToArray();
             }
-            BlockingCollection<Int64> outputQueue = new BlockingCollection<Int64>();
-            BlockingCollection<Int64> inputQueue = new BlockingCollection<Int64>();
+            BlockingCollection<long> outputQueue = new();
+            BlockingCollection<long> inputQueue = new();
 
-            IntcodeCPU cpu = new IntcodeCPU(program, inputQueue, outputQueue);
-            Task<Int64> cpuTask = new Task<Int64>(() =>
+            IntcodeCPU cpu = new(program, inputQueue, outputQueue);
+            Task<long> cpuTask = new(() =>
             {
                 return cpu.RunProgram();
             });
             cpuTask.Start();
 
-            List<string> springScript = new List<string>();
+            List<string> springScript = new();
             springScript.Add("NOT C J\n");
             springScript.Add("NOT B T\n");
             springScript.Add("OR T J\n");
@@ -282,14 +277,14 @@ namespace AdventOfCode.Solvers.Year2019
             springScript.Add("AND T J\n");
 
             springScript.Add("RUN\n");
-            foreach (var line in springScript) foreach (var c in IntcodeCPU.GetIntCodeInput(line)) inputQueue.Add(c);
+            foreach (string line in springScript) foreach (long c in IntcodeCPU.GetIntCodeInput(line)) inputQueue.Add(c);
 
-            Int64 result = 0;
+            long result = 0;
             while (!cpuTask.IsCompleted || outputQueue.Count > 0)
             {
                 while (outputQueue.Count > 0)
                 {
-                    var output = outputQueue.Take();
+                    long output = outputQueue.Take();
                     if (output > 127)
                     {
                         result = output;

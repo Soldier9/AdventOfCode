@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace AdventOfCode
 {
@@ -13,7 +11,7 @@ namespace AdventOfCode
 
         protected AbstractSolver()
         {
-            Year = Convert.ToInt32(Regex.Match(GetType().FullName, @"(?<=AdventOfCode\.Solvers\.Year)\d+(?=\.Day)").Value);
+            Year = Convert.ToInt32(Regex.Match(GetType().FullName!, @"(?<=AdventOfCode\.Solvers\.Year)\d+(?=\.Day)").Value);
             Day = Convert.ToInt32(Regex.Match(GetType().Name, @"(?<=Day)\d+(?=Solver)").Value);
             InputFile = Path.Combine(Directory.GetCurrentDirectory(), @"Inputs\" + Year + @"\Day" + Day + ".txt");
         }

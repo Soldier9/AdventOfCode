@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace AdventOfCode.Solvers.Year2021
+﻿namespace AdventOfCode.Solvers.Year2021
 {
     class Day6Solver : AbstractSolver
     {
         public override string Part1()
         {
-            List<int> fish = new List<int>();
+            List<int> fish = new();
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                fish = new List<int>(input.ReadLine().Split(',').Select(f => int.Parse(f)));
+                fish = new List<int>(input.ReadLine()!.Split(',').Select(f => int.Parse(f)));
             }
 
             for (int i = 0; i < 80; i++)
@@ -30,22 +25,22 @@ namespace AdventOfCode.Solvers.Year2021
                 }
             }
 
-            return fish.Count().ToString();
+            return fish.Count.ToString();
         }
 
         public override string Part2()
         {
-            List<Int64[]> fish = new List<Int64[]>();
+            List<long[]> fish = new();
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                var tmpFish = new List<int>(input.ReadLine().Split(',').Select(f => int.Parse(f)));
+                List<int> tmpFish = new(input.ReadLine()!.Split(',').Select(f => int.Parse(f)));
                 for (int n = 0; n < 9; n++)
                 {
-                    fish.Add(new Int64[2] { n, 0 });
+                    fish.Add(new long[2] { n, 0 });
                 }
 
-                foreach (var f in tmpFish)
+                foreach (int f in tmpFish)
                 {
                     fish[f][1]++;
                 }
@@ -67,8 +62,8 @@ namespace AdventOfCode.Solvers.Year2021
                 fish[group0Index][0] = 8;
             }
 
-            Int64 result = 0;
-            foreach (var group in fish) result += group[1];
+            long result = 0;
+            foreach (long[] group in fish) result += group[1];
 
             return result.ToString();
         }

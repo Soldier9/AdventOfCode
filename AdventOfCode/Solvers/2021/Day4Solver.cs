@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace AdventOfCode.Solvers.Year2021
+﻿namespace AdventOfCode.Solvers.Year2021
 {
     class Day4Solver : AbstractSolver
     {
@@ -11,7 +6,7 @@ namespace AdventOfCode.Solvers.Year2021
         class Board : List<List<int>>
         {
             private readonly int GridSize;
-            private readonly List<List<bool>> Called = new List<List<bool>>();
+            private readonly List<List<bool>> Called = new();
             private bool Done = false;
 
             public Board(int gridSize = 5)
@@ -19,7 +14,7 @@ namespace AdventOfCode.Solvers.Year2021
                 GridSize = gridSize;
                 for (int x = 0; x < GridSize; x++)
                 {
-                    List<bool> called = new List<bool>();
+                    List<bool> called = new();
                     for (int y = 0; y < GridSize; y++) called.Add(false);
                     Called.Add(called);
                 }
@@ -30,15 +25,22 @@ namespace AdventOfCode.Solvers.Year2021
                 if (Done) return Done;
 
                 for (int x = 0; x < GridSize; x++)
+                {
                     for (int y = 0; y < GridSize; y++)
+                    {
                         if (!Called[x][y]) break;
                         else if (y == GridSize - 1) return Done = true;
-
+                    }
+                }
 
                 for (int x = 0; x < GridSize; x++)
+                {
                     for (int y = 0; y < GridSize; y++)
+                    {
                         if (!Called[y][x]) break;
                         else if (y == GridSize - 1) return Done = true;
+                    }
+                }
 
                 return false;
             }
@@ -46,12 +48,16 @@ namespace AdventOfCode.Solvers.Year2021
             public void NumberCalled(int num)
             {
                 for (int x = 0; x < GridSize; x++)
+                {
                     for (int y = 0; y < GridSize; y++)
+                    {
                         if (this[x][y] == num)
                         {
                             Called[x][y] = true;
                             return;
                         }
+                    }
+                }
             }
 
             public int WinningScore(int num)
@@ -59,8 +65,10 @@ namespace AdventOfCode.Solvers.Year2021
                 int result = 0;
 
                 for (int x = 0; x < GridSize; x++)
+                {
                     for (int y = 0; y < GridSize; y++)
                         if (!Called[x][y]) result += this[x][y];
+                }
 
                 return result * num;
             }
@@ -73,19 +81,19 @@ namespace AdventOfCode.Solvers.Year2021
             }
         }
 
-        List<int> Numbers = new List<int>();
-        List<Board> Boards = new List<Board>();
+        List<int> Numbers = new();
+        readonly List<Board> Boards = new();
 
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                Numbers = new List<int>(input.ReadLine().Split(',').Select(n => int.Parse(n)));
+                Numbers = new List<int>(input.ReadLine()!.Split(',').Select(n => int.Parse(n)));
 
-                Board nextBoard = null;
+                Board? nextBoard = null;
                 while (!input.EndOfStream)
                 {
-                    string line = input.ReadLine();
+                    string line = input.ReadLine()!;
                     if (line.Length == 0)
                     {
                         if (nextBoard != null) Boards.Add(nextBoard);
@@ -93,9 +101,9 @@ namespace AdventOfCode.Solvers.Year2021
                         continue;
                     }
 
-                    nextBoard.Add(new List<int>(line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(n => int.Parse(n))));
+                    nextBoard!.Add(new List<int>(line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(n => int.Parse(n))));
                 }
-                Boards.Add(nextBoard);
+                Boards.Add(nextBoard!);
             }
 
             foreach (int num in Numbers)
@@ -124,7 +132,7 @@ namespace AdventOfCode.Solvers.Year2021
                     board.NumberCalled(num);
                     if (board.HasWon() && Boards.Count == 1) return board.WinningScore(num).ToString();
                 }
-                Boards.RemoveAll(b => b.HasWon());
+                _ = Boards.RemoveAll(b => b.HasWon());
             }
 
             return "Not all boards will win?!".ToString();

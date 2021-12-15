@@ -1,19 +1,16 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-namespace AdventOfCode.Solvers.Year2021
+﻿namespace AdventOfCode.Solvers.Year2021
 {
     class Day1Solver : AbstractSolver
     {
         public override string Part1()
         {
             int result = 0;
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 int oldMeasure = int.MaxValue;
                 while (!input.EndOfStream)
                 {
-                    int newMeasure = int.Parse(input.ReadLine());
+                    int newMeasure = int.Parse(input.ReadLine()!);
                     if (newMeasure > oldMeasure) result++;
                     oldMeasure = newMeasure;
                 }
@@ -24,13 +21,13 @@ namespace AdventOfCode.Solvers.Year2021
 
         public override string Part2()
         {
-            List<int> measures = new List<int>();
-            using (var input = File.OpenText(InputFile))
+            List<int> measures = new();
+            using (StreamReader input = File.OpenText(InputFile))
             {
 
                 while (!input.EndOfStream)
                 {
-                    measures.Add(int.Parse(input.ReadLine()));
+                    measures.Add(int.Parse(input.ReadLine()!));
                 }
             }
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
+﻿using System.Collections.Concurrent;
 
 namespace AdventOfCode.Solvers.Year2019
 {
@@ -11,25 +6,25 @@ namespace AdventOfCode.Solvers.Year2019
     {
         class IntcodeCPU
         {
-            readonly Dictionary<Int64, Int64> Program;
-            Int64 IP;
-            Int64 RelativeBase;
+            readonly Dictionary<long, long> Program;
+            long IP;
+            long RelativeBase;
 
-            readonly BlockingCollection<Int64> InputQueue;
-            readonly BlockingCollection<Int64> OutputQueue;
-            private readonly Queue<Int64> NicOutputQueue = new Queue<Int64>();
+            readonly BlockingCollection<long> InputQueue;
+            readonly BlockingCollection<long> OutputQueue;
+            private readonly Queue<long> NicOutputQueue = new();
             public long failedNicReads = 0;
 
-            public IntcodeCPU(Int64[] program, BlockingCollection<Int64> input, BlockingCollection<Int64> output)
+            public IntcodeCPU(long[] program, BlockingCollection<long> input, BlockingCollection<long> output)
             {
                 IP = 0;
                 Program = new Dictionary<long, long>();
-                for (Int64 i = 0; i < program.Length; i++) Program[i] = program[i];
+                for (long i = 0; i < program.Length; i++) Program[i] = program[i];
                 InputQueue = input;
                 OutputQueue = output;
             }
 
-            public void Input(Int64 input)
+            public void Input(long input)
             {
                 InputQueue.Add(input);
             }
@@ -38,9 +33,9 @@ namespace AdventOfCode.Solvers.Year2019
             {
                 while (true)
                 {
-                    Int64 opCode = Program[IP];
+                    long opCode = Program[IP];
 
-                    Int64[] modes = new Int64[3];
+                    long[] modes = new long[3];
                     modes[0] = (opCode % 1000) / 100;
                     modes[1] = (opCode % 10000) / 1000;
                     modes[2] = (opCode % 100000) / 10000;
@@ -91,27 +86,27 @@ namespace AdventOfCode.Solvers.Year2019
                 }
             }
 
-            void AddInstr(Int64[] modes)
+            void AddInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
-                Int64 param3 = GetParam(modes[2], 3, true);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
+                long param3 = GetParam(modes[2], 3, true);
 
                 Program[param3] = param1 + param2;
             }
 
-            void MultInstr(Int64[] modes)
+            void MultInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
-                Int64 param3 = GetParam(modes[2], 3, true);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
+                long param3 = GetParam(modes[2], 3, true);
 
                 Program[param3] = param1 * param2;
             }
 
-            void InputInstr(Int64[] modes)
+            void InputInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1, true);
+                long param1 = GetParam(modes[0], 1, true);
                 if (InputQueue.Count == 0)
                 {
                     failedNicReads++;
@@ -124,9 +119,9 @@ namespace AdventOfCode.Solvers.Year2019
                 }
             }
 
-            void OutputInstr(Int64[] modes)
+            void OutputInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
+                long param1 = GetParam(modes[0], 1);
                 NicOutputQueue.Enqueue(param1);
                 if (NicOutputQueue.Count == 3)
                 {
@@ -135,10 +130,10 @@ namespace AdventOfCode.Solvers.Year2019
                 failedNicReads = 0;
             }
 
-            void JumpIfTrueInstr(Int64[] modes)
+            void JumpIfTrueInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
 
                 if (param1 != 0)
                 {
@@ -149,10 +144,10 @@ namespace AdventOfCode.Solvers.Year2019
                     IP += 3;
                 }
             }
-            void JumpIfFalseInstr(Int64[] modes)
+            void JumpIfFalseInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
 
                 if (param1 == 0)
                 {
@@ -164,31 +159,31 @@ namespace AdventOfCode.Solvers.Year2019
                 }
             }
 
-            void LessThanInstr(Int64[] modes)
+            void LessThanInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
-                Int64 param3 = GetParam(modes[2], 3, true);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
+                long param3 = GetParam(modes[2], 3, true);
 
                 Program[param3] = (param1 < param2 ? 1 : 0);
             }
 
-            void EqualsInstr(Int64[] modes)
+            void EqualsInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
-                Int64 param3 = GetParam(modes[2], 3, true);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
+                long param3 = GetParam(modes[2], 3, true);
 
                 Program[param3] = (param1 == param2 ? 1 : 0);
             }
 
-            void ModifyRelativeBaseInstr(Int64[] modes)
+            void ModifyRelativeBaseInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
+                long param1 = GetParam(modes[0], 1);
                 RelativeBase += param1;
             }
 
-            Int64 GetParam(Int64 mode, int paramNum, bool isTargetParam = false)
+            long GetParam(long mode, int paramNum, bool isTargetParam = false)
             {
                 switch (mode)
                 {
@@ -208,9 +203,9 @@ namespace AdventOfCode.Solvers.Year2019
                 throw new NotImplementedException();
             }
 
-            public static IEnumerable<Int64> GetIntCodeInput(string input)
+            public static IEnumerable<long> GetIntCodeInput(string input)
             {
-                foreach (var c in input)
+                foreach (char c in input)
                 {
                     yield return Convert.ToInt64(c);
                 }
@@ -222,8 +217,8 @@ namespace AdventOfCode.Solvers.Year2019
             public int Address;
             public IntcodeCPU CPU;
             public Thread CPUThread;
-            public BlockingCollection<Int64> OutputQueue;
-            public BlockingCollection<Int64> InputQueue;
+            public BlockingCollection<long> OutputQueue;
+            public BlockingCollection<long> InputQueue;
 
             public NIC(int address, IntcodeCPU cpu, Thread cpuThread, BlockingCollection<long> outputQueue, BlockingCollection<long> inputQueue)
             {
@@ -237,39 +232,39 @@ namespace AdventOfCode.Solvers.Year2019
 
         public override string Part1()
         {
-            Int64[] program;
-            using (var input = File.OpenText(InputFile))
+            long[] program;
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                program = input.ReadLine().Split(',').Select(n => Int64.Parse(n)).ToArray();
+                program = input.ReadLine()!.Split(',').Select(n => long.Parse(n)).ToArray();
             }
 
-            var theSwitch = new List<NIC>();
+            List<NIC> theSwitch = new();
 
-            for (var i = 0; i < 50; i++)
+            for (int i = 0; i < 50; i++)
             {
-                var outputQueue = new BlockingCollection<Int64>();
-                var inputQueue = new BlockingCollection<Int64>
+                BlockingCollection<long> outputQueue = new();
+                BlockingCollection<long> inputQueue = new()
                 {
                     i
                 };
-                var cpu = new IntcodeCPU(program, inputQueue, outputQueue);
-                var cpuThread = new Thread(new ThreadStart(cpu.RunProgram));
+                IntcodeCPU cpu = new(program, inputQueue, outputQueue);
+                Thread cpuThread = new(new ThreadStart(cpu.RunProgram));
                 cpuThread.Start();
                 theSwitch.Add(new NIC(i, cpu, cpuThread, outputQueue, inputQueue));
             }
 
             while (true)
             {
-                foreach (var nic in theSwitch)
+                foreach (NIC nic in theSwitch)
                 {
                     if (nic.OutputQueue.Count > 2)
                     {
-                        var address = Convert.ToInt32(nic.OutputQueue.Take());
-                        var x = nic.OutputQueue.Take();
-                        var y = nic.OutputQueue.Take();
+                        int address = Convert.ToInt32(nic.OutputQueue.Take());
+                        long x = nic.OutputQueue.Take();
+                        long y = nic.OutputQueue.Take();
                         if (address == 255)
                         {
-                            foreach (var nic2 in theSwitch) nic2.CPUThread.Abort();
+                            foreach (NIC nic2 in theSwitch) throw new PlatformNotSupportedException(); //nic2.CPUThread.Abort(); FIXTHIS
                             return y.ToString();
                         }
                         theSwitch[address].InputQueue.Add(x);
@@ -283,41 +278,41 @@ namespace AdventOfCode.Solvers.Year2019
 
         public override string Part2()
         {
-            Int64[] program;
-            using (var input = File.OpenText(InputFile))
+            long[] program;
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                program = input.ReadLine().Split(',').Select(n => Int64.Parse(n)).ToArray();
+                program = input.ReadLine()!.Split(',').Select(n => long.Parse(n)).ToArray();
             }
 
-            var theSwitch = new List<NIC>();
+            List<NIC> theSwitch = new();
 
-            for (var i = 0; i < 50; i++)
+            for (int i = 0; i < 50; i++)
             {
-                var outputQueue = new BlockingCollection<Int64>();
-                var inputQueue = new BlockingCollection<Int64>
+                BlockingCollection<long> outputQueue = new();
+                BlockingCollection<long> inputQueue = new()
                 {
                     i
                 };
-                var cpu = new IntcodeCPU(program, inputQueue, outputQueue);
-                var cpuThread = new Thread(new ThreadStart(cpu.RunProgram));
+                IntcodeCPU cpu = new(program, inputQueue, outputQueue);
+                Thread cpuThread = new(new ThreadStart(cpu.RunProgram));
                 cpuThread.Start();
                 theSwitch.Add(new NIC(i, cpu, cpuThread, outputQueue, inputQueue));
             }
 
-            Int64 NATx = 0;
-            Int64 NATy = 0;
-            Int64 lastSentNATy = -1;
+            long NATx = 0;
+            long NATy = 0;
+            long lastSentNATy = -1;
 
             while (true)
             {
                 bool allIdle = true;
-                foreach (var nic in theSwitch)
+                foreach (NIC nic in theSwitch)
                 {
                     if (nic.OutputQueue.Count > 2)
                     {
-                        var address = Convert.ToInt32(nic.OutputQueue.Take());
-                        var x = nic.OutputQueue.Take();
-                        var y = nic.OutputQueue.Take();
+                        int address = Convert.ToInt32(nic.OutputQueue.Take());
+                        long x = nic.OutputQueue.Take();
+                        long y = nic.OutputQueue.Take();
                         if (address == 255)
                         {
                             NATx = x;
@@ -340,7 +335,7 @@ namespace AdventOfCode.Solvers.Year2019
                     Console.WriteLine("{0} -> {1}: {2}, {3}", 255, 0, NATx, NATy);
                     if (lastSentNATy == NATy)
                     {
-                        foreach (var nic in theSwitch) nic.CPUThread.Abort();
+                        foreach (NIC nic in theSwitch) throw new PlatformNotSupportedException(); //nic.CPUThread.Abort();
                         return NATy.ToString();
                     }
                     lastSentNATy = NATy;

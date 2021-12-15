@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-namespace AdventOfCode.Solvers.Year2020
+﻿namespace AdventOfCode.Solvers.Year2020
 {
     class Day8Solver : AbstractSolver
     {
@@ -12,7 +9,7 @@ namespace AdventOfCode.Solvers.Year2020
         }
         class CPU
         {
-            List<Instruction> memory;
+            readonly List<Instruction> memory;
 
             private int programCounter;
             private int accumulator;
@@ -27,12 +24,12 @@ namespace AdventOfCode.Solvers.Year2020
 
             public int Start(bool returnAccumulatorOnInfiniteLoop = false)
             {
-                HashSet<int> executedLocations = new HashSet<int>();
+                HashSet<int> executedLocations = new();
                 while (true)
                 {
                     if (programCounter == memory.Count) return accumulator;
                     if (executedLocations.Contains(programCounter)) break;
-                    executedLocations.Add(programCounter);
+                    _ = executedLocations.Add(programCounter);
 
                     switch (memory[programCounter].opcode)
                     {
@@ -53,26 +50,26 @@ namespace AdventOfCode.Solvers.Year2020
             }
         }
 
-        List<Instruction> program = new List<Instruction>();
+        readonly List<Instruction> program = new();
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    string[] line = input.ReadLine().Split(' ');
+                    string[] line = input.ReadLine()!.Split(' ');
                     program.Add(new Instruction { opcode = line[0], arg = int.Parse(line[1]) });
                 }
             }
 
-            CPU cpu = new CPU(program);
+            CPU cpu = new(program);
             return cpu.Start(true).ToString();
         }
 
         public override string Part2()
         {
-            List<int> nops = new List<int>();
-            List<int> jmps = new List<int>();
+            List<int> nops = new();
+            List<int> jmps = new();
 
             for (int i = 0; i < program.Count; i++)
             {
@@ -82,20 +79,20 @@ namespace AdventOfCode.Solvers.Year2020
 
             foreach (int location in nops)
             {
-                List<Instruction> modifiedProgram = new List<Instruction>(program);
+                List<Instruction> modifiedProgram = new(program);
                 modifiedProgram[location] = new Instruction { opcode = "jmp", arg = program[location].arg };
 
-                CPU cpu = new CPU(modifiedProgram);
+                CPU cpu = new(modifiedProgram);
                 int result = cpu.Start();
                 if (result != -1) return result.ToString();
             }
 
             foreach (int location in jmps)
             {
-                List<Instruction> modifiedProgram = new List<Instruction>(program);
+                List<Instruction> modifiedProgram = new(program);
                 modifiedProgram[location] = new Instruction { opcode = "nop", arg = program[location].arg };
 
-                CPU cpu = new CPU(modifiedProgram);
+                CPU cpu = new(modifiedProgram);
                 int result = cpu.Start();
                 if (result != -1) return result.ToString();
             }

@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace AdventOfCode.Solvers.Year2021
+﻿namespace AdventOfCode.Solvers.Year2021
 {
     class Day11Solver : AbstractSolver
     {
@@ -24,7 +20,7 @@ namespace AdventOfCode.Solvers.Year2021
 
             public List<Octopus> GetNeighbors()
             {
-                List<Octopus> neighbors = new List<Octopus>();
+                List<Octopus> neighbors = new();
 
                 if (X > 0 && Y > 0) neighbors.Add(Octopus.Grid[X - 1, Y - 1]);
                 if (Y > 0) neighbors.Add(Octopus.Grid[X, Y - 1]);
@@ -42,7 +38,7 @@ namespace AdventOfCode.Solvers.Year2021
 
             public static List<Octopus> GetAllReadyToFlash()
             {
-                List<Octopus> readyToFlash = new List<Octopus>();
+                List<Octopus> readyToFlash = new();
                 for (int x = 0; x < 10; x++)
                 {
                     for (int y = 0; y < 10; y++)
@@ -56,16 +52,16 @@ namespace AdventOfCode.Solvers.Year2021
 
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 int tmpX = 0;
                 while (!input.EndOfStream)
                 {
-                    string line = input.ReadLine();
+                    string line = input.ReadLine()!;
                     int tmpY = 0;
                     foreach (char c in line)
                     {
-                        new Octopus(tmpX, tmpY, int.Parse(c.ToString()));
+                        _ = new Octopus(tmpX, tmpY, int.Parse(c.ToString()));
                         tmpY++;
                     }
                     tmpX++;
@@ -100,16 +96,16 @@ namespace AdventOfCode.Solvers.Year2021
 
         public override string Part2()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 int tmpX = 0;
                 while (!input.EndOfStream)
                 {
-                    string line = input.ReadLine();
+                    string line = input.ReadLine()!;
                     int tmpY = 0;
                     foreach (char c in line)
                     {
-                        new Octopus(tmpX, tmpY, int.Parse(c.ToString()));
+                        _ = new Octopus(tmpX, tmpY, int.Parse(c.ToString()));
                         tmpY++;
                     }
                     tmpX++;

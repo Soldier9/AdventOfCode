@@ -1,22 +1,19 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-namespace AdventOfCode.Solvers.Year2020
+﻿namespace AdventOfCode.Solvers.Year2020
 {
     class Day11Solver : AbstractSolver
     {
-        Dictionary<(int, int), char> seats = new Dictionary<(int, int), char>();
-        List<(int, int)> directions = new List<(int, int)>();
+        readonly Dictionary<(int, int), char> seats = new();
+        readonly List<(int, int)> directions = new();
         int rows, columns;
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 int y = 0;
                 while (!input.EndOfStream)
                 {
                     int x = -1;
-                    foreach (char position in input.ReadLine())
+                    foreach (char position in input.ReadLine()!)
                     {
                         x++;
                         if (position == '.') continue;
@@ -37,11 +34,11 @@ namespace AdventOfCode.Solvers.Year2020
             directions.Add((1, 1));
 
             bool somethingChanged = true;
-            Dictionary<(int, int), char> currentSeats = new Dictionary<(int, int), char>(seats);
+            Dictionary<(int, int), char> currentSeats = new(seats);
             while (somethingChanged)
             {
                 somethingChanged = false;
-                Dictionary<(int, int), char> nextSeats = new Dictionary<(int, int), char>();
+                Dictionary<(int, int), char> nextSeats = new();
                 foreach ((int x, int y) in currentSeats.Keys)
                 {
                     int adjacentOccupied = 0;
@@ -77,12 +74,12 @@ namespace AdventOfCode.Solvers.Year2020
         public override string Part2()
         {
             bool somethingChanged = true;
-            Dictionary<(int, int), char> currentSeats = new Dictionary<(int, int), char>(seats);
+            Dictionary<(int, int), char> currentSeats = new(seats);
 
             while (somethingChanged)
             {
                 somethingChanged = false;
-                Dictionary<(int, int), char> nextSeats = new Dictionary<(int, int), char>();
+                Dictionary<(int, int), char> nextSeats = new();
                 foreach ((int x, int y) in currentSeats.Keys)
                 {
                     int adjacentOccupied = 0;
@@ -97,7 +94,10 @@ namespace AdventOfCode.Solvers.Year2020
                                 if (currentSeats[(lookX, lookY)] == '#') adjacentOccupied++;
                                 break;
                             }
-                            else if (lookX < 0 || lookX >= columns || lookY < 0 || lookY >= rows) break;
+                            else if (lookX < 0 || lookX >= columns || lookY < 0 || lookY >= rows)
+                            {
+                                break;
+                            }
                         }
                     }
 

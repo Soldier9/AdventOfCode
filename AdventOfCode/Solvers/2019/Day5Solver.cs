@@ -1,14 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-
-namespace AdventOfCode.Solvers.Year2019
+﻿namespace AdventOfCode.Solvers.Year2019
 {
     class Day5Solver : AbstractSolver
     {
         class IntcodeCPU
         {
-            int[] Program;
+            int[]? Program;
             int IP;
 
             public int RunProgram(int[] program)
@@ -67,7 +63,7 @@ namespace AdventOfCode.Solvers.Year2019
 
             void Add(int[] modes)
             {
-                int param1 = (modes[0] == 0 ? Program[Program[IP + 1]] : Program[IP + 1]);
+                int param1 = (modes[0] == 0 ? Program![Program[IP + 1]] : Program![IP + 1]);
                 int param2 = (modes[1] == 0 ? Program[Program[IP + 2]] : Program[IP + 2]);
                 int param3 = Program[IP + 3];
 
@@ -76,7 +72,7 @@ namespace AdventOfCode.Solvers.Year2019
 
             void Multiply(int[] modes)
             {
-                int param1 = (modes[0] == 0 ? Program[Program[IP + 1]] : Program[IP + 1]);
+                int param1 = (modes[0] == 0 ? Program![Program[IP + 1]] : Program![IP + 1]);
                 int param2 = (modes[1] == 0 ? Program[Program[IP + 2]] : Program[IP + 2]);
                 int param3 = Program[IP + 3];
 
@@ -85,15 +81,15 @@ namespace AdventOfCode.Solvers.Year2019
 
             void Input()
             {
-                int param1 = Program[IP + 1]; // Always position mode
+                int param1 = Program![IP + 1]; // Always position mode
 
                 Console.Write("\r\nWaiting for input: ");
-                Program[param1] = int.Parse(Console.ReadLine());
+                Program[param1] = int.Parse(Console.ReadLine()!);
             }
 
             void Output(int[] modes)
             {
-                int param1 = (modes[0] == 0 ? Program[Program[IP + 1]] : Program[IP + 1]);
+                int param1 = (modes[0] == 0 ? Program![Program[IP + 1]] : Program![IP + 1]);
 
                 Console.Write("Output from program: ");
                 Console.Write("{0}\r\n", param1);
@@ -101,7 +97,7 @@ namespace AdventOfCode.Solvers.Year2019
 
             void JumpIfTrue(int[] modes)
             {
-                int param1 = (modes[0] == 0 ? Program[Program[IP + 1]] : Program[IP + 1]);
+                int param1 = (modes[0] == 0 ? Program![Program[IP + 1]] : Program![IP + 1]);
                 int param2 = (modes[1] == 0 ? Program[Program[IP + 2]] : Program[IP + 2]);
 
                 if (param1 != 0)
@@ -115,7 +111,7 @@ namespace AdventOfCode.Solvers.Year2019
             }
             void JumpIfFalse(int[] modes)
             {
-                int param1 = (modes[0] == 0 ? Program[Program[IP + 1]] : Program[IP + 1]);
+                int param1 = (modes[0] == 0 ? Program![Program[IP + 1]] : Program![IP + 1]);
                 int param2 = (modes[1] == 0 ? Program[Program[IP + 2]] : Program[IP + 2]);
 
                 if (param1 == 0)
@@ -130,7 +126,7 @@ namespace AdventOfCode.Solvers.Year2019
 
             void LessThan(int[] modes)
             {
-                int param1 = (modes[0] == 0 ? Program[Program[IP + 1]] : Program[IP + 1]);
+                int param1 = (modes[0] == 0 ? Program![Program[IP + 1]] : Program![IP + 1]);
                 int param2 = (modes[1] == 0 ? Program[Program[IP + 2]] : Program[IP + 2]);
                 int param3 = Program[IP + 3];
 
@@ -139,7 +135,7 @@ namespace AdventOfCode.Solvers.Year2019
 
             void Equals(int[] modes)
             {
-                int param1 = (modes[0] == 0 ? Program[Program[IP + 1]] : Program[IP + 1]);
+                int param1 = (modes[0] == 0 ? Program![Program[IP + 1]] : Program![IP + 1]);
                 int param2 = (modes[1] == 0 ? Program[Program[IP + 2]] : Program[IP + 2]);
                 int param3 = Program[IP + 3];
 
@@ -149,29 +145,29 @@ namespace AdventOfCode.Solvers.Year2019
 
         public override string Part1()
         {
-            IntcodeCPU cpu = new IntcodeCPU();
+            IntcodeCPU cpu = new();
             int[] program;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                program = input.ReadLine().Split(',').Select(n => int.Parse(n)).ToArray();
+                program = input.ReadLine()!.Split(',').Select(n => int.Parse(n)).ToArray();
             }
 
-            cpu.RunProgram(program);
+            _ = cpu.RunProgram(program);
             return "Result is the last output of the program";
         }
 
         public override string Part2()
         {
-            IntcodeCPU cpu = new IntcodeCPU();
+            IntcodeCPU cpu = new();
             int[] program;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                program = input.ReadLine().Split(',').Select(n => int.Parse(n)).ToArray();
+                program = input.ReadLine()!.Split(',').Select(n => int.Parse(n)).ToArray();
             }
 
-            cpu.RunProgram(program);
+            _ = cpu.RunProgram(program);
             return "Result is the last output of the program";
         }
     }

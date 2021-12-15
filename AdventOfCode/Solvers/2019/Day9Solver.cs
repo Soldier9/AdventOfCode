@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Collections.Concurrent;
 
 namespace AdventOfCode.Solvers.Year2019
 {
@@ -11,36 +7,36 @@ namespace AdventOfCode.Solvers.Year2019
         class IntcodeCPU
         {
             //readonly Int64[] Program;
-            readonly Dictionary<Int64, Int64> Program;
-            Int64 IP;
-            Int64 RelativeBase;
+            readonly Dictionary<long, long> Program;
+            long IP;
+            long RelativeBase;
 
-            readonly BlockingCollection<Int64> InputQueue;
-            readonly BlockingCollection<Int64> OutputQueue;
-            Int64? LastOutput;
+            readonly BlockingCollection<long> InputQueue;
+            readonly BlockingCollection<long> OutputQueue;
+            long? LastOutput;
             public bool HasTerminated = false;
 
-            public IntcodeCPU(Int64[] program, BlockingCollection<Int64> input, BlockingCollection<Int64> output)
+            public IntcodeCPU(long[] program, BlockingCollection<long> input, BlockingCollection<long> output)
             {
                 IP = 0;
                 Program = new Dictionary<long, long>();
-                for (Int64 i = 0; i < program.Length; i++) Program[i] = program[i];
+                for (long i = 0; i < program.Length; i++) Program[i] = program[i];
                 InputQueue = input;
                 OutputQueue = output;
             }
 
-            public void Input(Int64 input)
+            public void Input(long input)
             {
                 InputQueue.Add(input);
             }
 
-            public Int64 RunProgram()
+            public long RunProgram()
             {
                 while (true)
                 {
-                    Int64 opCode = Program[IP];
+                    long opCode = Program[IP];
 
-                    Int64[] modes = new Int64[3];
+                    long[] modes = new long[3];
                     modes[0] = (opCode % 1000) / 100;
                     modes[1] = (opCode % 10000) / 1000;
                     modes[2] = (opCode % 100000) / 10000;
@@ -86,46 +82,46 @@ namespace AdventOfCode.Solvers.Year2019
 
                         case 99:
                             HasTerminated = true;
-                            return (LastOutput != null ? (Int64)LastOutput : -1);
+                            return (LastOutput != null ? (long)LastOutput : -1);
                     }
                 }
             }
 
-            void AddInstr(Int64[] modes)
+            void AddInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
-                Int64 param3 = GetParam(modes[2], 3, true);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
+                long param3 = GetParam(modes[2], 3, true);
 
                 Program[param3] = param1 + param2;
             }
 
-            void MultInstr(Int64[] modes)
+            void MultInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
-                Int64 param3 = GetParam(modes[2], 3, true);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
+                long param3 = GetParam(modes[2], 3, true);
 
                 Program[param3] = param1 * param2;
             }
 
-            void InputInstr(Int64[] modes)
+            void InputInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1, true);
+                long param1 = GetParam(modes[0], 1, true);
                 Program[param1] = InputQueue.Take();
             }
 
-            void OutputInstr(Int64[] modes)
+            void OutputInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
+                long param1 = GetParam(modes[0], 1);
                 LastOutput = param1;
                 OutputQueue.Add(param1);
             }
 
-            void JumpIfTrueInstr(Int64[] modes)
+            void JumpIfTrueInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
 
                 if (param1 != 0)
                 {
@@ -136,10 +132,10 @@ namespace AdventOfCode.Solvers.Year2019
                     IP += 3;
                 }
             }
-            void JumpIfFalseInstr(Int64[] modes)
+            void JumpIfFalseInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
 
                 if (param1 == 0)
                 {
@@ -151,31 +147,31 @@ namespace AdventOfCode.Solvers.Year2019
                 }
             }
 
-            void LessThanInstr(Int64[] modes)
+            void LessThanInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
-                Int64 param3 = GetParam(modes[2], 3, true);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
+                long param3 = GetParam(modes[2], 3, true);
 
                 Program[param3] = (param1 < param2 ? 1 : 0);
             }
 
-            void EqualsInstr(Int64[] modes)
+            void EqualsInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
-                Int64 param2 = GetParam(modes[1], 2);
-                Int64 param3 = GetParam(modes[2], 3, true);
+                long param1 = GetParam(modes[0], 1);
+                long param2 = GetParam(modes[1], 2);
+                long param3 = GetParam(modes[2], 3, true);
 
                 Program[param3] = (param1 == param2 ? 1 : 0);
             }
 
-            void ModifyRelativeBaseInstr(Int64[] modes)
+            void ModifyRelativeBaseInstr(long[] modes)
             {
-                Int64 param1 = GetParam(modes[0], 1);
+                long param1 = GetParam(modes[0], 1);
                 RelativeBase += param1;
             }
 
-            Int64 GetParam(Int64 mode, int paramNum, bool isTargetParam = false)
+            long GetParam(long mode, int paramNum, bool isTargetParam = false)
             {
                 switch (mode)
                 {
@@ -203,15 +199,13 @@ namespace AdventOfCode.Solvers.Year2019
         public override string Part1()
         {
 
-            Int64[] program;
-            using (var input = File.OpenText(InputFile))
+            long[] program;
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                program = input.ReadLine().Split(',').Select(n => Int64.Parse(n)).ToArray();
+                program = input.ReadLine()!.Split(',').Select(n => long.Parse(n)).ToArray();
             }
-            BlockingCollection<Int64> outputQueue = new BlockingCollection<Int64>();
-#pragma warning disable IDE0028 // Simplify collection initialization
-            BlockingCollection<Int64> inputQueue = new BlockingCollection<Int64>();
-#pragma warning restore IDE0028 // Simplify collection initialization
+            BlockingCollection<long> outputQueue = new();
+            BlockingCollection<long> inputQueue = new();
             inputQueue.Add(1);
 
             string result = (new IntcodeCPU(program, inputQueue, outputQueue)).RunProgram().ToString();
@@ -225,15 +219,13 @@ namespace AdventOfCode.Solvers.Year2019
 
         public override string Part2()
         {
-            Int64[] program;
-            using (var input = File.OpenText(InputFile))
+            long[] program;
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                program = input.ReadLine().Split(',').Select(n => Int64.Parse(n)).ToArray();
+                program = input.ReadLine()!.Split(',').Select(n => long.Parse(n)).ToArray();
             }
-            BlockingCollection<Int64> outputQueue = new BlockingCollection<Int64>();
-#pragma warning disable IDE0028 // Simplify collection initialization
-            BlockingCollection<Int64> inputQueue = new BlockingCollection<Int64>();
-#pragma warning restore IDE0028 // Simplify collection initialization
+            BlockingCollection<long> outputQueue = new();
+            BlockingCollection<long> inputQueue = new();
             inputQueue.Add(2);
 
             return (new IntcodeCPU(program, inputQueue, outputQueue)).RunProgram().ToString();

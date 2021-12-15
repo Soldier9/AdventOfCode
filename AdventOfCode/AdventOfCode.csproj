@@ -1,17 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{78CA2420-AA18-4760-B4FC-F55C5EB2F05F}</ProjectGuid>
+    <TargetFramework>net6.0</TargetFramework>
     <OutputType>Exe</OutputType>
-    <RootNamespace>AdventOfCode</RootNamespace>
-    <AssemblyName>AdventOfCode</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -27,125 +17,24 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <StartupObject>AdventOfCode.Program</StartupObject>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnforceCodeStyleInBuild>False</EnforceCodeStyleInBuild>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn />
+    <WarningLevel>5</WarningLevel>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn />
+    <WarningLevel>5</WarningLevel>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AbstractSolver.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Solvers\2019\Day13Solver.cs" />
-    <Compile Include="Solvers\2019\Day14Solver.cs" />
-    <Compile Include="Solvers\2019\Day15Solver.cs" />
-    <Compile Include="Solvers\2019\Day16Solver.cs" />
-    <Compile Include="Solvers\2019\Day17Solver.cs" />
-    <Compile Include="Solvers\2019\Day18Solver.cs" />
-    <Compile Include="Solvers\2019\Day19Solver.cs" />
-    <Compile Include="Solvers\2019\Day1Solver.cs" />
-    <Compile Include="Solvers\2019\Day20Solver.cs" />
-    <Compile Include="Solvers\2019\Day21Solver.cs" />
-    <Compile Include="Solvers\2019\Day22Solver.cs" />
-    <Compile Include="Solvers\2019\Day23Solver.cs" />
-    <Compile Include="Solvers\2019\Day24Solver.cs" />
-    <Compile Include="Solvers\2019\Day25Solver.cs" />
-    <Compile Include="Solvers\2019\Day2Solver.cs" />
-    <Compile Include="Solvers\2019\Day3Solver.cs" />
-    <Compile Include="Solvers\2019\Day4Solver.cs" />
-    <Compile Include="Solvers\2019\Day4SolverRegex.cs" />
-    <Compile Include="Solvers\2019\Day5Solver.cs" />
-    <Compile Include="Solvers\2019\Day6Solver.cs" />
-    <Compile Include="Solvers\2019\Day7SolverThreaded.cs" />
-    <Compile Include="Solvers\2019\Day7Solver.cs" />
-    <Compile Include="Solvers\2019\Day8Solver.cs" />
-    <Compile Include="Solvers\2019\Day9Solver.cs" />
-    <Compile Include="Solvers\2019\Day10Solver.cs" />
-    <Compile Include="Solvers\2019\Day11Solver.cs" />
-    <Compile Include="Solvers\2019\Day12Solver.cs" />
-    <Compile Include="Solvers\2020\Day11Solver.cs" />
-    <Compile Include="Solvers\2020\Day10Solver.cs" />
-    <Compile Include="Solvers\2020\Day12Solver.cs" />
-    <Compile Include="Solvers\2020\Day13Solver.cs" />
-    <Compile Include="Solvers\2020\Day14Solver.cs" />
-    <Compile Include="Solvers\2020\Day15Solver.cs" />
-    <Compile Include="Solvers\2020\Day16Solver.cs" />
-    <Compile Include="Solvers\2020\Day17Solver.cs" />
-    <Compile Include="Solvers\2020\Day18Solver.cs" />
-    <Compile Include="Solvers\2020\Day19Solver.cs" />
-    <Compile Include="Solvers\2020\Day25Solver.cs" />
-    <Compile Include="Solvers\2020\Day24Solver.cs" />
-    <Compile Include="Solvers\2020\Day23Solver.cs" />
-    <Compile Include="Solvers\2020\Day22Solver.cs" />
-    <Compile Include="Solvers\2020\Day21Solver.cs" />
-    <Compile Include="Solvers\2020\Day20Solver.cs" />
-    <Compile Include="Solvers\2020\Day9Solver.cs" />
-    <Compile Include="Solvers\2020\Day8Solver.cs" />
-    <Compile Include="Solvers\2020\Day7Solver.cs" />
-    <Compile Include="Solvers\2020\Day6Solver.cs" />
-    <Compile Include="Solvers\2020\Day5Solver.cs" />
-    <Compile Include="Solvers\2020\Day4Solver.cs" />
-    <Compile Include="Solvers\2020\Day3Solver.cs" />
-    <Compile Include="Solvers\2020\Day2Solver.cs" />
-    <Compile Include="Solvers\2020\Day1Solver.cs" />
-    <Compile Include="Solvers\2021\Day10Solver.cs" />
-    <Compile Include="Solvers\2021\Day11Solver.cs" />
-    <Compile Include="Solvers\2021\Day12Solver.cs" />
-    <Compile Include="Solvers\2021\Day13Solver.cs" />
-    <Compile Include="Solvers\2021\Day14Solver.cs" />
-    <Compile Include="Solvers\2021\Day9Solver.cs" />
-    <Compile Include="Solvers\2021\Day8Solver.cs" />
-    <Compile Include="Solvers\2021\Day7Solver.cs" />
-    <Compile Include="Solvers\2021\Day6Solver.cs" />
-    <Compile Include="Solvers\2021\Day5Solver.cs" />
-    <Compile Include="Solvers\2021\Day4Solver.cs" />
-    <Compile Include="Solvers\2021\Day3Solver.cs" />
-    <Compile Include="Solvers\2021\Day2Solver.cs" />
-    <Compile Include="Solvers\2021\Day1Solver.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.6">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.6 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
   <ItemGroup>
     <Content Include="Inputs\2019\Day1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -297,6 +186,9 @@
     <Content Include="Inputs\2020\Day2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Inputs\2021\Day15.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Inputs\2021\Day14.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -340,6 +232,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

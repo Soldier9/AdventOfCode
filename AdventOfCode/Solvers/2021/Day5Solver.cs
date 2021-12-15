@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers.Year2021
 {
@@ -11,8 +8,8 @@ namespace AdventOfCode.Solvers.Year2021
         {
             public void AddLine((int x, int y) start, (int x, int y) end)
             {
-                var xDirection = (end.x - start.x);
-                var yDirection = (end.y - start.y);
+                int xDirection = (end.x - start.x);
+                int yDirection = (end.y - start.y);
 
                 if (xDirection != 0) xDirection /= Math.Abs(xDirection);
                 else xDirection = 1;
@@ -25,7 +22,7 @@ namespace AdventOfCode.Solvers.Year2021
                 {
                     for (int x = start.x; xDirection < 0 ? x >= end.x : x <= end.x; x += xDirection)
                     {
-                        if (!this.ContainsKey(y)) this.Add(y, new Dictionary<int, int>());
+                        if (!ContainsKey(y)) Add(y, new Dictionary<int, int>());
                         if (!this[y].ContainsKey(x)) this[y].Add(x, 0);
                         this[y][x]++;
 
@@ -37,14 +34,14 @@ namespace AdventOfCode.Solvers.Year2021
 
         public override string Part1()
         {
-            Grid grid = new Grid();
+            Grid grid = new();
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                Regex parser = new Regex(@"(\d+),(\d+) -> (\d+),(\d+)");
+                Regex parser = new(@"(\d+),(\d+) -> (\d+),(\d+)");
                 while (!input.EndOfStream)
                 {
-                    Match points = parser.Match(input.ReadLine());
+                    Match points = parser.Match(input.ReadLine()!);
                     if (int.Parse(points.Groups[1].Value) == int.Parse(points.Groups[3].Value) || int.Parse(points.Groups[2].Value) == int.Parse(points.Groups[4].Value))
                     {
                         grid.AddLine((int.Parse(points.Groups[1].Value), int.Parse(points.Groups[2].Value)), (int.Parse(points.Groups[3].Value), int.Parse(points.Groups[4].Value)));
@@ -53,9 +50,9 @@ namespace AdventOfCode.Solvers.Year2021
             }
 
             int result = 0;
-            foreach (var line in grid)
+            foreach (KeyValuePair<int, Dictionary<int, int>> line in grid)
             {
-                foreach (var point in line.Value)
+                foreach (KeyValuePair<int, int> point in line.Value)
                 {
                     if (point.Value > 1) result++;
                 }
@@ -66,22 +63,22 @@ namespace AdventOfCode.Solvers.Year2021
 
         public override string Part2()
         {
-            Grid grid = new Grid();
+            Grid grid = new();
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                Regex parser = new Regex(@"(\d+),(\d+) -> (\d+),(\d+)");
+                Regex parser = new(@"(\d+),(\d+) -> (\d+),(\d+)");
                 while (!input.EndOfStream)
                 {
-                    Match points = parser.Match(input.ReadLine());
+                    Match points = parser.Match(input.ReadLine()!);
                     grid.AddLine((int.Parse(points.Groups[1].Value), int.Parse(points.Groups[2].Value)), (int.Parse(points.Groups[3].Value), int.Parse(points.Groups[4].Value)));
                 }
             }
 
             int result = 0;
-            foreach (var line in grid)
+            foreach (KeyValuePair<int, Dictionary<int, int>> line in grid)
             {
-                foreach (var point in line.Value)
+                foreach (KeyValuePair<int, int> point in line.Value)
                 {
                     if (point.Value > 1) result++;
                 }

@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace AdventOfCode.Solvers.Year2019
+﻿namespace AdventOfCode.Solvers.Year2019
 {
     class Day24Solver : AbstractSolver
     {
         class GridComparer : IEqualityComparer<List<char[]>>
         {
-            public bool Equals(List<char[]> x, List<char[]> y)
+            public bool Equals(List<char[]>? x, List<char[]>? y)
             {
+                if (x == null && y == null) return true;
+                if (x == null || y == null) return false;
+
                 if (x.Count != y.Count) return false;
-                for (var i = 0; i < x.Count; i++)
+                for (int i = 0; i < x.Count; i++)
                 {
                     if (!x[i].SequenceEqual(y[i])) return false;
                 }
@@ -22,7 +20,7 @@ namespace AdventOfCode.Solvers.Year2019
             public int GetHashCode(List<char[]> obj)
             {
                 int hash = -346745677;
-                for (var i = 0; i < obj.Count; i++)
+                for (int i = 0; i < obj.Count; i++)
                 {
                     for (int j = 0; j < obj[i].Length; j++)
                     {
@@ -35,33 +33,33 @@ namespace AdventOfCode.Solvers.Year2019
 
         public override string Part1()
         {
-            var grid = new List<char[]>();
-            using (var input = File.OpenText(InputFile))
+            List<char[]> grid = new();
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    grid.Add(input.ReadLine().ToCharArray());
+                    grid.Add(input.ReadLine()!.ToCharArray());
                 }
             }
 
             int width = grid[0].Length;
             int height = grid.Count;
-            var seenGrids = new HashSet<List<char[]>>(new GridComparer());
+            HashSet<List<char[]>> seenGrids = new(new GridComparer());
 
             while (!seenGrids.Contains(grid))
             {
-                seenGrids.Add(grid);
-                var newGrid = new List<char[]>();
-                foreach (var line in grid)
+                _ = seenGrids.Add(grid);
+                List<char[]> newGrid = new();
+                foreach (char[] line in grid)
                 {
-                    var newLine = new char[line.Length];
+                    char[] newLine = new char[line.Length];
                     line.CopyTo(newLine, 0);
                     newGrid.Add(newLine);
                 }
 
-                for (var y = 0; y < height; y++)
+                for (int y = 0; y < height; y++)
                 {
-                    for (var x = 0; x < width; x++)
+                    for (int x = 0; x < width; x++)
                     {
                         int neighborBugs = 0;
                         if (x > 0 && grid[y][x - 1] == '#') neighborBugs++;
@@ -79,9 +77,9 @@ namespace AdventOfCode.Solvers.Year2019
 
             int result = 0;
             int pow = 0;
-            for (var y = 0; y < height; y++)
+            for (int y = 0; y < height; y++)
             {
-                for (var x = 0; x < width; x++)
+                for (int x = 0; x < width; x++)
                 {
                     if (grid[y][x] == '#') result += (int)Math.Pow(2, pow);
                     pow++;
@@ -91,26 +89,27 @@ namespace AdventOfCode.Solvers.Year2019
             return result.ToString();
         }
 
-        List<char[]> CreateEmptyGrid()
+        static List<char[]> CreateEmptyGrid()
         {
-            var newGrid = new List<char[]>();
-            newGrid.Add(".....".ToCharArray());
-            newGrid.Add(".....".ToCharArray());
-            newGrid.Add("..?..".ToCharArray());
-            newGrid.Add(".....".ToCharArray());
-            newGrid.Add(".....".ToCharArray());
+            List<char[]> newGrid = new()
+            {
+                ".....".ToCharArray(),
+                ".....".ToCharArray(),
+                "..?..".ToCharArray(),
+                ".....".ToCharArray(),
+                ".....".ToCharArray()
+            };
             return newGrid;
         }
         public override string Part2()
         {
-
-            var grids = new Dictionary<int, List<char[]>>();
-            using (var input = File.OpenText(InputFile))
+            Dictionary<int, List<char[]>> grids = new();
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                var grid = new List<char[]>();
+                List<char[]> grid = new();
                 while (!input.EndOfStream)
                 {
-                    grid.Add(input.ReadLine().ToCharArray());
+                    grid.Add(input.ReadLine()!.ToCharArray());
                 }
                 grid[2][2] = '?';
                 grids.Add(0, grid);
@@ -119,16 +118,16 @@ namespace AdventOfCode.Solvers.Year2019
             int width = grids[0][0].Length;
             int height = grids[0].Count;
 
-            for (var n = 0; n < 200; n++)
+            for (int n = 0; n < 200; n++)
             {
 
-                var lowestGrid = grids.Keys.Min();
-                var highestGrid = grids.Keys.Max();
+                int lowestGrid = grids.Keys.Min();
+                int highestGrid = grids.Keys.Max();
                 bool needLowerGrid = false;
                 bool needHigherGrid = false;
-                for (var y = 0; y < height; y++)
+                for (int y = 0; y < height; y++)
                 {
-                    for (var x = 0; x < width; x++)
+                    for (int x = 0; x < width; x++)
                     {
                         if (grids[lowestGrid][y][x] == '#') needLowerGrid = true;
                         if (grids[highestGrid][y][x] == '#') needHigherGrid = true;
@@ -140,13 +139,13 @@ namespace AdventOfCode.Solvers.Year2019
                 if (needHigherGrid) grids.Add(highestGrid + 1, CreateEmptyGrid());
 
 
-                var newGrids = new Dictionary<int, List<char[]>>();
-                foreach (var level in grids.Keys)
+                Dictionary<int, List<char[]>> newGrids = new();
+                foreach (int level in grids.Keys)
                 {
-                    var newGrid = CreateEmptyGrid();
-                    for (var y = 0; y < height; y++)
+                    List<char[]> newGrid = CreateEmptyGrid();
+                    for (int y = 0; y < height; y++)
                     {
-                        for (var x = 0; x < width; x++)
+                        for (int x = 0; x < width; x++)
                         {
                             if (x == 2 && y == 2) continue;
 
@@ -166,10 +165,10 @@ namespace AdventOfCode.Solvers.Year2019
 
                             if (grids.ContainsKey(level + 1))
                             {
-                                if (x == 2 && y == 1) for (var upperX = 0; upperX < height; upperX++) if (grids[level + 1][0][upperX] == '#') neighborBugs++;
-                                if (x == 2 && y == 3) for (var upperX = 0; upperX < height; upperX++) if (grids[level + 1][height - 1][upperX] == '#') neighborBugs++;
-                                if (y == 2 && x == 1) for (var upperY = 0; upperY < width; upperY++) if (grids[level + 1][upperY][0] == '#') neighborBugs++;
-                                if (y == 2 && x == 3) for (var upperY = 0; upperY < width; upperY++) if (grids[level + 1][upperY][width - 1] == '#') neighborBugs++;
+                                if (x == 2 && y == 1) for (int upperX = 0; upperX < height; upperX++) if (grids[level + 1][0][upperX] == '#') neighborBugs++;
+                                if (x == 2 && y == 3) for (int upperX = 0; upperX < height; upperX++) if (grids[level + 1][height - 1][upperX] == '#') neighborBugs++;
+                                if (y == 2 && x == 1) for (int upperY = 0; upperY < width; upperY++) if (grids[level + 1][upperY][0] == '#') neighborBugs++;
+                                if (y == 2 && x == 3) for (int upperY = 0; upperY < width; upperY++) if (grids[level + 1][upperY][width - 1] == '#') neighborBugs++;
                             }
 
                             if (grids[level][y][x] == '#' && neighborBugs == 1) newGrid[y][x] = '#';
@@ -183,7 +182,7 @@ namespace AdventOfCode.Solvers.Year2019
             }
 
             int result = 0;
-            foreach (var grid in grids) for (var y = 0; y < height; y++) for (var x = 0; x < width; x++) if (grid.Value[y][x] == '#') result++;
+            foreach (KeyValuePair<int, List<char[]>> grid in grids) for (int y = 0; y < height; y++) for (int x = 0; x < width; x++) if (grid.Value[y][x] == '#') result++;
             return result.ToString();
         }
     }

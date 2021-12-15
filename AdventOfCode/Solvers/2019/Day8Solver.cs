@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers.Year2019
@@ -11,11 +7,11 @@ namespace AdventOfCode.Solvers.Year2019
     {
         public override string Part1()
         {
-            var input = File.OpenText(InputFile).ReadLine();
+            string input = File.OpenText(InputFile).ReadLine()!;
             int width = 25;
             int height = 6;
 
-            Dictionary<string, int> layers = new Dictionary<string, int>();
+            Dictionary<string, int> layers = new();
             for (int i = 0; i < input.Length; i += (width * height))
             {
                 string layer = input.Substring(i, width * height);
@@ -32,17 +28,17 @@ namespace AdventOfCode.Solvers.Year2019
 
         public override string Part2()
         {
-            var input = File.OpenText(InputFile).ReadLine();
+            string input = File.OpenText(InputFile).ReadLine()!;
             int width = 25;
             int height = 6;
 
-            List<string> layers = new List<string>();
+            List<string> layers = new();
             for (int i = 0; i < input.Length; i += (width * height))
             {
                 layers.Add(input.Substring(i, width * height));
             }
 
-            StringBuilder sb = new StringBuilder(new string('2', width * height));
+            StringBuilder sb = new(new string('2', width * height));
             foreach (string layer in layers)
             {
                 for (int i = 0; i < layer.Length; i++)

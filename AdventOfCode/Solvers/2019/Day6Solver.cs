@@ -1,25 +1,21 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace AdventOfCode.Solvers.Year2019
+﻿namespace AdventOfCode.Solvers.Year2019
 {
     class Day6Solver : AbstractSolver
     {
         class Celestial
         {
-            public static HashSet<Celestial> AllCelestials = new HashSet<Celestial>();
+            public static HashSet<Celestial> AllCelestials = new();
 
             public readonly string ID;
             readonly string OrbitsString;
 
-            public Celestial Orbits;
+            public Celestial? Orbits;
 
             public Celestial(string id, string orbitting)
             {
                 ID = id;
                 OrbitsString = orbitting;
-                AllCelestials.Add(this);
+                _ = AllCelestials.Add(this);
 
                 if (AllCelestials.Any(c => c.ID == orbitting))
                 {
@@ -39,7 +35,7 @@ namespace AdventOfCode.Solvers.Year2019
 
                 foreach (Celestial celestial in AllCelestials)
                 {
-                    var test = celestial;
+                    Celestial test = celestial;
                     while (test.Orbits != null)
                     {
                         orbits++;
@@ -56,21 +52,21 @@ namespace AdventOfCode.Solvers.Year2019
 
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    string line = input.ReadLine();
-                    new Celestial(line.Split(')')[1], line.Split(')')[0]);
+                    string line = input.ReadLine()!;
+                    _ = new Celestial(line.Split(')')[1], line.Split(')')[0]);
                 }
             }
 
             return Celestial.GetTotalNumberOfOrbits().ToString();
         }
 
-        Dictionary<Celestial, int> GetPathToSun(Celestial body)
+        static Dictionary<Celestial, int> GetPathToSun(Celestial body)
         {
-            Dictionary<Celestial, int> pathToSun = new Dictionary<Celestial, int>();
+            Dictionary<Celestial, int> pathToSun = new();
             Celestial currentBody = body;
 
             int transfers = 0;

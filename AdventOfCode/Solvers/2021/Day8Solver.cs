@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace AdventOfCode.Solvers.Year2021
+﻿namespace AdventOfCode.Solvers.Year2021
 {
     class Day8Solver : AbstractSolver
     {
@@ -11,11 +6,11 @@ namespace AdventOfCode.Solvers.Year2021
         {
             int result = 0;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    string line = input.ReadLine().Split('|')[1];
+                    string line = input.ReadLine()!.Split('|')[1];
                     foreach (string display in line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
                     {
                         switch (display.Length)
@@ -36,14 +31,14 @@ namespace AdventOfCode.Solvers.Year2021
         {
             int result = 0;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
                     ISet<char>[] digits = new HashSet<char>[10];
-                    List<ISet<char>> unplacedDigits = new List<ISet<char>>();
+                    List<ISet<char>> unplacedDigits = new();
 
-                    string[] line = input.ReadLine().Split('|');
+                    string[] line = input.ReadLine()!.Split('|');
                     foreach (string display in line[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
                     {
                         ISet<char> newDigit = new HashSet<char>(display);
@@ -58,22 +53,22 @@ namespace AdventOfCode.Solvers.Year2021
                     }
 
                     digits[3] = unplacedDigits.Single(d => d.Count == 5 && digits[1].IsSubsetOf(d));
-                    unplacedDigits.Remove(digits[3]);
+                    _ = unplacedDigits.Remove(digits[3]);
 
                     digits[9] = unplacedDigits.Single(d => d.Count == 6 && digits[3].IsSubsetOf(d));
-                    unplacedDigits.Remove(digits[9]);
+                    _ = unplacedDigits.Remove(digits[9]);
 
                     digits[5] = unplacedDigits.Single(d => d.Count == 5 && d.IsSubsetOf(digits[9]));
-                    unplacedDigits.Remove(digits[5]);
+                    _ = unplacedDigits.Remove(digits[5]);
 
                     digits[6] = unplacedDigits.Single(d => d.Count == 6 && digits[5].IsSubsetOf(d));
-                    unplacedDigits.Remove(digits[6]);
+                    _ = unplacedDigits.Remove(digits[6]);
 
                     digits[0] = unplacedDigits.Single(d => d.Count == 6);
-                    unplacedDigits.Remove(digits[0]);
+                    _ = unplacedDigits.Remove(digits[0]);
 
                     digits[2] = unplacedDigits.Single(d => d.Count == 5);
-                    unplacedDigits.Remove(digits[2]);
+                    _ = unplacedDigits.Remove(digits[2]);
 
                     string value = "";
                     foreach (string display in line[1].Split(new char[] { ' ' }, System.StringSplitOptions.RemoveEmptyEntries))

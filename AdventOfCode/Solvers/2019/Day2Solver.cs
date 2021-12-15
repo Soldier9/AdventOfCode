@@ -1,13 +1,10 @@
-﻿using System.IO;
-using System.Linq;
-
-namespace AdventOfCode.Solvers.Year2019
+﻿namespace AdventOfCode.Solvers.Year2019
 {
     class Day2Solver : AbstractSolver
     {
         class IntcodeCPU
         {
-            int[] Program;
+            int[]? Program;
             int IP;
             public int RunProgram(int[] program)
             {
@@ -16,7 +13,7 @@ namespace AdventOfCode.Solvers.Year2019
 
                 while (true)
                 {
-                    var opCode = Program[IP];
+                    int opCode = Program[IP];
                     switch (opCode)
                     {
                         case 1:
@@ -37,12 +34,12 @@ namespace AdventOfCode.Solvers.Year2019
 
         public override string Part1()
         {
-            IntcodeCPU cpu = new IntcodeCPU();
+            IntcodeCPU cpu = new();
             int[] program;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                program = input.ReadLine().Split(',').Select(n => int.Parse(n)).ToArray();
+                program = input.ReadLine()!.Split(',').Select(n => int.Parse(n)).ToArray();
             }
 
             program[1] = 1;
@@ -52,12 +49,12 @@ namespace AdventOfCode.Solvers.Year2019
 
         public override string Part2()
         {
-            IntcodeCPU cpu = new IntcodeCPU();
+            IntcodeCPU cpu = new();
             int[] program;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                program = input.ReadLine().Split(',').Select(n => int.Parse(n)).ToArray();
+                program = input.ReadLine()!.Split(',').Select(n => int.Parse(n)).ToArray();
             }
 
             for (int n = 0; n < 100; n++)

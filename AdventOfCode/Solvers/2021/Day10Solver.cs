@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
-namespace AdventOfCode.Solvers.Year2021
+﻿namespace AdventOfCode.Solvers.Year2021
 {
     class Day10Solver : AbstractSolver
     {
         public override string Part1()
         {
             int result = 0;
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
                     bool lineIsCorrupt = false;
-                    Stack<char> chunk = new Stack<char>();
-                    foreach (char c in input.ReadLine())
+                    Stack<char> chunk = new();
+                    foreach (char c in input.ReadLine()!)
                     {
                         switch (c)
                         {
@@ -47,15 +43,15 @@ namespace AdventOfCode.Solvers.Year2021
 
         public override string Part2()
         {
-            List<Int64> scores = new List<Int64>();
-            using (var input = File.OpenText(InputFile))
+            List<long> scores = new();
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    Int64 score = 0;
+                    long score = 0;
                     bool lineIsCorrupt = false;
-                    Stack<char> chunk = new Stack<char>();
-                    foreach (char c in input.ReadLine())
+                    Stack<char> chunk = new();
+                    foreach (char c in input.ReadLine()!)
                     {
                         switch (c)
                         {

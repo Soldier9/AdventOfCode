@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers.Year2020
 {
@@ -10,19 +6,19 @@ namespace AdventOfCode.Solvers.Year2020
     {
         int GridSize = 0;
         int TileSize = 0;
-        Dictionary<int, List<List<string>>> Tiles = new Dictionary<int, List<List<string>>>();
-        Dictionary<(int, int), (int, int)> Grid;
+        readonly Dictionary<int, List<List<string>>> Tiles = new();
+        Dictionary<(int, int), (int, int)>? Grid;
 
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 int num = 0;
-                List<string> tile = new List<string>();
+                List<string> tile = new();
 
                 while (!input.EndOfStream)
                 {
-                    string line = input.ReadLine();
+                    string line = input.ReadLine()!;
                     if (line.StartsWith("Tile"))
                     {
                         num = int.Parse(line.Substring(5, 4));
@@ -49,10 +45,10 @@ namespace AdventOfCode.Solvers.Year2020
                 for (int permutation = 0; permutation < Tiles[num].Count; permutation++)
                 {
                     Grid = new Dictionary<(int, int), (int, int)>();
-                    HashSet<int> usedTiles = new HashSet<int>();
+                    HashSet<int> usedTiles = new();
 
                     Grid[(0, 0)] = (num, permutation);
-                    usedTiles.Add(num);
+                    _ = usedTiles.Add(num);
 
                     Grid = FillGrid(Grid, usedTiles);
                     if (Grid != null)
@@ -67,7 +63,7 @@ namespace AdventOfCode.Solvers.Year2020
             return result.ToString();
         }
 
-        private Dictionary<(int, int), (int, int)> FillGrid(Dictionary<(int, int), (int, int)> grid, HashSet<int> usedTiles)
+        private Dictionary<(int, int), (int, int)>? FillGrid(Dictionary<(int, int), (int, int)> grid, HashSet<int> usedTiles)
         {
             if (grid.Count == Tiles.Count) return grid;
 
@@ -92,7 +88,7 @@ namespace AdventOfCode.Solvers.Year2020
                     if (TileFits(grid, nextPosition, num, permutation))
                     {
                         grid.Add(nextPosition, (num, permutation));
-                        usedTiles.Add(num);
+                        _ = usedTiles.Add(num);
                         return FillGrid(grid, usedTiles);
                     }
                 }
@@ -134,7 +130,7 @@ namespace AdventOfCode.Solvers.Year2020
 
         private List<List<string>> GetPermutations(List<string> tile)
         {
-            List<List<string>> tiles = new List<List<string>>();
+            List<List<string>> tiles = new();
             tiles.Add(tile);
             for (int i = 0; i < 3; i++)
             {
@@ -150,7 +146,7 @@ namespace AdventOfCode.Solvers.Year2020
 
         private List<string> RotateTile(List<string> tile)
         {
-            List<char[]> rotated = new List<char[]>();
+            List<char[]> rotated = new();
             for (int n = 0; n < TileSize; n++) rotated.Add(new char[TileSize]);
 
             for (int y = 0; y < TileSize; y++)
@@ -166,7 +162,7 @@ namespace AdventOfCode.Solvers.Year2020
 
         private List<string> FlipTile(List<string> tile)
         {
-            List<string> flipped = new List<string>();
+            List<string> flipped = new();
             for (int i = TileSize - 1; i > -1; i--) flipped.Add(tile[i]);
             return flipped;
         }
@@ -175,16 +171,16 @@ namespace AdventOfCode.Solvers.Year2020
         public override string Part2()
         {
             int imageSize = GridSize * (TileSize - 2);
-            List<List<string>> finalImages = new List<List<string>>();
+            List<List<string>> finalImages = new();
 
-            List<char[]> tmp = new List<char[]>();
+            List<char[]> tmp = new();
             for (int n = 0; n < imageSize; n++) tmp.Add(new char[imageSize]);
 
             for (int x = 0; x < GridSize; x++)
             {
                 for (int y = 0; y < GridSize; y++)
                 {
-                    List<string> tile = Tiles[Grid[(x, y)].Item1][Grid[(x, y)].Item2];
+                    List<string> tile = Tiles[Grid![(x, y)].Item1][Grid[(x, y)].Item2];
 
                     for (int x1 = 1; x1 < TileSize - 1; x1++)
                     {
@@ -214,8 +210,8 @@ namespace AdventOfCode.Solvers.Year2020
                     MatchCollection matches = seaMonster[1].Matches(image[l]);
                     foreach (Match match in matches)
                     {
-                        if (seaMonster[2].IsMatch(image[l + 1].Substring(match.Index)) &&
-                            seaMonster[0].IsMatch(image[l - 1].Substring(match.Index)))
+                        if (seaMonster[2].IsMatch(image[l + 1][match.Index..]) &&
+                            seaMonster[0].IsMatch(image[l - 1][match.Index..]))
                         {
                             monstersFound++;
                         }

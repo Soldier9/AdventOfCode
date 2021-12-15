@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace AdventOfCode.Solvers.Year2020
+﻿namespace AdventOfCode.Solvers.Year2020
 {
     class Day21Solver : AbstractSolver
     {
@@ -21,23 +16,22 @@ namespace AdventOfCode.Solvers.Year2020
                 foreach (string alergen in Alergens)
                 {
                     if (!Alergens2Recipes.ContainsKey(alergen)) Alergens2Recipes.Add(alergen, new HashSet<Recipe>());
-                    Alergens2Recipes[alergen].Add(this);
+                    _ = Alergens2Recipes[alergen].Add(this);
                 }
             }
         }
 
-        List<Recipe> Recipes = new List<Recipe>();
-        static Dictionary<string, HashSet<Recipe>> Alergens2Recipes = new Dictionary<string, HashSet<Recipe>>();
-
-        Dictionary<string, string> Identified = new Dictionary<string, string>();
+        readonly List<Recipe> Recipes = new();
+        static readonly Dictionary<string, HashSet<Recipe>> Alergens2Recipes = new();
+        readonly Dictionary<string, string> Identified = new();
 
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    Recipes.Add(new Recipe(input.ReadLine()));
+                    Recipes.Add(new Recipe(input.ReadLine()!));
                 }
             }
 
@@ -45,28 +39,31 @@ namespace AdventOfCode.Solvers.Year2020
             {
                 foreach (string alergen in Alergens2Recipes.Keys)
                 {
-                    HashSet<string> ingredients = null;
+                    HashSet<string>? ingredients = null;
                     foreach (Recipe recipe in Alergens2Recipes[alergen])
                     {
-                        if (ingredients == null) ingredients = new HashSet<string>(recipe.Ingredients.Where(i => !Identified.ContainsKey(i)));
+                        if (ingredients == null)
+                        {
+                            ingredients = new HashSet<string>(recipe.Ingredients.Where(i => !Identified.ContainsKey(i)));
+                        }
                         else
                         {
-                            ingredients.RemoveWhere(r => !recipe.Ingredients.Contains(r));
+                            _ = ingredients.RemoveWhere(r => !recipe.Ingredients.Contains(r));
                         }
                     }
-                    if (ingredients.Count == 1)
+                    if (ingredients!.Count == 1)
                     {
                         Identified.Add(ingredients.First(), alergen);
                     }
                 }
             }
 
-            HashSet<string> noAlergens = new HashSet<string>();
+            HashSet<string> noAlergens = new();
             foreach (Recipe recipe in Recipes)
             {
                 foreach (string ingredient in recipe.Ingredients)
                 {
-                    if (!Identified.ContainsKey(ingredient)) noAlergens.Add(ingredient);
+                    if (!Identified.ContainsKey(ingredient)) _ = noAlergens.Add(ingredient);
                 }
             }
 

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers.Year2020
 {
@@ -18,17 +16,17 @@ namespace AdventOfCode.Solvers.Year2020
             public string cid;
         }
 
-        private List<Passport> passports = new List<Passport>();
+        private readonly List<Passport> passports = new();
 
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                Passport passport = new Passport();
+                Passport passport = new();
 
                 while (!input.EndOfStream)
                 {
-                    string line = input.ReadLine();
+                    string line = input.ReadLine()!;
                     if (line == "")
                     {
                         passports.Add(passport);
@@ -68,21 +66,20 @@ namespace AdventOfCode.Solvers.Year2020
 
         public override string Part2()
         {
-            Regex hgtValid = new Regex(@"^(\d+)(cm|in)$");
-            Regex hclValid = new Regex(@"^#(\d|[abcdef]){6}$");
-            Regex pidValid = new Regex(@"^\d{9}$");
+            Regex hgtValid = new(@"^(\d+)(cm|in)$");
+            Regex hclValid = new(@"^#(\d|[abcdef]){6}$");
+            Regex pidValid = new(@"^\d{9}$");
 
             int result = 0;
             foreach (Passport pp in passports)
             {
                 if (pp.byr == null || pp.iyr == null || pp.eyr == null || pp.hgt == null || pp.hcl == null || pp.ecl == null || pp.pid == null) continue;
 
-                int tmp = 0;
-                if (!(int.TryParse(pp.byr, out tmp) && tmp >= 1920 && tmp <= 2002)) continue;
+                if (!(int.TryParse(pp.byr, out int tmp) && tmp >= 1920 && tmp <= 2002)) continue;
                 if (!(int.TryParse(pp.iyr, out tmp) && tmp >= 2010 && tmp <= 2020)) continue;
                 if (!(int.TryParse(pp.eyr, out tmp) && tmp >= 2020 && tmp <= 2030)) continue;
 
-                var hgtMatch = hgtValid.Match(pp.hgt);
+                Match hgtMatch = hgtValid.Match(pp.hgt);
                 if (hgtMatch == Match.Empty) continue;
                 if (hgtMatch.Groups[2].Value == "cm" && !(int.Parse(hgtMatch.Groups[1].Value) >= 150 && int.Parse(hgtMatch.Groups[1].Value) <= 193)) continue;
                 if (hgtMatch.Groups[2].Value == "in" && !(int.Parse(hgtMatch.Groups[1].Value) >= 59 && int.Parse(hgtMatch.Groups[1].Value) <= 76)) continue;

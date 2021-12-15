@@ -1,26 +1,23 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-namespace AdventOfCode.Solvers.Year2020
+﻿namespace AdventOfCode.Solvers.Year2020
 {
     class Day10Solver : AbstractSolver
     {
-        List<int> adapters = new List<int>();
+        readonly List<int> adapters = new();
         int finalJoltage = 0;
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    adapters.Add(int.Parse(input.ReadLine()));
+                    adapters.Add(int.Parse(input.ReadLine()!));
                 }
             }
 
             int dif1 = 0;
             int dif3 = 0;
             adapters.Sort();
-            foreach (var adapter in adapters)
+            foreach (int adapter in adapters)
             {
                 switch (adapter - finalJoltage)
                 {
@@ -40,7 +37,7 @@ namespace AdventOfCode.Solvers.Year2020
             return ValidPathsToEnd(0, -1).ToString();
         }
 
-        Dictionary<int, long> foundPaths = new Dictionary<int, long>();
+        readonly Dictionary<int, long> foundPaths = new();
         public long ValidPathsToEnd(int adapter, int index)
         {
             if (finalJoltage - adapter <= 3) return 1;

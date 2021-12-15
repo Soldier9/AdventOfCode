@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace AdventOfCode.Solvers.Year2021
+﻿namespace AdventOfCode.Solvers.Year2021
 {
     class Day3Solver : AbstractSolver
     {
         public override string Part1()
         {
-            List<int> bits = null;
+            List<int>? bits = null;
             int inputs = 0;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    string line = input.ReadLine();
+                    string line = input.ReadLine()!;
                     if (bits == null) bits = new List<int>(new int[line.Length]);
                     for (int i = 0; i < line.Length; i++)
                     {
@@ -29,7 +24,7 @@ namespace AdventOfCode.Solvers.Year2021
             int gamma = 0;
             int epsilon = 0;
             int half = inputs / 2;
-            for (int i = 0; i < bits.Count; i++)
+            for (int i = 0; i < bits!.Count; i++)
             {
                 if (bits[i] > half) gamma ^= (1 << (bits.Count - 1 - i));
                 else epsilon ^= (1 << (bits.Count - 1 - i));
@@ -39,10 +34,10 @@ namespace AdventOfCode.Solvers.Year2021
 
         public override string Part2()
         {
-            List<string> orgInputs = new List<string>();
-            using (var input = File.OpenText(InputFile))
+            List<string> orgInputs = new();
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                while (!input.EndOfStream) orgInputs.Add(input.ReadLine());
+                while (!input.EndOfStream) orgInputs.Add(input.ReadLine()!);
             }
 
             int oxygen = 0;
@@ -56,8 +51,8 @@ namespace AdventOfCode.Solvers.Year2021
                 }
 
                 int ones = inputs.Count(input => input[i] == '1');
-                if (ones >= inputs.Count / 2) inputs.RemoveAll(s => s[i] == '0');
-                else inputs.RemoveAll(s => s[i] == '1');
+                if (ones >= inputs.Count / 2) _ = inputs.RemoveAll(s => s[i] == '0');
+                else _ = inputs.RemoveAll(s => s[i] == '1');
             }
 
 
@@ -72,8 +67,8 @@ namespace AdventOfCode.Solvers.Year2021
                 }
 
                 int ones = inputs.Count(input => input[i] == '1');
-                if (ones < inputs.Count / 2) inputs.RemoveAll(s => s[i] == '0');
-                else inputs.RemoveAll(s => s[i] == '1');
+                if (ones < inputs.Count / 2) _ = inputs.RemoveAll(s => s[i] == '0');
+                else _ = inputs.RemoveAll(s => s[i] == '1');
             }
 
             return (oxygen * co2).ToString();

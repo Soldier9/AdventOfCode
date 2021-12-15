@@ -1,20 +1,17 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-namespace AdventOfCode.Solvers.Year2020
+﻿namespace AdventOfCode.Solvers.Year2020
 {
     class Day1Solver : AbstractSolver
     {
         private const int target = 2020;
-        private HashSet<int> nums = new HashSet<int>();
+        private readonly HashSet<int> nums = new();
 
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    nums.Add(int.Parse(input.ReadLine()));
+                    _ = nums.Add(int.Parse(input.ReadLine()!));
                 }
             }
 

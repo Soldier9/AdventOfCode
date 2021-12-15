@@ -1,18 +1,15 @@
-﻿using System;
-using System.IO;
-
-namespace AdventOfCode.Solvers.Year2019
+﻿namespace AdventOfCode.Solvers.Year2019
 {
     class Day1Solver : AbstractSolver
     {
         public override string Part1()
         {
             long totalFuelRequired = 0;
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    int mass = Int32.Parse(input.ReadLine());
+                    int mass = int.Parse(input.ReadLine()!);
                     int fuelRequired = (int)Math.Floor(mass / 3.0) - 2;
                     totalFuelRequired += fuelRequired;
                 }
@@ -24,12 +21,12 @@ namespace AdventOfCode.Solvers.Year2019
         public override string Part2()
         {
             long totalFuelRequired = 0;
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    int mass = Int32.Parse(input.ReadLine());
-                    int fuelRequired = getFuelRequired(mass);
+                    int mass = int.Parse(input.ReadLine()!);
+                    int fuelRequired = GetFuelRequired(mass);
                     totalFuelRequired += fuelRequired;
                 }
             }
@@ -37,10 +34,10 @@ namespace AdventOfCode.Solvers.Year2019
             return totalFuelRequired.ToString();
         }
 
-        int getFuelRequired(int mass)
+        int GetFuelRequired(int mass)
         {
             int fuel = Math.Max((int)Math.Floor(mass / 3.0) - 2, 0);
-            if (fuel > 0) fuel += (getFuelRequired(fuel));
+            if (fuel > 0) fuel += (GetFuelRequired(fuel));
             return fuel;
         }
     }

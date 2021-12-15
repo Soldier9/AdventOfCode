@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace AdventOfCode.Solvers.Year2019
+﻿namespace AdventOfCode.Solvers.Year2019
 {
     class Day10Solver : AbstractSolver
     {
@@ -18,24 +13,21 @@ namespace AdventOfCode.Solvers.Year2019
                 B = b;
             }
 
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
+                if (obj == null) return false;
                 Line other = (Line)obj;
-                return (other.A == A && other.B == B);
+                return other.A == A && other.B == B;
             }
 
-            public int CompareTo(object obj)
+            public int CompareTo(object? obj)
             {
-                Line other = (Line)obj;
-                return A.CompareTo(other.A);
+                return A.CompareTo(obj is not Line other ? null : other.A);
             }
 
             public override int GetHashCode()
             {
-                var hashCode = -1817952719;
-                hashCode = hashCode * -1521134295 + A.GetHashCode();
-                hashCode = hashCode * -1521134295 + B.GetHashCode();
-                return hashCode;
+                return HashCode.Combine(A, B);
             }
 
             public override string ToString()
@@ -46,8 +38,8 @@ namespace AdventOfCode.Solvers.Year2019
 
         class Distances
         {
-            public SortedDictionary<double, Asteroid> OneWay = new SortedDictionary<double, Asteroid>();
-            public SortedDictionary<double, Asteroid> TheOtherWay = new SortedDictionary<double, Asteroid>();
+            public SortedDictionary<double, Asteroid> OneWay = new();
+            public SortedDictionary<double, Asteroid> TheOtherWay = new();
         }
 
         class Asteroid
@@ -55,7 +47,7 @@ namespace AdventOfCode.Solvers.Year2019
             public readonly int X;
             public readonly int Y;
 
-            public Dictionary<Line, Distances> OtherAsteroids = new Dictionary<Line, Distances>();
+            public Dictionary<Line, Distances> OtherAsteroids = new();
 
             public Asteroid(int x, int y)
             {
@@ -88,7 +80,7 @@ namespace AdventOfCode.Solvers.Year2019
 
                     if (!OtherAsteroids.ContainsKey(line))
                     {
-                        Distances distances = new Distances();
+                        Distances distances = new();
                         if (otherAsteroid.X > X || (otherAsteroid.X == X && otherAsteroid.Y < Y))
                         {
                             distances.OneWay.Add(distance, otherAsteroid);
@@ -123,19 +115,19 @@ namespace AdventOfCode.Solvers.Year2019
             }
         }
 
-        HashSet<Asteroid> Asteroids = new HashSet<Asteroid>();
-        Asteroid BestAsteroid;
+        readonly HashSet<Asteroid> Asteroids = new();
+        Asteroid? BestAsteroid;
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 int y = 0;
                 while (!input.EndOfStream)
                 {
-                    string line = input.ReadLine();
+                    string line = input.ReadLine()!;
                     for (int x = 0; x < line.Length; x++)
                     {
-                        if (line[x] == '#') Asteroids.Add(new Asteroid(x, y));
+                        if (line[x] == '#') _ = Asteroids.Add(new Asteroid(x, y));
                     }
                     y++;
                 }
@@ -157,24 +149,24 @@ namespace AdventOfCode.Solvers.Year2019
 
         public override string Part2()
         {
-            List<Asteroid> vaporizations = new List<Asteroid>();
+            List<Asteroid> vaporizations = new();
 
             bool oneWay = true;
             while (Asteroids.Count - 1 > vaporizations.Count)
             {
-                foreach (KeyValuePair<Line, Distances> otherAsteroid in BestAsteroid.OtherAsteroids.OrderBy(a => a.Key))
+                foreach (KeyValuePair<Line, Distances> otherAsteroid in BestAsteroid!.OtherAsteroids.OrderBy(a => a.Key))
                 {
                     if (oneWay && otherAsteroid.Value.OneWay.Count > 0)
                     {
                         KeyValuePair<double, Asteroid> nextToVaporize = otherAsteroid.Value.OneWay.First();
                         vaporizations.Add(nextToVaporize.Value);
-                        otherAsteroid.Value.OneWay.Remove(nextToVaporize.Key);
+                        _ = otherAsteroid.Value.OneWay.Remove(nextToVaporize.Key);
                     }
                     else if (!oneWay && otherAsteroid.Value.TheOtherWay.Count > 0)
                     {
                         KeyValuePair<double, Asteroid> nextToVaporize = otherAsteroid.Value.TheOtherWay.First();
                         vaporizations.Add(nextToVaporize.Value);
-                        otherAsteroid.Value.TheOtherWay.Remove(nextToVaporize.Key);
+                        _ = otherAsteroid.Value.TheOtherWay.Remove(nextToVaporize.Key);
                     }
                 }
                 oneWay = !oneWay;

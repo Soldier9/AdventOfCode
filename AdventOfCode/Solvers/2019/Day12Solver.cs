@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers.Year2019
 {
@@ -29,14 +26,7 @@ namespace AdventOfCode.Solvers.Year2019
 
             public override int GetHashCode()
             {
-                var hashCode = -1519173815;
-                hashCode = hashCode * -1521134295 + X.GetHashCode();
-                hashCode = hashCode * -1521134295 + Y.GetHashCode();
-                hashCode = hashCode * -1521134295 + Z.GetHashCode();
-                hashCode = hashCode * -1521134295 + VelX.GetHashCode();
-                hashCode = hashCode * -1521134295 + VelY.GetHashCode();
-                hashCode = hashCode * -1521134295 + VelZ.GetHashCode();
-                return hashCode;
+                return HashCode.Combine(X, Y, Z, VelX, VelY, VelZ);
             }
 
             public int GetTotalEnergy()
@@ -49,13 +39,13 @@ namespace AdventOfCode.Solvers.Year2019
 
         public override string Part1()
         {
-            List<Moon> moons = new List<Moon>();
+            List<Moon> moons = new();
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    MatchCollection matches = Regex.Matches(input.ReadLine(), @"\-?\d+");
+                    MatchCollection matches = Regex.Matches(input.ReadLine()!, @"\-?\d+");
 
                     int x = int.Parse(matches[0].Value);
                     int y = int.Parse(matches[1].Value);
@@ -100,35 +90,35 @@ namespace AdventOfCode.Solvers.Year2019
             return totalSystemEnergy.ToString();
         }
 
-        long GCD(long a, long b)
-        {
-            while (b != 0)
-            {
-                long t = b;
-                b = a % b;
-                a = t;
-            }
-            return a;
-        }
+        //static long GCD(long a, long b)
+        //{
+        //    while (b != 0)
+        //    {
+        //        long t = b;
+        //        b = a % b;
+        //        a = t;
+        //    }
+        //    return a;
+        //}
 
-        long LCM(List<long> numbers)
-        {
-            long result = numbers[0];
-            for (int i = 1; i < numbers.Count; i++)
-            {
-                result = result * numbers[i] / GCD(result, numbers[i]);
-            }
-            return result;
-        }
+        //static long LCM(List<long> numbers)
+        //{
+        //    long result = numbers[0];
+        //    for (int i = 1; i < numbers.Count; i++)
+        //    {
+        //        result = result * numbers[i] / GCD(result, numbers[i]);
+        //    }
+        //    return result;
+        //}
 
         public override string Part2()
         {
-            List<Moon> moons = new List<Moon>();
-            using (var input = File.OpenText(InputFile))
+            List<Moon> moons = new();
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    MatchCollection matches = Regex.Matches(input.ReadLine(), @"\-?\d+");
+                    MatchCollection matches = Regex.Matches(input.ReadLine()!, @"\-?\d+");
 
                     int x = int.Parse(matches[0].Value);
                     int y = int.Parse(matches[1].Value);

@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
-namespace AdventOfCode.Solvers.Year2019
+﻿namespace AdventOfCode.Solvers.Year2019
 {
     class Day14Solver : AbstractSolver
     {
         class Reaction
         {
-            public readonly static Dictionary<string, Reaction> AllReactions = new Dictionary<string, Reaction>();
+            public readonly static Dictionary<string, Reaction> AllReactions = new();
 
             public readonly string Result;
             public readonly long Amount;
 
-            readonly Dictionary<string, long> Ingredients = new Dictionary<string, long>();
-            readonly Dictionary<Reaction, long> LinkedIngredients = new Dictionary<Reaction, long>();
+            readonly Dictionary<string, long> Ingredients = new();
+            readonly Dictionary<Reaction, long> LinkedIngredients = new();
 
-            readonly Dictionary<string, long> LeftOvers = new Dictionary<string, long>();
+            readonly Dictionary<string, long> LeftOvers = new();
 
             public Reaction(string result, long amount, Dictionary<string, long> ingredients)
             {
@@ -57,13 +53,13 @@ namespace AdventOfCode.Solvers.Year2019
                     }
                     else if (LeftOvers[Result] == amountRequired)
                     {
-                        LeftOvers.Remove(Result);
+                        _ = LeftOvers.Remove(Result);
                         return 0;
                     }
                     else
                     {
                         amountRequired -= LeftOvers[Result];
-                        LeftOvers.Remove(Result);
+                        _ = LeftOvers.Remove(Result);
                     }
                 }
 
@@ -82,16 +78,16 @@ namespace AdventOfCode.Solvers.Year2019
 
         public override string Part1()
         {
-            Dictionary<Reaction, long> amountsNeeded = new Dictionary<Reaction, long>();
-            new Reaction("ORE", 1, new Dictionary<string, long>());
+            //Dictionary<Reaction, long> amountsNeeded = new();
+            _ = new Reaction("ORE", 1, new Dictionary<string, long>());
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    string[] splitLine = input.ReadLine().Split(new string[] { " => " }, StringSplitOptions.None);
+                    string[] splitLine = input.ReadLine()!.Split(new string[] { " => " }, StringSplitOptions.None);
                     string[] splitResult = splitLine[1].Split(' ');
-                    Dictionary<string, long> ingredients = new Dictionary<string, long>();
+                    Dictionary<string, long> ingredients = new();
 
                     foreach (string ingredient in splitLine[0].Split(new string[] { ", " }, StringSplitOptions.None))
                     {
@@ -99,7 +95,7 @@ namespace AdventOfCode.Solvers.Year2019
                         ingredients.Add(splitIngredient[1], long.Parse(splitIngredient[0]));
                     }
 
-                    new Reaction(splitResult[1], long.Parse(splitResult[0]), ingredients);
+                    _ = new Reaction(splitResult[1], long.Parse(splitResult[0]), ingredients);
                 }
             }
 
@@ -112,9 +108,9 @@ namespace AdventOfCode.Solvers.Year2019
             long target = 1000000000000;
             Reaction fuelReaction = Reaction.AllReactions["FUEL"];
             long lastAttempt = 1;
-            long lastResult = 0;
+            long lastResult;
             long nextAttempt = 1000000000000 / fuelReaction.GetOreRequired();
-            long currentAttempt = nextAttempt;
+            long currentAttempt;
 
             while (true)
             {

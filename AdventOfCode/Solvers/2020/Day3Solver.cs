@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
-namespace AdventOfCode.Solvers.Year2020
+﻿namespace AdventOfCode.Solvers.Year2020
 {
     class Day3Solver : AbstractSolver
     {
-        private List<string> map = new List<string>();
+        private readonly List<string> map = new();
 
         private int FindTreesInTraversal(int right, int down)
         {
@@ -32,11 +28,11 @@ namespace AdventOfCode.Solvers.Year2020
 
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    map.Add(input.ReadLine());
+                    map.Add(input.ReadLine()!);
                 }
             }
 
@@ -45,7 +41,7 @@ namespace AdventOfCode.Solvers.Year2020
 
         public override string Part2()
         {
-            Int64 result = 1;
+            long result = 1;
             result *= FindTreesInTraversal(1, 1);
             result *= FindTreesInTraversal(3, 1);
             result *= FindTreesInTraversal(5, 1);

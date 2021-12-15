@@ -1,29 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace AdventOfCode.Solvers.Year2020
+﻿namespace AdventOfCode.Solvers.Year2020
 {
     class Day16Solver : AbstractSolver
     {
         class Rule
         {
-            public string Name;
+            public string? Name;
             public (int, int) Range1;
             public (int, int) Range2;
             public int Fieldnumber;
-            public List<int> PotentialFieldNums = new List<int>();
+            public List<int> PotentialFieldNums = new();
         }
 
-        List<Rule> Rules = new List<Rule>();
-        List<List<int>> NearbyTickets = new List<List<int>>();
-        List<List<int>> ValidNearbyTickets = new List<List<int>>();
-        List<int> MyTicket = new List<int>();
+        readonly List<Rule> Rules = new();
+        readonly List<List<int>> NearbyTickets = new();
+        readonly List<List<int>> ValidNearbyTickets = new();
+        List<int> MyTicket = new();
         int ValuesOnTicket = 0;
         public override string Part1()
         {
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 bool parsingRules = true;
                 bool parsingYourTicket = false;
@@ -31,7 +26,7 @@ namespace AdventOfCode.Solvers.Year2020
 
                 while (!input.EndOfStream)
                 {
-                    string[] line = input.ReadLine().Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] line = input.ReadLine()!.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
                     if (line.Length == 0) continue;
                     if (line.Length == 1)
                     {
@@ -126,13 +121,13 @@ namespace AdventOfCode.Solvers.Year2020
                 currentRule.Fieldnumber = currentRule.PotentialFieldNums[0];
                 foreach (Rule rule in Rules)
                 {
-                    rule.PotentialFieldNums.Remove(currentRule.Fieldnumber);
+                    _ = rule.PotentialFieldNums.Remove(currentRule.Fieldnumber);
                 }
                 fieldsAssigned++;
             }
 
             long result = 1;
-            foreach (Rule rule in Rules.Where(r => r.Name.StartsWith("departure")))
+            foreach (Rule rule in Rules.Where(r => r.Name!.StartsWith("departure")))
             {
                 result *= MyTicket[rule.Fieldnumber];
             }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 
 namespace AdventOfCode.Solvers.Year2019
 {
@@ -235,24 +230,24 @@ namespace AdventOfCode.Solvers.Year2019
         {
             int[] program;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                program = input.ReadLine().Split(',').Select(n => int.Parse(n)).ToArray();
+                program = input.ReadLine()!.Split(',').Select(n => int.Parse(n)).ToArray();
             }
 
             int greatestFinalResult = 0;
             foreach (int[] settings in GetCombinations())
             {
                 BlockingCollection<int> outputQueue;
-                BlockingCollection<int> inputQueue = new BlockingCollection<int>();
+                BlockingCollection<int> inputQueue = new();
 
-                List<Task<int>> cpus = new List<Task<int>>();
+                List<Task<int>> cpus = new();
                 for (int i = 0; i < 5; i++)
                 {
                     outputQueue = new BlockingCollection<int>();
                     inputQueue.Add(settings[i]);
                     if (i == 0) inputQueue.Add(0); // first input for cpu A
-                    IntcodeCPU cpu = new IntcodeCPU(program, inputQueue, outputQueue);
+                    IntcodeCPU cpu = new(program, inputQueue, outputQueue);
                     cpus.Add(new Task<int>(() =>
                     {
                         return cpu.RunProgram();
@@ -271,25 +266,25 @@ namespace AdventOfCode.Solvers.Year2019
         {
             int[] program;
 
-            using (var input = File.OpenText(InputFile))
+            using (StreamReader input = File.OpenText(InputFile))
             {
-                program = input.ReadLine().Split(',').Select(n => int.Parse(n)).ToArray();
+                program = input.ReadLine()!.Split(',').Select(n => int.Parse(n)).ToArray();
             }
 
             int greatestFinalResult = 0;
             foreach (int[] settings in GetCombinations2())
             {
                 BlockingCollection<int> outputQueue;
-                BlockingCollection<int> inputQueue = new BlockingCollection<int>();
+                BlockingCollection<int> inputQueue = new();
 
                 BlockingCollection<int> cpu1Input = inputQueue;
-                List<Task<int>> cpus = new List<Task<int>>();
+                List<Task<int>> cpus = new();
                 for (int i = 0; i < 5; i++)
                 {
                     outputQueue = (i == 4 ? cpu1Input : new BlockingCollection<int>());
                     inputQueue.Add(settings[i]);
                     if (i == 0) inputQueue.Add(0); // first input for cpu A
-                    IntcodeCPU cpu = new IntcodeCPU(program, inputQueue, outputQueue);
+                    IntcodeCPU cpu = new(program, inputQueue, outputQueue);
                     cpus.Add(new Task<int>(() =>
                     {
                         return cpu.RunProgram();

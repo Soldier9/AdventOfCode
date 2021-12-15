@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Solvers.Year2019
 {
@@ -10,14 +9,14 @@ namespace AdventOfCode.Solvers.Year2019
         readonly int InputFrom = 136818;
         readonly int InputTo = 685979;
 
-        bool IsValidPw(string testPw, bool part2 = false)
+        static bool IsValidPw(string testPw, bool part2 = false)
         {
             for (int i = 1; i < testPw.Length; i++)
             {
                 if (testPw[i - 1] > testPw[i]) return false;
             }
 
-            var matches = Regex.Matches(testPw, @"(\d)\1+").Cast<Match>();
+            IEnumerable<Match> matches = Regex.Matches(testPw, @"(\d)\1+").Cast<Match>();
             if (!part2 && matches.Any(m => m.Length >= 2)) return true;
             else if (part2 && matches.Any(m => m.Length == 2)) return true;
 

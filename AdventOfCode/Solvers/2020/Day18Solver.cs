@@ -1,19 +1,15 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace AdventOfCode.Solvers.Year2020
+﻿namespace AdventOfCode.Solvers.Year2020
 {
     class Day18Solver : AbstractSolver
     {
         public override string Part1()
         {
-            List<long> results = new List<long>();
-            using (var input = File.OpenText(InputFile))
+            List<long> results = new();
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    results.Add(long.Parse(Evaluate(input.ReadLine())));
+                    results.Add(long.Parse(Evaluate(input.ReadLine()!)));
                 }
             }
             return results.Sum().ToString();
@@ -28,12 +24,15 @@ namespace AdventOfCode.Solvers.Year2020
                 {
                     for (int j = i + 1; j < expr.Length; j++)
                     {
-                        if (expr[j] == '(') i = j;
+                        if (expr[j] == '(')
+                        {
+                            i = j;
+                        }
                         else if (expr[j] == ')')
                         {
-                            string preExpr = expr.Substring(0, i);
+                            string preExpr = expr[..i];
                             string innerExpr = expr.Substring(i + 1, j - i - 1);
-                            string postExpr = expr.Substring(j + 1);
+                            string postExpr = expr[(j + 1)..];
 
                             return Evaluate(preExpr + Evaluate(innerExpr) + postExpr);
                         }
@@ -52,9 +51,9 @@ namespace AdventOfCode.Solvers.Year2020
                         if (expr[j] == ' ') break;
                     }
 
-                    string operand1 = expr.Substring(0, i);
+                    string operand1 = expr[..i];
                     string operand2 = expr.Substring(i + 2, j - i - 2);
-                    string postExpr = expr.Substring(j);
+                    string postExpr = expr[j..];
 
                     if (expr[i] == '+') return Evaluate((long.Parse(operand1) + long.Parse(operand2)).ToString() + postExpr);
                     if (expr[i] == '*') return Evaluate((long.Parse(operand1) * long.Parse(operand2)).ToString() + postExpr);
@@ -68,12 +67,12 @@ namespace AdventOfCode.Solvers.Year2020
 
         public override string Part2()
         {
-            List<long> results = new List<long>();
-            using (var input = File.OpenText(InputFile))
+            List<long> results = new();
+            using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
                 {
-                    results.Add(long.Parse(Evaluate2(input.ReadLine())));
+                    results.Add(long.Parse(Evaluate2(input.ReadLine()!)));
                 }
             }
             return results.Sum().ToString();
@@ -88,12 +87,15 @@ namespace AdventOfCode.Solvers.Year2020
                 {
                     for (int j = i + 1; j < expr.Length; j++)
                     {
-                        if (expr[j] == '(') i = j;
+                        if (expr[j] == '(')
+                        {
+                            i = j;
+                        }
                         else if (expr[j] == ')')
                         {
-                            string preExpr = expr.Substring(0, i);
+                            string preExpr = expr[..i];
                             string innerExpr = expr.Substring(i + 1, j - i - 1);
-                            string postExpr = expr.Substring(j + 1);
+                            string postExpr = expr[(j + 1)..];
 
                             return Evaluate2(preExpr + Evaluate2(innerExpr) + postExpr);
                         }
@@ -119,10 +121,10 @@ namespace AdventOfCode.Solvers.Year2020
                     }
                     if (k > 0) k++;
 
-                    string preExpr = expr.Substring(0, k);
-                    string operand1 = expr.Substring(k, i - k);
+                    string preExpr = expr[..k];
+                    string operand1 = expr[k..i];
                     string operand2 = expr.Substring(i + 2, j - i - 2);
-                    string postExpr = expr.Substring(j);
+                    string postExpr = expr[j..];
 
                     return Evaluate2(preExpr + (long.Parse(operand1) + long.Parse(operand2)).ToString() + postExpr);
                 }
@@ -140,9 +142,9 @@ namespace AdventOfCode.Solvers.Year2020
                         if (expr[j] == ' ') break;
                     }
 
-                    string operand1 = expr.Substring(0, i);
+                    string operand1 = expr[..i];
                     string operand2 = expr.Substring(i + 2, j - i - 2);
-                    string postExpr = expr.Substring(j);
+                    string postExpr = expr[j..];
 
                     return Evaluate2((long.Parse(operand1) * long.Parse(operand2)).ToString() + postExpr);
                 }
