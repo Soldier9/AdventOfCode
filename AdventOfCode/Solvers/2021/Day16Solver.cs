@@ -87,7 +87,7 @@ namespace AdventOfCode.Solvers.Year2021
                         value = Value;
                         break;
                     case 5:
-                        value = (ulong)((SubPackets[0].GetValue() > SubPackets[1].GetValue())?1:0);
+                        value = (ulong)((SubPackets[0].GetValue() > SubPackets[1].GetValue()) ? 1 : 0);
                         break;
                     case 6:
                         value = (ulong)((SubPackets[0].GetValue() < SubPackets[1].GetValue()) ? 1 : 0);
