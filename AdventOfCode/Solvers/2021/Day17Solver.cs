@@ -37,7 +37,7 @@ namespace AdventOfCode.Solvers.Year2021
                     MaxTarget = (int.Parse(extract.Groups[2].Value), int.Parse(extract.Groups[4].Value));
                 }
             }
-            
+
             Dictionary<(int, int), int> validVelocities = new();
             for (int x = 0; x <= MaxTarget.x; x++)
             {
