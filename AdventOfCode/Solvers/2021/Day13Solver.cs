@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode.Solvers.Year2021
+﻿using System.Text;
+
+namespace AdventOfCode.Solvers.Year2021
 {
     class Day13Solver : AbstractSolver
     {
@@ -80,13 +82,25 @@
                 }
             }
 
-            foreach ((int x, int y) in dots)
+            (int min, int max) xBounds = (dots.MinBy(d => d.x).x, dots.MaxBy(d => d.x).x);
+            (int min, int max) yBounds = (dots.MinBy(d => d.y).y, dots.MaxBy(d => d.y).y);
+            StringBuilder sb = new();
+            for (int y = yBounds.min; y <= yBounds.max; y++)
             {
-                Console.SetCursorPosition(x, y + 7);
-                Console.Write("#");
+                for (int x = xBounds.min; x <= xBounds.max; x++)
+                {
+                    _ = sb.Append(dots.Contains((x, y)) ? '#' : ' ');
+                }
+                _ = sb.Append("\r\n");
             }
-            Console.SetCursorPosition(0, 6);
-            return "";
+            Program.PrintData(sb.ToString(), 0, true);
+            //foreach ((int x, int y) in dots)
+            //{
+            //    Console.SetCursorPosition(x, y + 7);
+            //    Console.Write("#");
+            //}
+            //Console.SetCursorPosition(0, 6);
+            return "Look below";
         }
     }
 }

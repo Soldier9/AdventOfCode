@@ -8,6 +8,8 @@ namespace AdventOfCode
         public readonly int Day;
         protected readonly string InputFile;
         public virtual bool PrioritizedSolver => false;
+        public virtual bool HasVisualization => false;
+        public virtual bool HasExtendedVisualization => false;
 
         protected AbstractSolver()
         {

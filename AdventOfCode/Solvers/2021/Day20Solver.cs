@@ -4,6 +4,9 @@ namespace AdventOfCode.Solvers.Year2021
 {
     class Day20Solver : AbstractSolver
     {
+        public override bool HasVisualization => true;
+        public override bool HasExtendedVisualization => true;
+
         public override string Part1()
         {
             string algorithm;
@@ -31,6 +34,7 @@ namespace AdventOfCode.Solvers.Year2021
             (int min, int max) yBounds = (image.Keys.MinBy(k => k.y).y, image.Keys.MaxBy(k => k.y).y);
             for (int n = 0; n < 2; n++)
             {
+                if (Program.ExtendedVisualization) PrintImage(image);
                 xBounds.min--; xBounds.max++;
                 yBounds.min--; yBounds.max++;
                 Dictionary<(int, int), char> nextImage = new();
@@ -45,6 +49,7 @@ namespace AdventOfCode.Solvers.Year2021
                 image = nextImage;
             }
 
+            if (Program.VisualizationEnabled) PrintImage(image);
             return image.Where(p => p.Value == '1').Count().ToString();
         }
 
@@ -95,6 +100,7 @@ namespace AdventOfCode.Solvers.Year2021
             (int min, int max) yBounds = (image.Keys.MinBy(k => k.y).y, image.Keys.MaxBy(k => k.y).y);
             for (int n = 0; n < 50; n++)
             {
+                if (Program.ExtendedVisualization) PrintImage(image);
                 xBounds.min--; xBounds.max++;
                 yBounds.min--; yBounds.max++;
                 Dictionary<(int, int), char> nextImage = new();
@@ -109,23 +115,25 @@ namespace AdventOfCode.Solvers.Year2021
                 image = nextImage;
             }
 
+            if (Program.VisualizationEnabled) PrintImage(image);
             return image.Where(p => p.Value == '1').Count().ToString();
         }
 
-#pragma warning disable IDE0051 // Remove unused private members
         private static void PrintImage(Dictionary<(int x, int y), char> image)
-#pragma warning restore IDE0051 // Remove unused private members
         {
-            Dictionary<(int, int), char> nextImage = new();
-            for (int x = image.Keys.MinBy(k => k.x).x; x <= image.Keys.MaxBy(k => k.x).x; x++)
+            StringBuilder sb = new();
+            (int min, int max) xBounds = (image.Keys.MinBy(k => k.x).x, image.Keys.MaxBy(k => k.x).x);
+            (int min, int max) yBounds = (image.Keys.MinBy(k => k.y).y, image.Keys.MaxBy(k => k.y).y);
+            for (int x = xBounds.min; x <= xBounds.max; x++)
             {
-                for (int y = image.Keys.MinBy(k => k.y).y; y <= image.Keys.MaxBy(k => k.y).y; y++)
+                for (int y = yBounds.min; y <= yBounds.max; y++)
                 {
-                    Console.Write(image[(x, y)] == '1' ? '#' : ' ');
+                    _ = sb.Append(image[(x, y)] == '1' ? '#' : ' ');
                 }
-                Console.Write("\r\n");
+                _ = sb.Append("\r\n");
             }
-            Console.Write("\r\n");
+            
+            Program.PrintData(sb.ToString(), 1);
         }
     }
 }

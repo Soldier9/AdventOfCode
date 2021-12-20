@@ -1,7 +1,10 @@
-﻿namespace AdventOfCode.Solvers.Year2021
+﻿using System.Text;
+
+namespace AdventOfCode.Solvers.Year2021
 {
     class Day11Solver : AbstractSolver
     {
+        public override bool HasVisualization => true;
         class Octopus
         {
             static public Octopus[,] Grid = new Octopus[10, 10];
@@ -89,6 +92,7 @@
                     }
                     readyToFlash = Octopus.GetAllReadyToFlash();
                 }
+                PrintState(50);
             }
 
             return flashes.ToString();
@@ -135,10 +139,33 @@
                     readyToFlash = Octopus.GetAllReadyToFlash();
                 }
 
+                PrintState();
                 if (flashes == 100) return (n + 1).ToString();
             }
 
             return ":(".ToString();
+        }
+
+        static void PrintState(int delay = 10)
+        {
+            StringBuilder sb = new();
+
+            int width = Octopus.Grid.GetLength(0);
+            int height = Octopus.Grid.GetLength(1);
+            _ = sb.Append("\u001b[38;5;232m");
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    _ = sb.Append("\u001b[48;5;");
+                    _ = sb.Append(Octopus.Grid[x, y].Energy == 9 ? "255" : Octopus.Grid[x, y].Energy + 233);
+                    _ = sb.Append('m');
+                    _ = sb.Append(Octopus.Grid[x, y].Energy);
+                }
+                _ = sb.Append("\r\n");
+            }
+            _ = sb.Append("\u001b[0m");
+            Program.PrintData(sb.ToString(), delay);
         }
     }
 }

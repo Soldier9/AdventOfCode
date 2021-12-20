@@ -1,7 +1,12 @@
-﻿namespace AdventOfCode.Solvers.Year2021
+﻿using System.Text;
+
+namespace AdventOfCode.Solvers.Year2021
 {
     class Day15Solver : AbstractSolver
     {
+        public override bool HasVisualization => true;
+        public override bool HasExtendedVisualization => true;
+
         class Location
         {
             static public Dictionary<(int, int), Location> Grid = new();
@@ -35,6 +40,7 @@
                 while (priorityQueue.Peek().TotalRisk < Grid[destination].TotalRisk)
                 {
                     Location location = priorityQueue.Dequeue();
+                    if (Program.ExtendedVisualization) PrintState(location);
                     foreach (Location neighbor in location.GetNeighbors())
                     {
                         if (neighbor.TotalRisk > location.TotalRisk + neighbor.Risk)
@@ -44,11 +50,11 @@
                         }
                     }
                 }
-
+                if (Program.VisualizationEnabled) PrintState(Grid[destination]);
                 return Grid[destination].TotalRisk;
             }
 
-            List<Location> GetNeighbors()
+            private List<Location> GetNeighbors()
             {
                 List<Location> neighbors = new();
                 if (Position.x > 0) neighbors.Add(Grid[(Position.x - 1, Position.y)]);
@@ -58,6 +64,38 @@
                 if (Position.y < MaxY) neighbors.Add(Grid[(Position.x, Position.y + 1)]);
 
                 return neighbors;
+            }
+
+            private static void PrintState(Location bestPathSoFar)
+            {
+                HashSet<Location> bestPath = new();
+                Location backtrackLocation = bestPathSoFar;
+                _ = bestPath.Add(backtrackLocation);
+                while (backtrackLocation.Position != (0, 0))
+                {
+                    backtrackLocation = backtrackLocation.GetNeighbors().MinBy(l => l.TotalRisk)!;
+                    _ = bestPath.Add(backtrackLocation);
+                }
+
+                StringBuilder sb = new();
+                for (int x = 0; x <= MaxX; x++)
+                {
+                    for (int y = 0; y <= MaxY; y++)
+                    {
+                        if (bestPath.Contains(Grid[(x, y)]))
+                        {
+                            _ = sb.Append("\u001b[48;5;2m");
+                            _ = sb.Append(Grid[(x, y)].Risk);
+                            _ = sb.Append("\u001b[0m");
+                        }
+                        else
+                        {
+                            _ = sb.Append(Grid[(x, y)].Risk);
+                        }
+                    }
+                    _ = sb.Append("\r\n");
+                }
+                Program.PrintData(sb.ToString(), 1);
             }
         }
 
