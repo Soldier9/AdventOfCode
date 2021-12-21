@@ -132,7 +132,7 @@ namespace AdventOfCode.Solvers.Year2021
                 }
                 _ = sb.Append("\r\n");
             }
-            
+
             Program.PrintData(sb.ToString(), 1);
         }
     }
