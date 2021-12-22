@@ -34,19 +34,7 @@ namespace AdventOfCode.Solvers.Year2021
                 }
             }
 
-            int result = 0;
-            for (int x = -50; x <= 50; x++)
-            {
-                for (int y = -50; y <= 50; y++)
-                {
-                    for (int z = -50; z <= 50; z++)
-                    {
-                        if (cubes.ContainsKey((x, y, z)) && cubes[(x, y, z)]) result++;
-                    }
-                }
-            }
-
-            return result.ToString();
+            return cubes.Count(c => c.Value).ToString();
         }
 
         public override string Part2()
@@ -56,7 +44,6 @@ namespace AdventOfCode.Solvers.Year2021
 
             using (StreamReader input = File.OpenText(InputFile))
             {
-                int linesProcessed = 0;
                 while (!input.EndOfStream)
                 {
                     Match line = parser.Match(input.ReadLine()!);
@@ -85,7 +72,6 @@ namespace AdventOfCode.Solvers.Year2021
                     if (state) _ = newCubes.TryAdd(newCube, Volume(newCube));
 
                     cubes = newCubes;
-                    Program.PrintData("(" + ++linesProcessed + " / 420) " + cubes.Count + " cubes", 0, true);
                 }
             }
 
@@ -111,40 +97,24 @@ namespace AdventOfCode.Solvers.Year2021
         private static List<((int x, int y, int z) min, (int x, int y, int z) max)> SplitCube(((int x, int y, int z) min, (int x, int y, int z) max) cube1, ((int x, int y, int z) min, (int x, int y, int z) max) cube2)
         {
             List<((int x, int y, int z) min, (int x, int y, int z) max)> result = new();
-
-            List<int> xSplits = new();
-            List<int> ySplits = new();
-            List<int> zSplits = new();
-
-            xSplits.Add(cube1.min.x);
-            if (cube1.min.x <= cube2.min.x && cube2.min.x < cube1.max.x) xSplits.Add(cube2.min.x);
-            if (cube1.min.x < cube2.max.x && cube2.max.x <= cube1.max.x) xSplits.Add(cube2.max.x);
-            xSplits.Add(cube1.max.x);
-
-            ySplits.Add(cube1.min.y);
-            if (cube1.min.y <= cube2.min.y && cube2.min.y < cube1.max.y) ySplits.Add(cube2.min.y);
-            if (cube1.min.y < cube2.max.y && cube2.max.y <= cube1.max.y) ySplits.Add(cube2.max.y);
-            ySplits.Add(cube1.max.y);
-
-            zSplits.Add(cube1.min.z);
-            if (cube1.min.z <= cube2.min.z && cube2.min.z < cube1.max.z) zSplits.Add(cube2.min.z);
-            if (cube1.min.z < cube2.max.z && cube2.max.z <= cube1.max.z) zSplits.Add(cube2.max.z);
-            zSplits.Add(cube1.max.z);
-
-            for (int ix = 0; ix < xSplits.Count - 1; ix++)
-            {
-                (int min, int max) xRange = (xSplits[ix], xSplits[ix + 1]);
-                for (int iy = 0; iy < ySplits.Count - 1; iy++)
-                {
-                    (int min, int max) yRange = (ySplits[iy], ySplits[iy + 1]);
-                    for (int iz = 0; iz < zSplits.Count - 1; iz++)
-                    {
-                        (int min, int max) zRange = (zSplits[iz], zSplits[iz + 1]);
-                        ((int x, int y, int z) min, (int x, int y, int z) max) newCube = ((xRange.min, yRange.min, zRange.min), (xRange.max, yRange.max, zRange.max));
-                        result.Add(newCube);
-                    }
-                }
+            if (cube1.max.x < cube2.min.x || cube1.max.y < cube2.min.y || cube1.max.z < cube2.min.z || cube1.min.x >= cube2.max.x || cube1.min.y >= cube2.max.y || cube1.min.z >= cube2.max.z)
+            {   // No overlap
+                result.Add(cube1);
+                return result;
             }
+
+            if (cube1.min.x < cube2.min.x && cube2.min.x <= cube1.max.x) result.Add((cube1.min, (cube2.min.x, cube1.max.y, cube1.max.z)));
+            if (cube1.min.x <= cube2.max.x && cube2.max.x < cube1.max.x) result.Add(((cube2.max.x, cube1.min.y, cube1.min.z), cube1.max));
+            ((int x, int y, int z) min, (int x, int y, int z) max) splitAgain = ((Math.Max(cube2.min.x, cube1.min.x), cube1.min.y, cube1.min.z), (Math.Min(cube2.max.x, cube1.max.x), cube1.max.y, cube1.max.z));
+
+            if (splitAgain.min.y < cube2.min.y && cube2.min.y <= splitAgain.max.y) result.Add((splitAgain.min, (splitAgain.max.x, cube2.min.y, splitAgain.max.z)));
+            if (splitAgain.min.y <= cube2.max.y && cube2.max.y < splitAgain.max.y) result.Add(((splitAgain.min.x, cube2.max.y, splitAgain.min.z), splitAgain.max));
+            splitAgain = ((splitAgain.min.x, Math.Max(cube2.min.y, splitAgain.min.y), splitAgain.min.z), (splitAgain.max.x, Math.Min(cube2.max.y, splitAgain.max.y), splitAgain.max.z));
+
+            if (splitAgain.min.z < cube2.min.z && cube2.min.z <= splitAgain.max.z) result.Add((splitAgain.min, (splitAgain.max.x, splitAgain.max.y, cube2.min.z)));
+            if (splitAgain.min.z <= cube2.max.z && cube2.max.z < splitAgain.max.z) result.Add(((splitAgain.min.x, splitAgain.min.y, cube2.max.z), splitAgain.max));
+            result.Add(((splitAgain.min.x, splitAgain.min.y, Math.Max(cube2.min.z, splitAgain.min.z)), (splitAgain.max.x, splitAgain.max.y, Math.Min(cube2.max.z, splitAgain.max.z))));
+
             return result;
         }
     }
