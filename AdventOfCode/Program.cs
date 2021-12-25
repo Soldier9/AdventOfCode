@@ -122,34 +122,20 @@ namespace AdventOfCode
                 string[] lines = output.Split("\r\n");
                 int linesToPrint = Math.Min(Console.WindowHeight - cursor.y - 3, lines.Length);
                 StringBuilder sb = new();
-                Regex findAnsiChunks = new(@"(\u001b\[[^\e]+m)+([^\e]*)|(^[^\e]+)");
+
+                Regex findAnsiChunks = new(@"((\u001b\[[^\e]+m)*[^\e]){0," + Console.WindowWidth + @"}(\u001b\[[^\e]+m)*");
                 for (int l = 0; l < linesToPrint; l++)
                 {
                     MatchCollection chunksWithAnsi = findAnsiChunks.Matches(lines[l]);
-                    int actualLength = 0;
-                    int chunkNum = 0;
-                    while (chunkNum < chunksWithAnsi.Count && actualLength < Console.WindowWidth)
+                    _ = sb.Append(chunksWithAnsi[0].Value);
+                    for (int i = 1; i < chunksWithAnsi.Count; i++)
                     {
-                        actualLength += Math.Max(chunksWithAnsi[chunkNum].Groups[2].Length, chunksWithAnsi[chunkNum].Groups[3].Length);
-                        chunkNum++;
-                    }
-
-                    for (int i = 0; i < chunkNum - 1; i++)
-                    {
-                        _ = sb.Append(chunksWithAnsi[i].Groups[0].Value);
-                    }
-                    int charsToCut = Math.Max(actualLength - Console.WindowWidth, 0);
-                    _ = sb.Append(chunksWithAnsi[chunkNum - 1].Groups[0].Value[..^charsToCut]);
-
-                    for (int i = chunkNum; i < chunksWithAnsi.Count; i++)
-                    {
-                        if (chunksWithAnsi[i].Groups[1].Value == "\u001b[0m")
+                        if (chunksWithAnsi[i].Groups[3].Value == "\u001b[0m")
                         {
                             _ = sb.Append("\u001b[0m");
                             break;
                         }
                     }
-
                     _ = sb.Append("\r\n");
                 }
                 Console.Write(sb.ToString());

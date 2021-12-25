@@ -112,11 +112,14 @@ namespace AdventOfCode.Solvers.Year2021
             {
                 for (int x = 0; x < width; x++)
                 {
+                    if (map[(x, y)] == '>') _ = sb.Append("\u001b[38;5;2m");
+                    if (map[(x, y)] == 'v') _ = sb.Append("\u001b[38;5;1m");
                     _ = sb.Append(map[(x, y)]);
+                    if (map[(x, y)] != '.') _ = sb.Append("\u001b[0m");
                 }
                 _ = sb.Append("\r\n");
             }
-            Program.PrintData(sb.ToString(), 10);
+            Program.PrintData(sb.ToString(), 0, false, true);
         }
 
         public override string Part2()
