@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode
 {
@@ -8,11 +10,13 @@ namespace AdventOfCode
         static IEnumerable<AbstractSolver>? Solvers;
         public static bool VisualizationEnabled = false;
         public static bool ExtendedVisualization = false;
+
+        private static int LastVisualizationLine = -1;
         static void Main()
         {
             int Year = 0;
             int Day = 0;
-#if !DEBUG
+            //#if !DEBUG
             Console.WriteLine("Input YYYY-DD to run or anything else to run latest solver.");
             Console.Write("End with ! to enable visualization or !! for extended visualization (if either is available): ");
             string[] inputs = Console.ReadLine()!.Split('-');
@@ -32,7 +36,7 @@ namespace AdventOfCode
                 _ = int.TryParse(inputs[0], out Year);
                 _ = int.TryParse(inputs[1], out Day);
             }
-#endif
+            //#endif
 
             Solvers = Assembly
                 .GetExecutingAssembly()
@@ -58,8 +62,11 @@ namespace AdventOfCode
                     int line = Console.CursorTop;
                     Console.Write("Press any key to run part 2...");
                     _ = Console.ReadKey();
-                    Console.SetCursorPosition(0, line);
-                    Console.Write("                               ");
+                    for (int i = line; i <= LastVisualizationLine; i++)
+                    {
+                        Console.SetCursorPosition(0, i);
+                        Console.Write(new string(' ', Console.BufferWidth));
+                    }
                     Console.SetCursorPosition(0, line);
                 }
                 else
@@ -95,15 +102,66 @@ namespace AdventOfCode
                 Console.WriteLine("Solution not implemented");
             }
             _ = Console.ReadLine();
+            int finalCursorLine = Console.CursorTop;
+            for (int i = finalCursorLine; i <= LastVisualizationLine; i++)
+            {
+                Console.SetCursorPosition(0, i);
+                Console.Write(new string(' ', Console.BufferWidth));
+            }
+            Console.SetCursorPosition(0, finalCursorLine);
         }
 
-        public static void PrintData(string output, int delayAfter = 0, bool printWithVisualizationDisabled = false)
+        public static void PrintData(string output, int delayAfter = 0, bool printWithVisualizationDisabled = false, bool cropToConsoleSize = false)
         {
             if (!VisualizationEnabled && !printWithVisualizationDisabled) return;
             (int x, int y) cursor = (Console.CursorLeft, Console.CursorTop);
-            Console.SetCursorPosition(0, 9);
-            Console.Write(output);
+            Console.CursorVisible = false;
+            Console.SetCursorPosition(0, cursor.y + 2);
+            if (cropToConsoleSize)
+            {
+                string[] lines = output.Split("\r\n");
+                int linesToPrint = Math.Min(Console.WindowHeight - cursor.y - 3, lines.Length);
+                StringBuilder sb = new();
+                Regex findAnsiChunks = new(@"(\u001b\[[^\e]+m)+([^\e]*)|(^[^\e]+)");
+                for (int l = 0; l < linesToPrint; l++)
+                {
+                    MatchCollection chunksWithAnsi = findAnsiChunks.Matches(lines[l]);
+                    int actualLength = 0;
+                    int chunkNum = 0;
+                    while (chunkNum < chunksWithAnsi.Count && actualLength < Console.WindowWidth)
+                    {
+                        actualLength += Math.Max(chunksWithAnsi[chunkNum].Groups[2].Length, chunksWithAnsi[chunkNum].Groups[3].Length);
+                        chunkNum++;
+                    }
+
+                    for (int i = 0; i < chunkNum - 1; i++)
+                    {
+                        _ = sb.Append(chunksWithAnsi[i].Groups[0].Value);
+                    }
+                    int charsToCut = Math.Max(actualLength - Console.WindowWidth, 0);
+                    _ = sb.Append(chunksWithAnsi[chunkNum - 1].Groups[0].Value[..^charsToCut]);
+
+                    for (int i = chunkNum; i < chunksWithAnsi.Count; i++)
+                    {
+                        if (chunksWithAnsi[i].Groups[1].Value == "\u001b[0m")
+                        {
+                            _ = sb.Append("\u001b[0m");
+                            break;
+                        }
+                    }
+
+                    _ = sb.Append("\r\n");
+                }
+                Console.Write(sb.ToString());
+            }
+            else
+            {
+                Console.Write(output);
+            }
+            LastVisualizationLine = Console.CursorTop;
             Console.SetCursorPosition(cursor.x, cursor.y);
+            Console.CursorVisible = true;
+
             if (delayAfter > 0) Thread.Sleep(delayAfter);
         }
     }

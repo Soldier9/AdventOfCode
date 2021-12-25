@@ -40,7 +40,7 @@ namespace AdventOfCode.Solvers.Year2021
                 while (priorityQueue.Peek().TotalRisk < Grid[destination].TotalRisk)
                 {
                     Location location = priorityQueue.Dequeue();
-                    if (Program.ExtendedVisualization) PrintState(location);
+                    if (Program.ExtendedVisualization) PrintState(location, true);
                     foreach (Location neighbor in location.GetNeighbors())
                     {
                         if (neighbor.TotalRisk > location.TotalRisk + neighbor.Risk)
@@ -66,7 +66,7 @@ namespace AdventOfCode.Solvers.Year2021
                 return neighbors;
             }
 
-            private static void PrintState(Location bestPathSoFar)
+            private static void PrintState(Location bestPathSoFar, bool cropOutput = false)
             {
                 HashSet<Location> bestPath = new();
                 Location backtrackLocation = bestPathSoFar;
@@ -78,24 +78,28 @@ namespace AdventOfCode.Solvers.Year2021
                 }
 
                 StringBuilder sb = new();
-                for (int x = 0; x <= MaxX; x++)
+                for (int y = 0; y <= MaxY; y++)
                 {
-                    for (int y = 0; y <= MaxY; y++)
+                    for (int x = 0; x <= MaxX; x++)
                     {
                         if (bestPath.Contains(Grid[(x, y)]))
                         {
-                            _ = sb.Append("\u001b[48;5;2m");
+                            _ = sb.Append("\u001b[48;5;8m");
+                            _ = sb.Append("\u001b[38;5;9m");
                             _ = sb.Append(Grid[(x, y)].Risk);
                             _ = sb.Append("\u001b[0m");
                         }
                         else
                         {
+                            if (Grid[(x, y)].TotalRisk != int.MaxValue) _ = sb.Append("\u001b[48;5;8m");
                             _ = sb.Append(Grid[(x, y)].Risk);
+                            if (Grid[(x, y)].TotalRisk != int.MaxValue) _ = sb.Append("\u001b[0m");
                         }
                     }
                     _ = sb.Append("\r\n");
                 }
-                Program.PrintData(sb.ToString(), 1);
+                for (int x = 0; x <= MaxX; x++) _ = sb.Append(' ');
+                Program.PrintData(sb.ToString(), 0, false, cropOutput);
             }
         }
 
