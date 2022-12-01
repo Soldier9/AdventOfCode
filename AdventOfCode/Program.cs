@@ -16,7 +16,7 @@ namespace AdventOfCode
         {
             int Year = 0;
             int Day = 0;
-            //#if !DEBUG
+            #if !DEBUG
             Console.WriteLine("Input YYYY-DD to run or anything else to run latest solver.");
             Console.Write("End with ! to enable visualization or !! for extended visualization (if either is available): ");
             string[] inputs = Console.ReadLine()!.Split('-');
@@ -36,7 +36,7 @@ namespace AdventOfCode
                 _ = int.TryParse(inputs[0], out Year);
                 _ = int.TryParse(inputs[1], out Day);
             }
-            //#endif
+            #endif
 
             Solvers = Assembly
                 .GetExecutingAssembly()
