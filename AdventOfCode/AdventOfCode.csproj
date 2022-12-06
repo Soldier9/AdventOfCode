@@ -51,6 +51,7 @@
     <None Remove="Inputs\2022\Day3.txt" />
     <None Remove="Inputs\2022\Day4.txt" />
     <None Remove="Inputs\2022\Day5.txt" />
+    <None Remove="Inputs\2022\Day6.txt" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Inputs\2019\Day1.txt">
@@ -276,6 +277,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Inputs\2021\Day1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Inputs\2022\Day6.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Inputs\2022\Day5.txt">
