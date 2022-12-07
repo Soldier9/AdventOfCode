@@ -41,7 +41,7 @@ namespace AdventOfCode
             Solvers = Assembly
                 .GetExecutingAssembly()
                 .GetTypes()
-                .Where(t => t.BaseType!.Name == "AbstractSolver")
+                .Where(t => t.BaseType is not null && t.BaseType!.Name == "AbstractSolver")
                 .Select(s => (AbstractSolver)Activator.CreateInstance(s)!)
                 .OrderBy(s => s.Year)
                 .ThenBy(s => s.Day)
