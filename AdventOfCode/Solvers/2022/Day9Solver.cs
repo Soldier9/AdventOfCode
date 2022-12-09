@@ -1,10 +1,11 @@
 ﻿using System.Security.Principal;
+using System.Text;
 
 namespace AdventOfCode.Solvers.Year2022
 {
     class Day9Solver : AbstractSolver
     {
-
+        public override bool HasVisualization => true;
 
         public override string Part1()
         {
@@ -99,11 +100,47 @@ namespace AdventOfCode.Solvers.Year2022
 
                         for (int j = 1; j < rope.Count; j++) if (!IsTouching(rope[j - 1], rope[j])) rope[j] = MoveTail(rope[j - 1], rope[j]);
                         visited.Add(rope.Last());
+                        if (Program.VisualizationEnabled) PrintRope(rope);
                     }
                 }
             }
 
             return visited.Count.ToString();
+        }
+
+        private (int x, int y) allTimeMin = (0, 0);
+        private (int x, int y) allTimeMax = (0, 0);
+        private void PrintRope(List<(int x, int y)> rope)
+        {
+            Dictionary<(int x, int y), string> hashedRope = new();
+            for (int i = 0; i < rope.Count; i++)
+            {
+                char rep = '#';
+                if (i == 0) rep = 'H';
+                if (i == rope.Count - 1) rep = 'T';
+                hashedRope.TryAdd(rope[i], "\u001b[38;5;" + (255 - i).ToString() + "m" + rep + "\u001b[0m");
+            }
+
+            (int x, int y) min = (rope.MinBy(r => r.x).x, rope.MinBy(r => r.y).y);
+            (int x, int y) max = (rope.MaxBy(r => r.x).x, rope.MaxBy(r => r.y).y);
+            allTimeMin.x = Math.Min(allTimeMin.x, min.x);
+            allTimeMin.y = Math.Min(allTimeMin.y, min.y);
+            allTimeMax.x = Math.Max(allTimeMax.x, max.x);
+            allTimeMax.y = Math.Max(allTimeMax.y, max.y);
+
+            StringBuilder sb = new();
+            for (int y = allTimeMin.y; y <= allTimeMax.y; y++)
+            {
+                StringBuilder nextLine = new();
+                for (int x = allTimeMin.x; x <= allTimeMax.x; x++)
+                {
+                    if (hashedRope.ContainsKey((x, y))) nextLine.Append(hashedRope[(x, y)]);
+                    else if (x == 0 && y == 0) nextLine.Append("s");
+                    else nextLine.Append(" ");
+                }
+                sb.AppendLine(nextLine.ToString());
+            }
+            Program.PrintData(sb.ToString(), 0, false, true);
         }
     }
 }
