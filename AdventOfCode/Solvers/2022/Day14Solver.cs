@@ -2,11 +2,21 @@
 {
     class Day14Solver : AbstractSolver
     {
+        public override bool HasVisualization => true;
+
+        Dictionary<char, string> decorations = new();
         Dictionary<(int x, int y), char> map = new();
         int bottom = 0;
 
         public override string Part1()
         {
+            if(Program.VisualizationEnabled)
+            {
+                decorations.Add('#', "\u001b[48;5;250m");
+                decorations.Add('o', "\u001b[48;5;221m");
+                decorations.Add('~', "\u001b[48;5;221m");
+            }
+
             using (StreamReader input = File.OpenText(InputFile))
             {
                 while (!input.EndOfStream)
@@ -42,14 +52,20 @@
             return result.ToString();
         }
 
-        class DoneException : Exception { }
-
         public bool FlowSand((int x, int y) sand, bool part2 = false)
         {
+            if (Program.ExtendedVisualization)
+            {
+                Dictionary<(int x, int y), char> newMap = new(map);
+                newMap.Add(sand, '~');
+                Program.PrintData(Program.CreateStringFromDict(newMap, decorations, null, 0, null, null, ' '), 1, false, true);
+            }
+
             if (!part2 && sand.y > bottom) return false;
             else if (part2 && sand.y == bottom + 1)
             {
                 map.Add((sand.x, sand.y), 'o');
+                if(Program.VisualizationEnabled) Program.PrintData(Program.CreateStringFromDict(map, decorations, null, 0, null, null, ' '), 0, false, true);
                 return true;
             }
 
@@ -58,6 +74,7 @@
             else if (!map.ContainsKey((sand.x + 1, sand.y + 1))) return FlowSand((sand.x + 1, sand.y + 1), part2);
 
             map.Add((sand.x, sand.y), 'o');
+            if (Program.VisualizationEnabled && !Program.ExtendedVisualization) Program.PrintData(Program.CreateStringFromDict(map, decorations, null, 0, null, null, ' '), 0, false, true);
             if (part2 && sand == (500, 0)) return false;
             return true;
         }

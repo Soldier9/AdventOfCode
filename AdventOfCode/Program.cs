@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -109,6 +110,37 @@ namespace AdventOfCode
                 Console.Write(new string(' ', Console.BufferWidth));
             }
             Console.SetCursorPosition(0, finalCursorLine);
+        }
+
+
+        public static string CreateStringFromDict(Dictionary<(int x, int y), char> dict) => CreateStringFromDict(dict, new(), null);
+        public static string CreateStringFromDict(Dictionary<(int x, int y), char> dict, Dictionary<char, string> decorations, int? minX = null, int? minY = null, int? maxX = null, int? maxY = null, char background = ' ')
+        {
+            StringBuilder sb = new();
+
+            (int x, int y) min = (dict.MinBy(e => e.Key.x).Key.x, dict.MinBy(e => e.Key.y).Key.y);
+            if (minX != null && minX < min.x) min.x = (int)minX;
+            if (minY != null && minY < min.y) min.y = (int)minY;
+
+            (int x, int y) max = (dict.MaxBy(e => e.Key.x).Key.x, dict.MaxBy(e => e.Key.y).Key.y);
+            if (maxX != null && maxX > max.x) max.x = (int)maxX;
+            if (maxY != null && maxY > max.y) max.y = (int)maxY;
+
+            for (int y = min.y; y <= max.y; y++)
+            {
+                for(int x = min.x; x <= max.x; x++)
+                {
+                    char newChar = dict.ContainsKey((x, y))? dict[(x, y)] : background;
+
+                    if(decorations.ContainsKey(newChar))
+                    {
+                        _ = sb.Append(decorations[newChar] + newChar + "\u001b[0m");
+                    } else _ = sb.Append(newChar);
+                }
+                _ = sb.Append("\r\n");
+            }
+
+            return sb.ToString();
         }
 
         public static void PrintData(string output, int delayAfter = 0, bool printWithVisualizationDisabled = false, bool cropToConsoleSize = false)
