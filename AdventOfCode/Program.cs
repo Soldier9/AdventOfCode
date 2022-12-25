@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -17,38 +16,60 @@ namespace AdventOfCode
         {
             int Year = 0;
             int Day = 0;
-            #if !DEBUG
-            Console.WriteLine("Input YYYY-DD to run or anything else to run latest solver.");
-            Console.Write("End with ! to enable visualization or !! for extended visualization (if either is available): ");
-            string[] inputs = Console.ReadLine()!.Split('-');
-            Console.Clear();
-            if (inputs[^1].Length > 0 && inputs[^1][^1] == '!')
+            bool doList = false;
+
+            do
             {
-                VisualizationEnabled = true;
-                inputs[^1] = inputs[^1][..^1];
-                if (inputs[^1].Length > 0 && inputs[^1][^1] == '!')
+#if !DEBUG
+                doList = false;
+                Console.WriteLine("Input YYYY-DD to run or anything else to run latest solver.");
+                Console.WriteLine("Input \"list\" to list available solvers.");
+                Console.Write("End with ! to enable visualization or !! for extended visualization (if either is available): ");
+                string[] inputs = Console.ReadLine()!.Split('-');
+                Console.Clear();
+                if (inputs[0] == "list")
                 {
-                    ExtendedVisualization = true;
-                    inputs[^1] = inputs[^1][..^1];
+                    doList = true;
                 }
-            }
-            if (inputs.Length == 2)
-            {
-                _ = int.TryParse(inputs[0], out Year);
-                _ = int.TryParse(inputs[1], out Day);
-            }
-            #endif
+                else
+                {
+                    if (inputs[^1].Length > 0 && inputs[^1][^1] == '!')
+                    {
+                        VisualizationEnabled = true;
+                        inputs[^1] = inputs[^1][..^1];
+                        if (inputs[^1].Length > 0 && inputs[^1][^1] == '!')
+                        {
+                            ExtendedVisualization = true;
+                            inputs[^1] = inputs[^1][..^1];
+                        }
+                    }
+                    if (inputs.Length == 2)
+                    {
+                        _ = int.TryParse(inputs[0], out Year);
+                        _ = int.TryParse(inputs[1], out Day);
+                    }
+                }
+#endif
 
-            Solvers = Assembly
-                .GetExecutingAssembly()
-                .GetTypes()
-                .Where(t => t.BaseType is not null && t.BaseType!.Name == "AbstractSolver")
-                .Select(s => (AbstractSolver)Activator.CreateInstance(s)!)
-                .OrderBy(s => s.Year)
-                .ThenBy(s => s.Day)
-                .ThenBy(s => s.PrioritizedSolver)!;
+                Solvers = Assembly
+                    .GetExecutingAssembly()
+                    .GetTypes()
+                    .Where(t => t.BaseType is not null && t.BaseType!.Name == "AbstractSolver")
+                    .Select(s => (AbstractSolver)Activator.CreateInstance(s)!)
+                    .OrderBy(s => s.Year)
+                    .ThenBy(s => s.Day)
+                    .ThenBy(s => s.PrioritizedSolver)!;
 
-            AbstractSolver solver = Solvers.SingleOrDefault(s => s.Year == Year && s.Day == Day, Solvers.Last());
+                if (doList)
+                {
+                    foreach (AbstractSolver s in Solvers)
+                    {
+                        Console.WriteLine(s.Year + "-" + s.Day + " " + (s.HasVisualization ? "!" : "") + (s.HasExtendedVisualization ? "!" : ""));
+                    }
+                }
+            } while (doList);
+
+            AbstractSolver solver = Solvers!.SingleOrDefault(s => s.Year == Year && s.Day == Day, Solvers!.Last());
             Console.WriteLine("Advent of Code {0} Day {1}"
                 + (solver.HasExtendedVisualization ? " - Extended Visualization available for this solver"
                 : solver.HasVisualization ? " - Visualization available for this solver" : ""),
@@ -133,14 +154,15 @@ namespace AdventOfCode
 
             for (int y = min.y; y <= max.y; y++)
             {
-                for(int x = min.x; x <= max.x; x++)
+                for (int x = min.x; x <= max.x; x++)
                 {
-                    char newChar = dict.ContainsKey((x, y))? dict[(x, y)] : background;
+                    char newChar = dict.ContainsKey((x, y)) ? dict[(x, y)] : background;
 
-                    if(decorations.ContainsKey(newChar))
+                    if (decorations.ContainsKey(newChar))
                     {
                         _ = sb.Append(decorations[newChar] + newChar + "\u001b[0m");
-                    } else _ = sb.Append(newChar);
+                    }
+                    else _ = sb.Append(newChar);
                 }
                 _ = sb.Append("\r\n");
             }
