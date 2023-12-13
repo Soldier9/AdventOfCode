@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.Design;
-
-namespace AdventOfCode.Solvers.Year2023
+﻿namespace AdventOfCode.Solvers.Year2023
 {
     class Day11Solver : AbstractSolver
     {
