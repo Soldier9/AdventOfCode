@@ -81,6 +81,7 @@
     <None Remove="Inputs\2023\Day16.txt" />
     <None Remove="Inputs\2023\Day17.txt" />
     <None Remove="Inputs\2023\Day18.txt" />
+    <None Remove="Inputs\2023\Day19.txt" />
     <None Remove="Inputs\2023\Day2.txt" />
     <None Remove="Inputs\2023\Day3.txt" />
     <None Remove="Inputs\2023\Day4.txt" />
@@ -416,6 +417,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Inputs\2023\Day18.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Inputs\2023\Day19.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Inputs\2023\Day9.txt">
