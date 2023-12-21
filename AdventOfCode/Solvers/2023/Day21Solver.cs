@@ -63,24 +63,35 @@ namespace AdventOfCode.Solvers.Year2023
 
         public override string Part2()
         {
-            return "Does not finish in reasonable time!";
-            //// Does not finish in reasonable time!
-            //HashSet<(int x, int y)> currentPossiblePositions = new();
-            //currentPossiblePositions.Add(StartingPos);
-            //for (int i = 0; i < 26501365; i++)
-            //{
-            //    HashSet<(int x, int y)> nextPossiblePositions = new();
-            //    foreach ((int x, int y) position in currentPossiblePositions)
-            //    {
-            //        foreach ((int x, int y) move in GetPossibleMovesPart2(position))
-            //        {
-            //            nextPossiblePositions.Add(move);
-            //        }
-            //    }
-            //    currentPossiblePositions = nextPossiblePositions;
-            //}
+            StringBuilder sb = new StringBuilder();
+            sb.Append("interpolate{{");
+            int dataPoints = 0;
+            HashSet<(int x, int y)> currentPossiblePositions = new();
+            currentPossiblePositions.Add(StartingPos);
+            for (int i = 0; i < 26501365; i++)
+            {
+                HashSet<(int x, int y)> nextPossiblePositions = new();
+                foreach ((int x, int y) position in currentPossiblePositions)
+                {
+                    foreach ((int x, int y) move in GetPossibleMovesPart2(position))
+                    {
+                        nextPossiblePositions.Add(move);
+                    }
+                }
+                currentPossiblePositions = nextPossiblePositions;
+                if (((i + 1) - 65) % width == 0)
+                {
+                    if (i > width) sb.Append(", {");
+                    sb.Append((i + 1) + ", " + currentPossiblePositions.Count + "}");
+                    if(++dataPoints == 3)
+                    {
+                        sb.Append("}");
+                        break;
+                    }
+                }
+            }
 
-            //return currentPossiblePositions.Count.ToString();
+            return "Feed this into WolframAlpha and solve for 26501365: \r\n" + sb.ToString();
         }
 
         HashSet<(int x, int y)> GetPossibleMovesPart2((int x, int y) fromPos)
