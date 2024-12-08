@@ -127,14 +127,14 @@
                 }
             }
 
-            if(Program.VisualizationEnabled) Program.PrintData(Program.CreateStringFromDict(Elf.map.Keys.ToHashSet()), 0, true, true);
+            if(Program.VisualizationEnabled) Program.PrintData(Program.CreateStringFromSet(Elf.map.Keys.ToHashSet()), 0, true, true);
             for (int i = 0; i < 10; i++) {
                 bool keepMoving = false;
                 foreach (Elf elf in Elf.map.Values) if(elf.findMove() != null) keepMoving = true;
                 if (!keepMoving) break;
                 foreach (Elf elf in Elf.map.Values) elf.ValidateMoves();
                 Elf.DoMoves();
-                if(Program.VisualizationEnabled) Program.PrintData(Program.CreateStringFromDict(Elf.map.Keys.ToHashSet()), 0, true, true);
+                if(Program.VisualizationEnabled) Program.PrintData(Program.CreateStringFromSet(Elf.map.Keys.ToHashSet()), 0, true, true);
             }
 
             (int x, int y) min = (Elf.map.MinBy(e => e.Key.x).Key.x, Elf.map.MinBy(e => e.Key.y).Key.y);
@@ -164,7 +164,7 @@
                 }
             }
 
-            if(Program.ExtendedVisualization) Program.PrintData(Program.CreateStringFromDict(Elf.map.Keys.ToHashSet()), 0, true, true);
+            if(Program.ExtendedVisualization) Program.PrintData(Program.CreateStringFromSet(Elf.map.Keys.ToHashSet()), 0, true, true);
             int result = 0;
             while(true)
             {
@@ -174,7 +174,7 @@
                 if (!keepMoving) return result.ToString();
                 foreach (Elf elf in Elf.map.Values) elf.ValidateMoves();
                 Elf.DoMoves();
-                if (Program.ExtendedVisualization) Program.PrintData(Program.CreateStringFromDict(Elf.map.Keys.ToHashSet()), 0, true, true);
+                if (Program.ExtendedVisualization) Program.PrintData(Program.CreateStringFromSet(Elf.map.Keys.ToHashSet()), 0, true, true);
             }
         }
     }

@@ -94,7 +94,7 @@ namespace AdventOfCode.Solvers.Year2022
                 }
                 for (int j = 0; j < rock.Count; j++) map.Add(rock[j]);
 
-                if(Program.VisualizationEnabled) Program.PrintData(Program.CreateStringFromDict(map), 100, true, true);
+                if(Program.VisualizationEnabled) Program.PrintData(Program.CreateStringFromSet(map), 100, true, true);
             }
 
 

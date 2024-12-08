@@ -133,12 +133,22 @@ namespace AdventOfCode
             Console.SetCursorPosition(0, finalCursorLine);
         }
 
-        public static string CreateStringFromDict(HashSet<(int x, int y)> charLocs, char charToUse = '#')
+        public static Dictionary<(int x, int y), char> CreateDictFromEnumerable(IEnumerable<(int x, int y)> charLocs, char charToUse = '#', Dictionary<(int x, int y), char>? baseDict = null)
         {
-            Dictionary<(int x, int y), char> dict = new();
-            foreach ((int x, int y) x in charLocs) dict.Add(x, charToUse);
-            return CreateStringFromDict(dict);
+            Dictionary<(int x, int y), char> dict = baseDict ?? [];
+            foreach ((int x, int y) x in charLocs)
+            {
+                if(dict.ContainsKey(x)) dict[x] = charToUse;
+                else dict.Add(x, charToUse);
+            }
+            return dict;
         }
+        
+        public static string CreateStringFromSet(HashSet<(int x, int y)> charLocs, char charToUse = '#')
+        {
+            return CreateStringFromDict(CreateDictFromEnumerable(charLocs, charToUse));
+        }
+
         public static string CreateStringFromDict(Dictionary<(int x, int y), char> dict) => CreateStringFromDict(dict, new(), null);
         public static string CreateStringFromDict(Dictionary<(int x, int y), char> dict, Dictionary<char, string> decorations, int? minX = null, int? minY = null, int? maxX = null, int? maxY = null, char background = ' ')
         {
