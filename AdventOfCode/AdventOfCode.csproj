@@ -564,6 +564,10 @@
         <Content Include="Inputs\2025\Day5.txt">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <None Remove="Inputs\2025\Day6.txt" />
+        <Content Include="Inputs\2025\Day6.txt">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
     <ItemGroup>
         <Compile Update="Properties\Resources.Designer.cs">
